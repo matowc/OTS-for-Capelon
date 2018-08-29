@@ -8,7 +8,7 @@ class JLinkExe(Driver):
 	
 	def __init__(self, name):
 		# for debuggig
-		logging.basicConfig(level=logging.DEBUG)
+
 		
 		self._JLinkExePath = "/opt/SEGGER/JLink/JLinkExe"
 		self._scriptPath = ""
@@ -36,10 +36,10 @@ class JLinkExe(Driver):
 		result = subprocess.run([self._JLinkExePath, '-device', self._device, '-CommandFile', self._scriptPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		# consider replacing with check_errors method and catching exception
 		if result.returncode == 0:
-			return 0
+			return True
 		else:
 			logging.warning(result.stdout)
-			return 1
+			return False
 		
 
 

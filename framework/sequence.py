@@ -1,4 +1,5 @@
 import logging
+from exceptions.step_fail import StepFail
 
 class Sequence:
 	
@@ -7,6 +8,9 @@ class Sequence:
 		self.name = name
 		self._resultList = resultList
 		pass
+	
+	def evaluateStep(self, stepName:str, value):
+		return self.steps[stepName].evaluate(self, value, self._resultList)
 	
 	def pre (self) :
 		# returns
@@ -20,15 +24,17 @@ class Sequence:
 		# returns
 		pass
 	
-	def onFail (self) :
+	def onFail (self, result):
+		logging.info("Step {} FAILED".format(result.step.name))
+		raise StepFail()
 		# returns
 		pass
 	
-	def onPass (self) :
+	def onPass (self ,result):
 		# returns
 		pass
 	
-	def onError (self) :
+	def onError (self, result):
 		# returns
 		pass
 	

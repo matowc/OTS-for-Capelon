@@ -5,6 +5,7 @@ from framework import *
 from drivers import *
 from sequences import *
 
+logging.basicConfig(level=logging.DEBUG)
 
 class Gui:
 	def __init__(self):

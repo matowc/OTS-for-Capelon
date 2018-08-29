@@ -12,23 +12,33 @@ class FullTest(Sequence):
 		super().__init__(station, name, resultList)
 		
 		# get drivers
-		self._MqttClient1 = MqttClient(self._station.drivers['MqttClient1'])
-		self._JLinkExe1 = JLinkExe(self._station.drivers['JLinkExe1'])
+		MqttClient_t = NewType('MqttClient_t', MqttClient)
+		JLinkExe_t = NewType('JLinkExe_t', JLinkExe)
+		self._MqttClient1 = MqttClient_t(self._station.drivers['MqttClient1'])
+		self._JLinkExe1 = JLinkExe_t(self._station.drivers['JLinkExe1'])
 		
 		# define steps
 		self.steps = {
-			'startUpTopic':			Step("Start-up Topic", StepTypeEnum.STRING, ""),
-			'deviceId':				Step("Device ID", StepTypeEnum.STRING, ""),
-			'programming' : 		Step("Device programming", StepTypeEnum.BOOL, True),
-			'accelerometer-x' : 	Step("Accelerometer X", StepTypeEnum.NUMERIC, "0:1")
+			'powerUp':					Step("Power up the device", StepTypeEnum.ACTION),
+			'deviceDetect': 			Step("Programmer: device detection", StepTypeEnum.BOOL),
+			'deviceProgramming': 		Step("Programmer: programming", StepTypeEnum.BOOL),
+			'startUp': 					Step("MQTT: start-up message", StepTypeEnum.BOOL),
+			'deviceId': 				Step("MQTT: DID", StepTypeEnum.ACTION),
+			'turnOff12V': 				Step("MQTT: turn 12V off", StepTypeEnum.BOOL),
+			'fullTestResponse': 		Step("MQTT: run full test", StepTypeEnum.BOOL),
+			'rtcTest': 					Step("MQTT: RTC test", StepTypeEnum.BOOL),
+			'rtcRunTest': 				Step("MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
+			'rtcBkupTest': 				Step("MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
+			'digitalInputTest':			Step("MQTT: digital input", StepTypeEnum.BOOL),
+			'daliTest':					Step("MQTT: DALI test", StepTypeEnum.BOOL),
+			'daliErrsTest': 			Step("MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
+			'daliAlsTest': 				Step("MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
+			'accelerometerTest': 		Step("MQTT: Accelerometer test", StepTypeEnum.BOOL),
+			'accelerometerAngleXTest': 	Step("MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'accelerometerAngleYTest': 	Step("MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'accelerometerAngleZTest': 	Step("MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90")
 		}
-		
-		# g = NewType('g', MqttClient)
-		# mg = g(self._MqttClient1)
-		# mg.publish()
-		# MqttClient(self._MqttClient1)
-		
-		pass
+
 	
 	def pre (self) :
 		# returns
@@ -37,76 +47,79 @@ class FullTest(Sequence):
 	def main (self) :
 		# returns
 		try:
-			# Software started
-			# Power up Device
 			APIKEY = "1234"
 			DID = ""
 			mqttAttrTopic = '/' + APIKEY + '/+/attrs'
+			
+			# local temp variables for MQTT communication
+			topic = ''
+			message = ''
+			
+			# we do not know DID until it send the first message (AOEstart),
+			# so I clear all messages and waits for the first one
 			self._MqttClient1.clearAllMostRecentMessages()
 			self._MqttClient1.subscribe(mqttAttrTopic)
-			time.sleep(2)
 			
-			topic = ""
-			try:
+			# power up - to clarify if we can verify it
+			self.evaluateStep('powerUp', True)
+			
+			# programming
+			# self.evaluateStep('deviceProgramming', self._JLinkExe1.program())
+			
+			# wait until new message appears (empty dict evaluates as False in Python)
+			# timeout = 60s
+			timeout = time.time() + 2
+			while not self._MqttClient1.mostRecentMessages and time.time() < timeout:
+				time.sleep(1)
+				
+			topic = ''
+			if self._MqttClient1.mostRecentMessages:
 				[topic] = self._MqttClient1.mostRecentMessages.keys()
-			except ValueError:
-				pass
-			self.steps['startUpTopic'].evaluate(self, topic, self._resultList)
-			
-			try:
 				[null, APIKEY, DID] = topic.split('/')
 				
-			except ValueError:
-				pass
-			self.steps['deviceId'].evaluate(self, DID, self._resultList)
+			self.evaluateStep('startUp', bool(topic))
+			self.evaluateStep('deviceId', DID)
 			
 			mqttCmdTopic = '/'+APIKEY+'/'+DID+'/cmd'
 			mqttAckTopic = '/'+APIKEY+'/'+DID+'/cmdexe'
 			mqttAttrTopic = '/'+APIKEY+'/'+DID+'/attrs'
 			
-			# When Device ID received software register device
-			# S/W prompts user to press Start test button
-			# OLC software performs test
-			# Test Accelerometer
-			self._MqttClient1.clearMostRecentMessage(mqttCmdTopic)
-			self._MqttClient1.publish(mqttCmdTopic, json.dumps({"Cattrs": ["AOMaccl", "AOMangl"]}))
-			time.sleep(2)
-			payload = ""
-			if mqttAckTopic in self._MqttClient1.mostRecentMessages:
-				payload = self._MqttClient1.mostRecentMessages[mqttAckTopic]
-				
-			self.steps['accelerometer-x'].evaluate(self, payload, self._resultList)
-				
+			# turn 12V off
+			self._MqttClient1.clearMostRecentMessage(mqttAckTopic)
+			self._MqttClient1.publish(mqttCmdTopic, json.dumps({"C12Vout": False}))
 			
-			# Test RTC
-			# Test Dali
+			timeout = time.time() + 2
+			message = ''
+			while(time.time() <= timeout):
+				if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
+					message = json.loads(self._MqttClient1.mostRecentMessages[mqttAckTopic])
+					message = message['C12Vout']
+					break
+				else:
+					time.sleep(1)
+					
+			self.evaluateStep('turnOff12V', (message == 0) )
 			
-			# We do not have to test dig input, but if you want we could have the test fixture set the digital input to a certain state and you can check it too, but we should not require to switch the dig input since it would require manual handling.
-			# If all test are passed
-			# S/W prompts user to power cycle device
-			# If all tests are not passed
-			# Test failed
-			# A test result with corresponding Device ID is received by software
-			# Then Software will consider this devices OK
-			# Result will be logged and label printed
-			# Then test software will going to waiting mode until a new device ID is received. (step 3)
-			# Or user can exit test
+			
 		finally:
 			pass
 	
 	def post (self) :
 		# returns
 		pass
-	
-	def onFail (self) :
+
+	def onFail(self, result: Result):
+		super().onFail(Result)
 		# returns
 		pass
-	
-	def onPass (self) :
+
+	def onPass(self, result: Result):
+		super().onPass(Result)
 		# returns
 		pass
-	
-	def onError (self) :
+
+	def onError(self, result: Result):
+		super().onError(Result)
 		# returns
 		pass
 	

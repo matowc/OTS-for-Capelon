@@ -46,6 +46,7 @@ class MqttClient(Driver):
 		pass
 
 	def connect(self, server, port):
+		# todo handle error when connection not available (i.e. netowrk is down)
 		self._client.connect(server, port)
 		pass
 
@@ -61,7 +62,8 @@ class MqttClient(Driver):
 		pass
 	
 	def clearMostRecentMessage(self, topic):
-		self.mostRecentMessages[topic] = None
+		if topic in self.mostRecentMessages:
+			self.mostRecentMessages[topic] = ""
 		
 	def clearAllMostRecentMessages(self):
 		self.mostRecentMessages = {}

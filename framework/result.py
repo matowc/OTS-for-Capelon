@@ -17,13 +17,14 @@ class Result:
 	
 	def post(self, sequence: Sequence):
 		self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S.%f')
+		logging.info("{:^10} {:>30} = {:10} {:20} {:>20}".format("("+self.step.type.name+")", self.step.name, str(self.value), "("+str(self.step.limits)+")", "["+self.timestamp+"]"))
 		
 		if self.status == StepResultEnum.PASSED:
-			sequence.onPass()
+			sequence.onPass(self)
 		elif self.status == StepResultEnum.FAILED:
-			sequence.onFail()
+			sequence.onFail(self)
 		elif self.status == StepResultEnum.ERROR:
-			sequence.onError()
+			sequence.onError(self)
 
 
 def main():

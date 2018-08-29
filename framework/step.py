@@ -32,11 +32,14 @@ class Step:
 				status = StepResultEnum.PASSED
 			else:
 				status = StepResultEnum.FAILED
-				
+
+		elif self.type == StepTypeEnum.ACTION:
+			status = StepResultEnum.DONE
+
 		result = Result(self, value, status)
 		result.post(sequence)
 		resultList.add(result)
-	
+
 def main():
 	pass
 	

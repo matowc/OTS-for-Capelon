@@ -1,4 +1,5 @@
 from typing import Dict
+import logging
 
 from drivers.driver import Driver
 
@@ -12,6 +13,8 @@ class Station:
 	
 	def addDriver(self, driver: Driver):
 		self.drivers[driver.name] = driver
+
+		logging.info("Driver %s added to station", driver.name)
 		
 
 

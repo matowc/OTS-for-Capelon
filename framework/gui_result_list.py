@@ -14,6 +14,7 @@ class GuiResultList(ResultList):
 		super().__init__()
 		self.gui = None
 		self._resultListTree = None
+		logging.info("ResultList initialized")
 		
 	def bindGui(self, gui : Gui, resultListTreeWidget : ttk.Treeview):
 		self.gui = gui
