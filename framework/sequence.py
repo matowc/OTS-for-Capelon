@@ -3,10 +3,11 @@ from exceptions.step_fail import StepFail
 
 class Sequence:
 	
-	def __init__(self, station, name, resultList) :
+	def __init__(self, station, name, resultList, gui=None):
 		self._station = station
 		self.name = name
 		self._resultList = resultList
+		self._gui = gui
 		pass
 	
 	def evaluateStep(self, stepName:str, value):
@@ -26,7 +27,6 @@ class Sequence:
 	
 	def onFail (self, result):
 		logging.info("Step {} FAILED".format(result.step.name))
-		raise StepFail()
 		# returns
 		pass
 	

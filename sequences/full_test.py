@@ -1,14 +1,17 @@
 import logging
 import time
+from framework.sequence import *
 from framework import *
 import json
 from typing import NewType
 from drivers import *
+from exceptions.step_fail import *
+from framework.gui import *
 
 
 class FullTest(Sequence):
 	
-	def __init__(self, station, name, resultList: ResultList) :
+	def __init__(self, station, name, resultList: ResultList, gui: Gui=None) :
 		super().__init__(station, name, resultList)
 		
 		# get drivers
@@ -16,6 +19,7 @@ class FullTest(Sequence):
 		JLinkExe_t = NewType('JLinkExe_t', JLinkExe)
 		self._MqttClient1 = MqttClient_t(self._station.drivers['MqttClient1'])
 		self._JLinkExe1 = JLinkExe_t(self._station.drivers['JLinkExe1'])
+		self._gui = gui
 		
 		# define steps
 		self.steps = {
@@ -59,12 +63,18 @@ class FullTest(Sequence):
 			# so I clear all messages and waits for the first one
 			self._MqttClient1.clearAllMostRecentMessages()
 			self._MqttClient1.subscribe(mqttAttrTopic)
-			
+
+			self._gui.displayCustomMessage('', 'Please power up the device')
+			time.sleep(1)
+
 			# power up - to clarify if we can verify it
 			self.evaluateStep('powerUp', True)
 			
 			# programming
 			# self.evaluateStep('deviceProgramming', self._JLinkExe1.program())
+
+			self._gui.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
+			time.sleep(1)
 			
 			# wait until new message appears (empty dict evaluates as False in Python)
 			# timeout = 60s
@@ -98,8 +108,13 @@ class FullTest(Sequence):
 				else:
 					time.sleep(1)
 					
-			self.evaluateStep('turnOff12V', (message == 0) )
-			
+			self.evaluateStep('turnOff12V', (message == 0))
+
+			self._gui.displayCustomMessage('', 'Please power cycle the device')
+			time.sleep(1)
+
+		except StepFail:
+			logging.info("Step failed - sequence terminated")
 			
 		finally:
 			pass
@@ -109,17 +124,18 @@ class FullTest(Sequence):
 		pass
 
 	def onFail(self, result: Result):
-		super().onFail(Result)
+		super().onFail(result)
+		# raise StepFail()
 		# returns
 		pass
 
 	def onPass(self, result: Result):
-		super().onPass(Result)
+		super().onPass(result)
 		# returns
 		pass
 
 	def onError(self, result: Result):
-		super().onError(Result)
+		super().onError(result)
 		# returns
 		pass
 	
