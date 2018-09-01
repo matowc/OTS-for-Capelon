@@ -39,9 +39,9 @@ class Step:
 			self.limits = ''
 
 		result = Result(self, value, status)
-		sequence.postStep(result)
 		result.post(sequence)
 		resultList.add(result)
+		sequence.postStep(result) # has to be after the result list is update, because otherwise FAIL result will break the sequence (throw exception)and will not display on the list
 
 def main():
 	pass

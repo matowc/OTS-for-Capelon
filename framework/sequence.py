@@ -60,6 +60,7 @@ class Sequence:
 	def onFail (self, result):
 		logging.info("Step {} FAILED".format(result.step.name))
 		self.status = SequenceStatusEnum.FAILED
+		raise StepFail
 	
 	def onPass (self ,result):
 		pass
