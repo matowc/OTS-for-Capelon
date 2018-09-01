@@ -14,7 +14,7 @@ class ResultList:
 
 		if(result in self.results):
 			for i, r in enumerate(self.results):
-				if (r.step.name == result.step.name):
+				if (id(r.step) == id(step)):
 					self.results[i] = result
 		else:
 			self.results.append(result)
