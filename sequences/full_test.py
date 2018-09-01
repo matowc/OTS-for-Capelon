@@ -120,6 +120,9 @@ class FullTest(Sequence):
 				mqttAckTopic = '/'+APIKEY+'/'+DID+'/cmdexe'
 				mqttAttrTopic = '/'+APIKEY+'/'+DID+'/attrs'
 
+				self._MqttClient1.subscribe(mqttAckTopic, 1)
+				self._MqttClient1.subscribe(mqttAttrTopic, 1)
+
 				self.evaluateStep(cycle+'startUp', bool(topic))
 				self.evaluateStep(cycle+'deviceId', DID)
 
