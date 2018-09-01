@@ -64,9 +64,9 @@ class FullTest(Sequence):
 		}
 
 		self._config = {
-			'startUpTimeout_s':			3,
-			'fullTestTimeout_s':		3,
-			'defaultCommandTimeout_s':	3
+			'startUpTimeout_s':			15,
+			'fullTestTimeout_s':		2,
+			'defaultCommandTimeout_s':	2
 		}
 
 	
