@@ -64,7 +64,7 @@ class FullTest(Sequence):
 		}
 
 		self._config = {
-			'startUpTimeout_s':			15,
+			'startUpTimeout_s':			25,
 			'fullTestTimeout_s':		2,
 			'defaultCommandTimeout_s':	2
 		}
@@ -179,7 +179,7 @@ class FullTest(Sequence):
 			print(self._MqttClient1.mostRecentMessages.keys())
 			if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
 				response = self._MqttClient1.mostRecentMessages[mqttAckTopic]
-				logging.debug(response)
+				logging.debug(response.decode("utf-8"))
 				response = json.loads(response)
 				break
 			else:
