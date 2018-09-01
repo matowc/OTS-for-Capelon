@@ -77,7 +77,7 @@ class MqttClient(Driver):
 
 	def onMessage(self, client, userdata, msg):
 		self.mostRecentMessages[msg.topic] = msg.payload.decode("utf-8")
-		logging.info(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
+		logging.info(msg.topic+" "+str(msg.qos)+" "+str(msg.payload.decode("utf-8")))
 	
 	def onConnect(self, client, userdata, flags, rc):
 		logging.info("CONNACK received with code %d." % (rc))
