@@ -43,6 +43,7 @@ class FullTest(Sequence):
 			'accelerometerAngleXTest': 	Step("MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC, "-90:90"),
 			'accelerometerAngleYTest': 	Step("MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC, "-90:90"),
 			'accelerometerAngleZTest': 	Step("MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90")
+
 		}
 
 		self._config = {
