@@ -179,7 +179,7 @@ class FullTest(Sequence):
 			print(self._MqttClient1.mostRecentMessages.keys())
 			if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
 				response = self._MqttClient1.mostRecentMessages[mqttAckTopic]
-				logging.debug(response.decode("utf-8"))
+				logging.debug(response)
 				response = json.loads(response)
 				break
 			else:
