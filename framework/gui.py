@@ -62,7 +62,7 @@ class Gui:
 		self._frames['menuButtons'].grid(row=0, column=1)
 		
 		# header widgets
-		self._widgets['logo.image'] = PhotoImage(file='/home/mateusz/Dropbox/capelon/OTS/docs/logo2.PNG')
+		self._widgets['logo.image'] = PhotoImage(file='/docs/logo2.PNG')
 		self._widgets['logo.logo'] = ttk.Label(self._frames['logo'], image=self._widgets['logo.image'])
 		self._widgets['logo.name'] = ttk.Label(self._frames['logo'], text = 'TEST STATION', font=['Arial', 18, 'bold'], foreground='grey')
 		self._widgets['menuButtons.settingsButton'] = \
