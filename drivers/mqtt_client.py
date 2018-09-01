@@ -72,7 +72,7 @@ class MqttClient(Driver):
 		logging.info("Subscribed: "+str(mid)+" "+str(granted_qos))
 
 	def onMessage(self, client, userdata, msg):
-		self.mostRecentMessages[msg.topic] = msg.payload
+		self.mostRecentMessages[msg.topic] = str(msg.payload)
 		logging.info(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
 	
 	def onConnect(self, client, userdata, flags, rc):

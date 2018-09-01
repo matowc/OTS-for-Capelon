@@ -1,4 +1,5 @@
 from framework.station import Station
+from sequences import *
 
 
 class Application:
@@ -8,6 +9,11 @@ class Application:
 		self.resultLogger = None # ResultLogger
 		self.station = Station()
 		self.database = None # Database
+		self.testThread = None
+		self.test = None
+		self.sequences = {
+			'OLC NEMA PP - full test':	FullTest
+		}
 		pass
 	
 	def launch (self) :

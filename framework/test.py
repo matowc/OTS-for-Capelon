@@ -11,10 +11,11 @@ class Test:
 		pass
 	
 	def run(self):
-		
+		self.resultList.clear()
 		self.sequence.pre()
 		self.sequence.main()
 		self.sequence.post()
+		self.sequence.final()
 
 
 def main():

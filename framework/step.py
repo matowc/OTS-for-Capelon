@@ -21,7 +21,7 @@ class Step:
 
 		
 		if self.type == StepTypeEnum.NUMERIC:
-			[LL, HL] = self.limits.split(':',2)
+			[LL, HL] = map(float, self.limits.split(':',2))
 			if value >= LL and value <= HL:
 				status = StepResultEnum.PASSED
 			else:
@@ -37,6 +37,7 @@ class Step:
 			status = StepResultEnum.DONE
 
 		result = Result(self, value, status)
+		sequence.postStep(result)
 		result.post(sequence)
 		resultList.add(result)
 

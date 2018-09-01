@@ -33,6 +33,10 @@ class GuiResultList(ResultList):
 		# returns
 		pass
 
+	def clear(self):
+		super().clear()
+		self._resultListTree.delete(*self._resultListTree.get_children())
+
 
 
 def main():
