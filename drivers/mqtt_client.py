@@ -15,8 +15,9 @@ class MqttClient(Driver):
 		self._clientId = 'ots'
 		self._server = 'localhost'
 		self._port = 1883
-		self._topics = [{'name': '/1234/#', 'qos': 1}]
-		
+		#self._topics = [{'name': '/1234/#', 'qos': 1}]
+		self._topics = []
+
 		self.mostRecentMessages = {}
 		
 		super().__init__(name)
@@ -67,7 +68,7 @@ class MqttClient(Driver):
 	
 	def clearMostRecentMessage(self, topic):
 		if topic in self.mostRecentMessages:
-			self.mostRecentMessages[topic] = ""
+			del self.mostRecentMessages[topic]
 		
 	def clearAllMostRecentMessages(self):
 		self.mostRecentMessages = {}
