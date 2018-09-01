@@ -1,14 +1,14 @@
 from tkinter import *
 from tkinter import ttk
-
-from framework import *
+import time
 from drivers import *
 import threading
 import logging
 from tkinter import messagebox
 from tkinter import scrolledtext
 
-logging.basicConfig(level=logging.DEBUG)
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s')
 
 class TextHandler(logging.Handler):
     # This class allows you to log to a Tkinter Text or ScrolledText widget
@@ -150,6 +150,7 @@ class Gui:
 		logger = logging.getLogger()
 		logger.addHandler(textHandler)
 
+		from framework.application import Application
 		self.ots = Application()
 		self.ots.station.addDriver(MqttClient("MqttClient1"))
 		self.ots.station.addDriver(JLinkExe("JLinkExe1"))
@@ -216,10 +217,12 @@ class Gui:
 		self._frames['interactive'].grid_forget()
 		logging.debug('Chosen sequence: {}'.format(sequenceName))
 
+		from framework.gui_result_list import GuiResultList
 		resultList1 = GuiResultList()
 		resultList1.bindGui(self, self._widgets['resultList.tree'])
 		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, resultList1, self)
 
+		from framework.test import Test
 		self.ots.test = Test(sequence1, resultList1)
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
