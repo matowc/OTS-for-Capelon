@@ -13,9 +13,9 @@ class MqttClient(Driver):
 		
 		self._client = None
 		self._clientId = 'ots'
-		self._server = 'broker.mqttdashboard.com'
+		self._server = 'localhost'
 		self._port = 1883
-		self._topics = [{'name': 'capelon/#', 'qos': 1}]
+		self._topics = [{'name': '/1234/#', 'qos': 1}]
 		
 		self.mostRecentMessages = {}
 		
@@ -29,7 +29,11 @@ class MqttClient(Driver):
 		self._client.on_subscribe = self.onSubscribe
 		self._client.on_message = self.onMessage
 		self._client.on_connect = self.onConnect
-		self.connect(self._server, self._port)
+		try:
+			self.connect(self._server, self._port)
+		except Exception:
+			pass
+
 		for topic in self._topics:
 			self.subscribe(topic['name'], topic['qos'])
 			self._client.loop_start()

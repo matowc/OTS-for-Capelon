@@ -173,6 +173,7 @@ class FullTest(Sequence):
 		timeout = time.time() + timeout_s
 		response = ''
 		while time.time() <= timeout:
+			print(self._MqttClient1.mostRecentMessages.keys())
 			if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
 				response = json.loads(self._MqttClient1.mostRecentMessages[mqttAckTopic].decode("utf-8"))
 				break
