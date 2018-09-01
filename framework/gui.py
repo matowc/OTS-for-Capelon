@@ -113,7 +113,7 @@ class Gui:
 		
 		# content widgets
 		self._widgets['message.message'] = \
-			ttk.Label(self._frames['message'], text='', font=('Arial',16))
+			ttk.Label(self._frames['message'], text='', font=('Arial',16), anchor='center', wraplength=40)
 		self._widgets['interactive.sequenceList'] = \
 			ttk.Combobox(self._frames['interactive'], font=('Arial', 14))
 		self._widgets['interactive.sequenceListLabel'] = \
@@ -200,7 +200,7 @@ class Gui:
 		return resultListTree
 
 	def initializeStatisticsFrame(self):
-		left = 100
+		left = 50
 		top = 100
 		diameter = 60
 		gap = 60
@@ -208,10 +208,10 @@ class Gui:
 		text_width = 100
 
 		self._widgets['statistics.canvas'] = Canvas(self._frames['statistics'], width=left+diameter+text_gap+text_width, height=(top+3*diameter+2*gap+10), background='white', bd=0, highlightthickness=0, relief='ridge')
-		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(left, top, left+diameter, top+diameter, outline='green', fill=self.colors['green'])
+		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(left, top, left+diameter, top+diameter, outline=self.colors['green'], fill=self.colors['green'])
 		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(left+diameter/2, top+diameter/2, fill= "white", font=('Arial', 20, 'bold'), text="0")
 		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(left+diameter+text_gap, top+diameter/2, fill=self.colors['green'], font=('Arial', 20, 'bold'), text="OK")
-		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(left, top+diameter+gap, left+diameter, top+diameter+gap+diameter, outline='red', fill=self.colors['red'])
+		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(left, top+diameter+gap, left+diameter, top+diameter+gap+diameter, outline=self.colors['red'], fill=self.colors['red'])
 		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(left+diameter/2, top+diameter+gap+diameter/2, fill= "white", font=('Arial', 20, 'bold'), text="0")
 		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(left+diameter+text_gap, top+diameter+gap+diameter/2, fill=self.colors['red'], font=('Arial', 20, 'bold'), text="NOK")
 		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(left, top+diameter+gap+diameter+gap, left+diameter, top+diameter+gap+diameter+gap+diameter, outline=self.colors['light grey'], fill=self.colors['light grey'])
