@@ -137,7 +137,7 @@ class FullTest(Sequence):
 					if response:
 						break
 				self.evaluateStep(cycle+'fullTestResponseRetries', retryCount)
-				self.evaluateStep(cycle+'fullTestResponse', response)
+				self.evaluateStep(cycle+'fullTestResponse', response == True)
 
 				if response:
 					self.evaluateStep(cycle+'rtcTest', response['Cdiags']['rtc']['io'])
@@ -148,9 +148,9 @@ class FullTest(Sequence):
 					self.evaluateStep(cycle+'daliErrsTest', response['Cdiags']['dali']['errs'])
 					self.evaluateStep(cycle+'daliAlsTest', response['Cdiags']['dali']['als'])
 					self.evaluateStep(cycle+'accelerometerTest', response['Cdiags']['accl']['io'])
-					self.evaluateStep(cycle+'accelerometerAngleXTest', response['Cdiags']['angl']['x'])
-					self.evaluateStep(cycle+'accelerometerAngleYTest', response['Cdiags']['angl']['y'])
-					self.evaluateStep(cycle+'accelerometerAngleZTest', response['Cdiags']['angl']['z'])
+					self.evaluateStep(cycle+'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
+					self.evaluateStep(cycle+'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
+					self.evaluateStep(cycle+'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
 
 				if cycle == 'c1_':
 					self.displayCustomMessage('', 'Please power cycle the device')
