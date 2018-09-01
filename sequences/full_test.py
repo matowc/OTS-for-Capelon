@@ -82,15 +82,6 @@ class FullTest(Sequence):
 			DID = ""
 			mqttAttrTopic = '/' + APIKEY + '/+/attrs'
 			
-			# local temp variables for MQTT communication
-			topic = ''
-			message = ''
-			
-			# we do not know DID until it send the first message (AOEstart),
-			# so I clear all messages and waits for the first one
-			self._MqttClient1.clearAllMostRecentMessages()
-			self._MqttClient1.subscribe(mqttAttrTopic)
-
 			self.displayCustomMessage('', 'Please power up the device')
 			time.sleep(1)
 			# power up - to clarify if we can verify it
@@ -104,6 +95,11 @@ class FullTest(Sequence):
 			self.clearCustomMessage()
 
 			for cycle in ['c1_', 'c2_']:
+
+				# we do not know DID until it send the first message (AOEstart),
+				# so I clear all messages and waits for the first one
+				self._MqttClient1.clearAllMostRecentMessages()
+				self._MqttClient1.subscribe(mqttAttrTopic)
 
 				# wait until new message appears (empty dict evaluates as False in Python)
 				# timeout = 60s
@@ -137,7 +133,7 @@ class FullTest(Sequence):
 					if response:
 						break
 				self.evaluateStep(cycle+'fullTestResponseRetries', retryCount)
-				self.evaluateStep(cycle+'fullTestResponse', response == True)
+				self.evaluateStep(cycle+'fullTestResponse', bool(response))
 
 				if response:
 					self.evaluateStep(cycle+'rtcTest', response['Cdiags']['rtc']['io'])
