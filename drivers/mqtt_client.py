@@ -15,8 +15,7 @@ class MqttClient(Driver):
 		self._clientId = 'ots'
 		self._server = 'localhost'
 		self._port = 1883
-		#self._topics = [{'name': '/1234/#', 'qos': 1}]
-		self._topics = []
+		self._topics = [{'name': '/1234/#', 'qos': 1}]
 
 		self.mostRecentMessages = {}
 		
