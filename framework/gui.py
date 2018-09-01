@@ -113,9 +113,9 @@ class Gui:
 		
 		# content widgets
 		self._widgets['message.message'] = \
-			ttk.Label(self._frames['message'], text='', font=('Arial',16), anchor='center', wraplength=40)
+			ttk.Label(self._frames['message'], text='', font=('Arial',20), anchor='center', wraplength=30)
 		self._widgets['interactive.sequenceList'] = \
-			ttk.Combobox(self._frames['interactive'], font=('Arial', 14))
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
 		self._widgets['interactive.sequenceListLabel'] = \
 			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font = ('Arial', 20))
 		self._widgets['interactive.startButton'] = \
@@ -128,7 +128,7 @@ class Gui:
 			ttk.Label(self._frames['testStatus'], text = '', font=('Arial', 18, 'bold'), background = self.colors['light grey'], anchor = CENTER)
 		self.initializeStatisticsFrame()
 		self._widgets['customFrame.message'] = \
-			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20))
+			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20), anchor='center', wraplength=30)
 		
 		self._widgets['message.message'].pack()
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
