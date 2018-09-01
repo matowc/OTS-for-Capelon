@@ -45,7 +45,7 @@ class Gui:
 		self.colors['light grey'] = 'light grey'
 
 		self._root = Tk()
-		self._root.geometry("1700x1000+100+0")
+		self._root.geometry("1900x1000+0+0")
 		self._root.title("Owczarek Test System (OTS) for Capelon")
 		self._root.configure(background = 'white')
 		
@@ -128,7 +128,7 @@ class Gui:
 			ttk.Label(self._frames['testStatus'], text = '', font=('Arial', 18, 'bold'), background = self.colors['light grey'], anchor = CENTER)
 		self.initializeStatisticsFrame()
 		self._widgets['customFrame.message'] = \
-			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20), anchor='center', wraplength=30)
+			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20), anchor='center', wraplength=400, justify='center')
 		
 		self._widgets['message.message'].pack()
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
