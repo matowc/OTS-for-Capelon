@@ -108,10 +108,10 @@ class Gui:
 
 		self._frames['interactive'].grid(row=1, column=0, columnspan=2)
 		self._frames['message'].grid(row=0, column=0, columnspan=2)
-		self._frames['resultList'].grid(row=0, column=3, rowspan=2)
-		self._frames['logs'].grid(row=3, column=0, columnspan=2)
-		self._frames['statistics'].grid(row=3, column=3, sticky='nsew')
-		self._frames['testStatus'].grid(row=2, column=3, sticky='nsew')
+		self._frames['resultList'].grid(row=0, column=3, rowspan=4)
+		self._frames['logs'].grid(row=3, column=0, columnspan=2, rowspan=2)
+		self._frames['statistics'].grid(row=0, column=4, sticky='nsew', rowspan=2)
+		self._frames['testStatus'].grid(row=4, column=3, sticky='nsew')
 		self._frames['testStatus'].grid_rowconfigure(0, weight=1)
 		self._frames['testStatus'].grid_columnconfigure(0, weight=1)
 		self._frames['content'].grid_columnconfigure(2, minsize=100, weight=1)
@@ -162,7 +162,7 @@ class Gui:
 	def initializeResultListTree(self):
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
-			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=20)
+			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=30)
 		
 		resultListTree.heading('#0', text='')
 		resultListTree.heading('stepName', text='Step Name')

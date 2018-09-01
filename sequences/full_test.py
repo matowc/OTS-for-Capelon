@@ -64,7 +64,7 @@ class FullTest(Sequence):
 		}
 
 		self._config = {
-			'startUpTimeout_s':			25,
+			'startUpTimeout_s':			40,
 			'fullTestTimeout_s':		2,
 			'defaultCommandTimeout_s':	2
 		}
@@ -81,7 +81,7 @@ class FullTest(Sequence):
 			APIKEY = "1234"
 			DID = ""
 			mqttAttrTopic = '/' + APIKEY + '/+/attrs'
-			
+
 			self.displayCustomMessage('', 'Please power up the device')
 			time.sleep(1)
 			# power up - to clarify if we can verify it
