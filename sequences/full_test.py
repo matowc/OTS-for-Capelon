@@ -179,6 +179,7 @@ class FullTest(Sequence):
 		while time.time() <= timeout:
 			print(self._MqttClient1.mostRecentMessages.keys())
 			if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
+				print(self._MqttClient1.mostRecentMessages)
 				response = self._MqttClient1.mostRecentMessages[mqttAckTopic]
 				logging.debug(response)
 				response = json.loads(response)
