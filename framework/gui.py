@@ -34,6 +34,16 @@ class TextHandler(logging.Handler):
 
 class Gui:
 	def __init__(self):
+
+		self.colors = {}
+		# self.colors['light green'] = 'light green'
+		# self.colors['red'] = 'red'
+		# self.colors['light grey'] = 'light grey'
+		self.colors['light green'] = '#C5E6A6'
+		self.colors['green'] = '#7FB069'
+		self.colors['red'] = '#DA4167'
+		self.colors['light grey'] = 'light grey'
+
 		self._root = Tk()
 		self._root.geometry("1700x1000+100+0")
 		self._root.title("Owczarek Test System (OTS) for Capelon")
@@ -81,28 +91,12 @@ class Gui:
 		#self._widgets['menuButtons.dataManagementButton'].grid(row=0, column=2)
 		#self._widgets['menuButtons.exitButton'].grid(row=0, column=3)
 
-		style = ttk.Style()
-		style.element_create("Custom.Treeheading.border", "from", "default")
-		style.layout("Custom.Treeview.Heading", [
-			("Custom.Treeheading.cell", {'sticky': 'nswe'}),
-			("Custom.Treeheading.border", {'sticky': 'nswe', 'children': [
-				("Custom.Treeheading.padding", {'sticky': 'nswe', 'children': [
-					("Custom.Treeheading.image", {'side': 'right', 'sticky': ''}),
-					("Custom.Treeheading.text", {'sticky': 'we'})
-				]})
-			]}),
-		])
-		style.configure("Custom.Treeview.Heading",
-						background="grey", foreground="white", relief="flat")
-		style.map("Custom.Treeview.Heading",
-				  relief=[('active', 'groove'), ('pressed', 'sunken')])
-		style.configure('Treeview', rowheight=15)  # SOLUTION
 		
 		# content subframes
 		self._frames['interactive'] = Frame(self._frames['content'], background = 'white')
 		self._frames['message'] = Frame(self._frames['content'])
 		self._frames['customFrame'] = Frame(self._frames['content'])
-		self._frames['resultList'] = Frame(self._frames['content'])
+		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'], padx = 10, pady = 10)
 		self._frames['logs'] = LabelFrame(self._frames['content'], background='white', text='Logs', pady=10, padx=10)
 		self._frames['statistics'] = Frame(self._frames['content'], background ='white')
 		self._frames['testStatus'] = Frame(self._frames['content'])
@@ -115,7 +109,7 @@ class Gui:
 		self._frames['testStatus'].grid(row=4, column=3, sticky='nsew')
 		self._frames['testStatus'].grid_rowconfigure(0, weight=1)
 		self._frames['testStatus'].grid_columnconfigure(0, weight=1)
-		self._frames['content'].grid_columnconfigure(2, minsize=100, weight=1)
+		self._frames['content'].grid_columnconfigure(2, minsize=30, weight=1)
 		
 		# content widgets
 		self._widgets['message.message'] = \
@@ -131,7 +125,7 @@ class Gui:
 		self._widgets['resultList.tree'] = self.initializeResultListTree()
 		self._widgets['logs.logs'].configure(font=('TkFixedFont', 7))
 		self._widgets['testStatus.currentStatus'] = \
-			ttk.Label(self._frames['testStatus'], text = 'NOT RUN', font=('Arial', 18), background = 'light grey', anchor = CENTER)
+			ttk.Label(self._frames['testStatus'], text = '', font=('Arial', 18, 'bold'), background = self.colors['light grey'], anchor = CENTER)
 		self.initializeStatisticsFrame()
 		self._widgets['customFrame.message'] = \
 			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20))
@@ -161,6 +155,27 @@ class Gui:
 		self._widgets['interactive.sequenceList'].configure(value= ['OLC NEMA PP - full test'])
 			
 	def initializeResultListTree(self):
+
+		style = ttk.Style()
+		style.element_create("Custom.Treeheading.border", "from", "default")
+		style.layout("Custom.Treeview.Heading", [
+			("Custom.Treeheading.cell", {'sticky': 'nswe'}),
+			("Custom.Treeheading.border", {'sticky': 'nswe', 'children': [
+				("Custom.Treeheading.padding", {'sticky': 'nswe', 'children': [
+					("Custom.Treeheading.image", {'side': 'right', 'sticky': ''}),
+					("Custom.Treeheading.text", {'sticky': 'we'})
+				]})
+			]}),
+		])
+		style.layout("Treeview", [
+			('Treeview.treearea', {'sticky': 'nswe'})
+		])
+		style.configure("Custom.Treeview.Heading",
+						background="light grey", foreground="white", relief="flat")
+		style.map("Custom.Treeview.Heading",
+				  relief=[('active', 'groove'), ('pressed', 'sunken')])
+		style.configure('Treeview', rowheight=15, borderwidth=10, bordercolor='black')
+
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
 			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=40)
@@ -185,18 +200,23 @@ class Gui:
 		return resultListTree
 
 	def initializeStatisticsFrame(self):
-		#self._widgets['statistics.statistics'] = \
-		#	ttk.Label(self._frames['statistics'], text = 'PASSED: {}\nFAILED: {}\nTOTAL: {}'.format(1,2,3), background = 'yellow')
-		self._widgets['statistics.canvas'] = Canvas(self._frames['statistics'], width=510, background='white', bd=0, highlightthickness=0, relief='ridge')
-		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(0, 100, 100, 200, outline='light green', fill='light green')
-		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(200, 100, 300, 200, outline='red', fill='red')
-		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(400, 100, 500, 200, outline='grey', fill='grey')
-		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(50, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(250, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.totalCount'] = self._widgets['statistics.canvas'].create_text(450, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(50, 80, fill= "light green", font=('Arial', 20, 'bold'), text="OK")
-		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(250, 80, fill= "red", font=('Arial', 20, 'bold'), text="NOK")
-		self._widgets['statistics.totalLabel'] = self._widgets['statistics.canvas'].create_text(450, 80, fill= "grey", font=('Arial', 20, 'bold'), text="Total")
+		left = 100
+		top = 100
+		diameter = 60
+		gap = 60
+		text_gap = 50
+		text_width = 100
+
+		self._widgets['statistics.canvas'] = Canvas(self._frames['statistics'], width=left+diameter+text_gap+text_width, height=(top+3*diameter+2*gap+10), background='white', bd=0, highlightthickness=0, relief='ridge')
+		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(left, top, left+diameter, top+diameter, outline='green', fill=self.colors['green'])
+		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(left+diameter/2, top+diameter/2, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(left+diameter+text_gap, top+diameter/2, fill=self.colors['green'], font=('Arial', 20, 'bold'), text="OK")
+		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(left, top+diameter+gap, left+diameter, top+diameter+gap+diameter, outline='red', fill=self.colors['red'])
+		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(left+diameter/2, top+diameter+gap+diameter/2, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(left+diameter+text_gap, top+diameter+gap+diameter/2, fill=self.colors['red'], font=('Arial', 20, 'bold'), text="NOK")
+		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(left, top+diameter+gap+diameter+gap, left+diameter, top+diameter+gap+diameter+gap+diameter, outline=self.colors['light grey'], fill=self.colors['light grey'])
+		self._widgets['statistics.totalCount'] = self._widgets['statistics.canvas'].create_text(left+diameter/2, top+diameter+gap+diameter+gap+diameter/2, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.totalLabel'] = self._widgets['statistics.canvas'].create_text(left+diameter+text_gap, top+diameter+gap+diameter+gap+diameter/2, fill= self.colors['light grey'], font=('Arial', 20, 'bold'), text="Total")
 
 		#self._widgets['statistics.statistics'].grid(row=0, column=0)
 		self._widgets['statistics.canvas'].grid(row=0,column=0)
@@ -254,7 +274,7 @@ class Gui:
 		if self._root:
 			self._widgets['testStatus.currentStatus']['text'] = text
 			if bgcolor:
-				self._widgets['testStatus.currentStatus'].config(background = bgcolor)
+				self._widgets['testStatus.currentStatus'].config(background = bgcolor, foreground = 'white')
 
 	def incrementStatistics(self, widgetName):
 		actual = int(self._widgets['statistics.canvas'].itemcget(self._widgets[widgetName], 'text'))

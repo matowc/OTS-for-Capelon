@@ -19,9 +19,9 @@ class GuiResultList(ResultList):
 	def bindGui(self, gui : Gui, resultListTreeWidget : ttk.Treeview):
 		self.gui = gui
 		self._resultListTree = resultListTreeWidget
-		self._resultListTree.tag_configure('PASSED', background='light green')
-		self._resultListTree.tag_configure('FAILED', background='red')
-		self._resultListTree.tag_configure('DONE', background='light green')
+		self._resultListTree.tag_configure('PASSED', background=self.gui.colors['green'])
+		self._resultListTree.tag_configure('FAILED', background=self.gui.colors['red'])
+		self._resultListTree.tag_configure('DONE', background=self.gui.colors['light green'])
 		self._resultListTree.tag_configure('result', font=('Arial', 8))
 	
 	def add (self, result: Result):

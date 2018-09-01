@@ -38,10 +38,15 @@ class Step:
 			status = StepResultEnum.DONE
 			self.limits = ''
 
-		result = Result(self, value, status)
-		result.post(sequence)
-		resultList.add(result)
-		sequence.postStep(result) # has to be after the result list is update, because otherwise FAIL result will break the sequence (throw exception)and will not display on the list
+		try:
+			result = Result(self, value, status)
+			sequence.postStep(result)
+			result.post(sequence)
+		except Exception:
+			raise
+		finally:
+			resultList.add(result)
+
 
 def main():
 	pass

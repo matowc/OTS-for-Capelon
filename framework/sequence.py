@@ -18,19 +18,19 @@ class Sequence:
 	def pre (self) :
 		self.status = SequenceStatusEnum.RUNNING
 		if self._gui:
-			self._gui.updateTestStatus("Sequence pre-actions in progress...", "orange")
+			self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey")
 		# returns
 		pass
 	
 	def main (self) :
 		if self._gui:
-			self._gui.updateTestStatus("Test in progress...", 'yellow')
+			self._gui.updateTestStatus("Test in progress...", 'light grey')
 
 		pass
 	
 	def post (self) :
 		if self._gui:
-			self._gui.updateTestStatus("Sequence post-actions in progress...", 'orange')
+			self._gui.updateTestStatus("Sequence post-actions in progress...", 'light grey')
 		# returns
 		pass
 
