@@ -120,7 +120,7 @@ class Gui:
 		self._widgets['message.message'] = \
 			ttk.Label(self._frames['message'], text='', font=('Arial',16))
 		self._widgets['interactive.sequenceList'] = \
-			ttk.Combobox(self._frames['interactive'])
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 14))
 		self._widgets['interactive.sequenceListLabel'] = \
 			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font = ('Arial', 20))
 		self._widgets['interactive.startButton'] = \
@@ -188,6 +188,12 @@ class Gui:
 		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(0, 100, 100, 200, outline='light green', fill='light green')
 		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(200, 100, 300, 200, outline='red', fill='red')
 		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(400, 100, 500, 200, outline='grey', fill='grey')
+		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(50, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(250, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.totalCount'] = self._widgets['statistics.canvas'].create_text(450, 150, fill= "white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(50, 80, fill= "light green", font=('Arial', 20, 'bold'), text="OK")
+		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(250, 80, fill= "red", font=('Arial', 20, 'bold'), text="NOK")
+		self._widgets['statistics.totalLabel'] = self._widgets['statistics.canvas'].create_text(450, 80, fill= "grey", font=('Arial', 20, 'bold'), text="Total")
 
 		#self._widgets['statistics.statistics'].grid(row=0, column=0)
 		self._widgets['statistics.canvas'].grid(row=0,column=0)
@@ -244,6 +250,18 @@ class Gui:
 			self._widgets['testStatus.currentStatus']['text'] = text
 			if bgcolor:
 				self._widgets['testStatus.currentStatus'].config(background = bgcolor)
+
+	def incrementStatistics(self, widgetName):
+		actual = int(self._widgets['statistics.canvas'].itemcget(self._widgets[widgetName], 'text'))
+		self._widgets['statistics.canvas'].itemconfigure(self._widgets[widgetName], text=str(actual+1))
+
+	def incrementPassedStatistics(self):
+		self.incrementStatistics('statistics.passedCount')
+		self.incrementStatistics('statistics.totalCount')
+
+	def incrementFailedStatistics(self):
+		self.incrementStatistics('statistics.failedCount')
+		self.incrementStatistics('statistics.totalCount')
 
 
 

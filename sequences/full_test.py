@@ -24,25 +24,42 @@ class FullTest(Sequence):
 		
 		# define steps
 		self.steps = {
-			'powerUp':					Step("Power up the device", StepTypeEnum.ACTION),
-			'deviceDetect': 			Step("Programmer: device detection", StepTypeEnum.BOOL),
-			'deviceProgramming': 		Step("Programmer: programming", StepTypeEnum.BOOL),
-			'startUp': 					Step("MQTT: start-up message", StepTypeEnum.BOOL),
-			'deviceId': 				Step("MQTT: DID", StepTypeEnum.ACTION),
-			'turnOff12V': 				Step("MQTT: turn 12V off", StepTypeEnum.BOOL),
-			'fullTestResponse': 		Step("MQTT: run full test", StepTypeEnum.BOOL),
-			'fullTestResponseRetries': 	Step("MQTT: number of retries", StepTypeEnum.ACTION),
-			'rtcTest': 					Step("MQTT: RTC test", StepTypeEnum.BOOL),
-			'rtcRunTest': 				Step("MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
-			'rtcBkupTest': 				Step("MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
-			'digitalInputTest':			Step("MQTT: digital input", StepTypeEnum.BOOL),
-			'daliTest':					Step("MQTT: DALI test", StepTypeEnum.BOOL),
-			'daliErrsTest': 			Step("MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
-			'daliAlsTest': 				Step("MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
-			'accelerometerTest': 		Step("MQTT: Accelerometer test", StepTypeEnum.BOOL),
-			'accelerometerAngleXTest': 	Step("MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC, "-90:90"),
-			'accelerometerAngleYTest': 	Step("MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC, "-90:90"),
-			'accelerometerAngleZTest': 	Step("MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90")
+			'powerUp':						Step("Power up the device", StepTypeEnum.ACTION),
+			'deviceDetect': 				Step("Programmer: device detection", StepTypeEnum.BOOL),
+			'deviceProgramming': 			Step("Programmer: programming", StepTypeEnum.BOOL),
+			'c1_startUp': 					Step("[Cycle1] MQTT: start-up message", StepTypeEnum.BOOL),
+			'c1_deviceId': 					Step("[Cycle1] MQTT: DID", StepTypeEnum.ACTION),
+			'c1_turnOff12V': 				Step("[Cycle1] MQTT: turn 12V off", StepTypeEnum.BOOL),
+			'c1_fullTestResponse': 			Step("[Cycle1] MQTT: run full test", StepTypeEnum.BOOL),
+			'c1_fullTestResponseRetries': 	Step("[Cycle1] MQTT: number of retries", StepTypeEnum.ACTION),
+			'c1_rtcTest': 					Step("[Cycle1] MQTT: RTC test", StepTypeEnum.BOOL),
+			'c1_rtcRunTest': 				Step("[Cycle1] MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
+			'c1_rtcBkupTest': 				Step("[Cycle1] MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
+			'c1_digitalInputTest':			Step("[Cycle1] MQTT: digital input", StepTypeEnum.BOOL),
+			'c1_daliTest':					Step("[Cycle1] MQTT: DALI test", StepTypeEnum.BOOL),
+			'c1_daliErrsTest': 				Step("[Cycle1] MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
+			'c1_daliAlsTest': 				Step("[Cycle1] MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
+			'c1_accelerometerTest': 		Step("[Cycle1] MQTT: Accelerometer test", StepTypeEnum.BOOL),
+			'c1_accelerometerAngleXTest': 	Step("[Cycle1] MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'c1_accelerometerAngleYTest': 	Step("[Cycle1] MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'c1_accelerometerAngleZTest': 	Step("[Cycle1] MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'powerCycle': 					Step("Power cycle the device", StepTypeEnum.ACTION),
+			'c2_startUp': 					Step("[Cycle2] MQTT: start-up message", StepTypeEnum.BOOL),
+			'c2_deviceId': 					Step("[Cycle2] MQTT: DID", StepTypeEnum.ACTION),
+			'c2_turnOff12V': 				Step("[Cycle2] MQTT: turn 12V off", StepTypeEnum.BOOL),
+			'c2_fullTestResponse': 			Step("[Cycle2] MQTT: run full test", StepTypeEnum.BOOL),
+			'c2_fullTestResponseRetries': 	Step("[Cycle2] MQTT: number of retries", StepTypeEnum.ACTION),
+			'c2_rtcTest': 					Step("[Cycle2] MQTT: RTC test", StepTypeEnum.BOOL),
+			'c2_rtcRunTest': 				Step("[Cycle2] MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
+			'c2_rtcBkupTest': 				Step("[Cycle2] MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
+			'c2_digitalInputTest': 			Step("[Cycle2] MQTT: digital input", StepTypeEnum.BOOL),
+			'c2_daliTest': 					Step("[Cycle2] MQTT: DALI test", StepTypeEnum.BOOL),
+			'c2_daliErrsTest': 				Step("[Cycle2] MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
+			'c2_daliAlsTest': 				Step("[Cycle2] MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
+			'c2_accelerometerTest': 		Step("[Cycle2] MQTT: Accelerometer test", StepTypeEnum.BOOL),
+			'c2_accelerometerAngleXTest': 	Step("[Cycle2] MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'c2_accelerometerAngleYTest': 	Step("[Cycle2] MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC, "-90:90"),
+			'c2_accelerometerAngleZTest': 	Step("[Cycle2] MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90")
 
 		}
 
@@ -85,54 +102,57 @@ class FullTest(Sequence):
 			# self.evaluateStep('deviceProgramming', self._JLinkExe1.program())
 			time.sleep(1)
 			self.clearCustomMessage()
-			
-			# wait until new message appears (empty dict evaluates as False in Python)
-			# timeout = 60s
-			timeout = time.time() + self._config['startUpTimeout_s']
-			while not self._MqttClient1.mostRecentMessages and time.time() < timeout:
-				time.sleep(1)
-				
-			topic = ''
-			if self._MqttClient1.mostRecentMessages:
-				[topic] = self._MqttClient1.mostRecentMessages.keys()
-				[null, APIKEY, DID, null] = topic.split('/')
 
-			mqttCmdTopic = '/'+APIKEY+'/'+DID+'/cmd'
-			mqttAckTopic = '/'+APIKEY+'/'+DID+'/cmdexe'
-			mqttAttrTopic = '/'+APIKEY+'/'+DID+'/attrs'
+			for cycle in ['c1_', 'c2_']:
 
-			self.evaluateStep('startUp', bool(topic))
-			self.evaluateStep('deviceId', DID)
+				# wait until new message appears (empty dict evaluates as False in Python)
+				# timeout = 60s
+				timeout = time.time() + self._config['startUpTimeout_s']
+				while not self._MqttClient1.mostRecentMessages and time.time() < timeout:
+					time.sleep(1)
 
-			response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic, self._config['defaultCommandTimeout_s'])
-			self.evaluateStep('turnOff12V', (response and response['C12Vout'] == 0))
+				topic = ''
+				if self._MqttClient1.mostRecentMessages:
+					[topic] = self._MqttClient1.mostRecentMessages.keys()
+					[null, APIKEY, DID, null] = topic.split('/')
 
-			response = False
-			retryCount = 0
-			while retryCount < 3:
-				retryCount = retryCount + 1
-				response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic, self._config['fullTestTimeout_s'])
+				mqttCmdTopic = '/'+APIKEY+'/'+DID+'/cmd'
+				mqttAckTopic = '/'+APIKEY+'/'+DID+'/cmdexe'
+				mqttAttrTopic = '/'+APIKEY+'/'+DID+'/attrs'
+
+				self.evaluateStep(cycle+'startUp', bool(topic))
+				self.evaluateStep(cycle+'deviceId', DID)
+
+				response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic, self._config['defaultCommandTimeout_s'])
+				self.evaluateStep(cycle+'turnOff12V', (response and response['C12Vout'] == 0))
+
+				response = False
+				retryCount = 0
+				while retryCount < 3:
+					retryCount = retryCount + 1
+					response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic, self._config['fullTestTimeout_s'])
+					if response:
+						break
+				self.evaluateStep(cycle+'fullTestResponseRetries', retryCount)
+				self.evaluateStep(cycle+'fullTestResponse', response)
+
 				if response:
-					break
-			self.evaluateStep('fullTestResponseRetries', retryCount)
-			self.evaluateStep('fullTestResponse', response)
+					self.evaluateStep(cycle+'rtcTest', response['Cdiags']['rtc']['io'])
+					self.evaluateStep(cycle+'rtcRunTest', response['Cdiags']['rtc']['run'] == 0)
+					self.evaluateStep(cycle+'rtcBkupTest', response['Cdiags']['rtc']['bkup'] == 0)
+					self.evaluateStep(cycle+'digitalInputTest', response['Cdiags']['digin'] == True)
+					self.evaluateStep(cycle+'daliTest', response['Cdiags']['dali']['io'])
+					self.evaluateStep(cycle+'daliErrsTest', response['Cdiags']['dali']['errs'])
+					self.evaluateStep(cycle+'daliAlsTest', response['Cdiags']['dali']['als'])
+					self.evaluateStep(cycle+'accelerometerTest', response['Cdiags']['accl']['io'])
+					self.evaluateStep(cycle+'accelerometerAngleXTest', response['Cdiags']['angl']['x'])
+					self.evaluateStep(cycle+'accelerometerAngleYTest', response['Cdiags']['angl']['y'])
+					self.evaluateStep(cycle+'accelerometerAngleZTest', response['Cdiags']['angl']['z'])
 
-			if response:
-				self.evaluateStep('rtcTest', response['Cdiags']['rtc']['io'])
-				self.evaluateStep('rtcRunTest', response['Cdiags']['rtc']['run'] == 0)
-				self.evaluateStep('rtcBkupTest', response['Cdiags']['rtc']['bkup'] == 0)
-				self.evaluateStep('digitalInputTest', response['Cdiags']['digin'] == True)
-				self.evaluateStep('daliTest', response['Cdiags']['dali']['io'])
-				self.evaluateStep('daliErrsTest', response['Cdiags']['dali']['errs'])
-				self.evaluateStep('daliAlsTest', response['Cdiags']['dali']['als'])
-				self.evaluateStep('accelerometerTest', response['Cdiags']['accl']['io'])
-				self.evaluateStep('accelerometerAngleXTest', response['Cdiags']['angl']['x'])
-				self.evaluateStep('accelerometerAngleYTest', response['Cdiags']['angl']['y'])
-				self.evaluateStep('accelerometerAngleZTest', response['Cdiags']['angl']['z'])
-
-			self.displayCustomMessage('', 'Please power cycle the device')
-			time.sleep(1)
-			self.clearCustomMessage()
+				if cycle == 'c1_':
+					self.displayCustomMessage('', 'Please power cycle the device')
+					time.sleep(1)
+					self.clearCustomMessage()
 
 		except StepFail:
 			logging.info("Step failed - sequence terminated")

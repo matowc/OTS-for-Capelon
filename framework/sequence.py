@@ -40,12 +40,16 @@ class Sequence:
 		if self._gui:
 			if self.status == SequenceStatusEnum.PASSED:
 				self._gui.updateTestStatus("TEST PASSED", 'green')
+				self._gui.incrementPassedStatistics()
 			elif self.status == SequenceStatusEnum.FAILED:
 				self._gui.updateTestStatus("TEST FAILED", 'red')
+				self._gui.incrementFailedStatistics()
 			elif self.status == SequenceStatusEnum.ERROR:
 				self._gui.updateTestStatus("TEST FINISHED WITH ERROR", 'red')
+				self._gui.incrementFailedStatistics()
 			else:
 				self._gui.updateTestStatus("UNKNOWN ERROR", 'red')
+				self._gui.incrementFailedStatistics()
 
 			self._gui.displaySequenceChoice()
 
