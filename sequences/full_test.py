@@ -94,6 +94,8 @@ class FullTest(Sequence):
 			time.sleep(1)
 			self.clearCustomMessage()
 
+			self.displayCustomMessage('', 'Device starting up...')
+
 			for cycle in ['c1_', 'c2_']:
 
 				# we do not know DID until it send the first message (AOEstart),
@@ -112,6 +114,8 @@ class FullTest(Sequence):
 					[topic] = self._MqttClient1.mostRecentMessages.keys()
 					[null, APIKEY, DID, null] = topic.split('/')
 
+				self.clearCustomMessage()
+
 				mqttCmdTopic = '/'+APIKEY+'/'+DID+'/cmd'
 				mqttAckTopic = '/'+APIKEY+'/'+DID+'/cmdexe'
 				mqttAttrTopic = '/'+APIKEY+'/'+DID+'/attrs'
@@ -128,10 +132,12 @@ class FullTest(Sequence):
 				response = False
 				retryCount = 0
 				while retryCount < 3:
-					retryCount = retryCount + 1
 					response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic, self._config['fullTestTimeout_s'])
 					if response:
 						break
+					else:
+						retryCount = retryCount + 1
+
 				self.evaluateStep(cycle+'fullTestResponseRetries', retryCount)
 				self.evaluateStep(cycle+'fullTestResponse', bool(response))
 
@@ -149,9 +155,7 @@ class FullTest(Sequence):
 					self.evaluateStep(cycle+'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
 
 				if cycle == 'c1_':
-					self.displayCustomMessage('', 'Please power cycle the device')
-					time.sleep(1)
-					self.clearCustomMessage()
+					self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
 
 		except StepFail:
 			logging.info("Step failed - sequence terminated")
