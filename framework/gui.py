@@ -96,6 +96,7 @@ class Gui:
 						background="grey", foreground="white", relief="flat")
 		style.map("Custom.Treeview.Heading",
 				  relief=[('active', 'groove'), ('pressed', 'sunken')])
+		style.configure('Treeview', rowheight=15)  # SOLUTION
 		
 		# content subframes
 		self._frames['interactive'] = Frame(self._frames['content'], background = 'white')
@@ -162,7 +163,8 @@ class Gui:
 	def initializeResultListTree(self):
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
-			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=30)
+			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=40)
+
 		
 		resultListTree.heading('#0', text='')
 		resultListTree.heading('stepName', text='Step Name')

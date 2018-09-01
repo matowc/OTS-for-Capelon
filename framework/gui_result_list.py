@@ -22,13 +22,14 @@ class GuiResultList(ResultList):
 		self._resultListTree.tag_configure('PASSED', background='light green')
 		self._resultListTree.tag_configure('FAILED', background='red')
 		self._resultListTree.tag_configure('DONE', background='light green')
+		self._resultListTree.tag_configure('result', font=('Arial', 8))
 	
 	def add (self, result: Result):
 		super().add(result)
 		
 		self._resultListTree.insert('', 'end', text=result.step.name,
 									values=(result.step.name, result.step.type.name, result.value, result.step.limits, result.status.name, result.timestamp),
-									tags = (result.status.name))
+									tags = (result.status.name, 'result') )
 
 		# returns
 		pass
