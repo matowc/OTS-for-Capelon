@@ -4,8 +4,6 @@ import logging
 
 
 class Application:
-		self.resultLogger = None # ResultLogger
-		self.database = None # Database
 
     def __init__(self):
         self.eventLogger = None  # EventLogger
