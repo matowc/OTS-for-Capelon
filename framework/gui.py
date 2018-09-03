@@ -332,14 +332,14 @@ class Gui:
 		self._frames['interactive'].grid_forget()
 		logging.debug('Sequence: \'{}\''.format(sequenceName))
 
-		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, resultList1, self)
+		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self)
 
 		from framework.test import Test
 		from framework.batch import Batch
 		if not self.ots.batch:
 			self.ots.batch = Batch(self._widgets['interactive.batchNumber'].get())
 
-		self.ots.test = Test(sequence1, resultList)
+		self.ots.test = Test(sequence1, self._resultList)
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
 
