@@ -114,12 +114,6 @@ class Gui:
 		# content widgets
 		self._widgets['message.message'] = \
 			ttk.Label(self._frames['message'], text='', font=('Arial',20), anchor='center', wraplength=30)
-		self._widgets['interactive.sequenceList'] = \
-			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
-		self._widgets['interactive.sequenceListLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font = ('Arial', 20))
-		self._widgets['interactive.startButton'] = \
-			ttk.Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick())
 		self._widgets['logs.logs'] = \
 			scrolledtext.ScrolledText(self._frames['logs'], height = 10, width=80, state='disabled', bd=0, highlightthickness=0, relief='ridge')
 		self._widgets['resultList.tree'] = self.initializeResultListTree()
@@ -127,13 +121,11 @@ class Gui:
 		self._widgets['testStatus.currentStatus'] = \
 			ttk.Label(self._frames['testStatus'], text = '', font=('Arial', 18, 'bold'), background = self.colors['light grey'], anchor = CENTER)
 		self.initializeStatisticsFrame()
+		self.initializeSequenceChoiceFrame()
 		self._widgets['customFrame.message'] = \
 			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20), anchor='center', wraplength=400, justify='center')
 		
 		self._widgets['message.message'].pack()
-		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
-		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
-		self._widgets['interactive.startButton'].grid(row=2, column=0)
 		self._widgets['logs.logs'].pack()
 		self._widgets['testStatus.currentStatus'].grid(row=0, column=0, sticky='wnse', ipadx = 10, ipady = 10)
 		self._widgets['resultList.tree'].grid(row=0, column=0)
@@ -153,7 +145,19 @@ class Gui:
 	def init(self):
 		# TODO dynamic import of values
 		self._widgets['interactive.sequenceList'].configure(value= ['OLC NEMA PP - full test'])
-			
+
+
+	def initializeSequenceChoiceFrame(self):
+		self._widgets['interactive.sequenceList'] = \
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
+		self._widgets['interactive.sequenceListLabel'] = \
+			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font = ('Arial', 20))
+		self._widgets['interactive.startButton'] = \
+			ttk.Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick())
+		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
+		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
+		self._widgets['interactive.startButton'].grid(row=2, column=0)
+
 	def initializeResultListTree(self):
 
 		style = ttk.Style()
