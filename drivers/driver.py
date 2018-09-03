@@ -8,7 +8,7 @@ class Driver:
 		self.loadConfiguration()
 		self.initialize()
 
-		logging.info("Driver %s initialized", self.name)
+		logging.info("Driver \'{}\' initialized".format(self.name))
 
 	def __del__(self):
 		self.deinitialize()

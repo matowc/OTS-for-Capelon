@@ -8,4 +8,4 @@ class SequenceStatusEnum(Enum):
 	ERROR = 3
 	NOT_RUN = 4
 	DONE = 5
-	TERMINATING = 6
+	TERMINATED = 6

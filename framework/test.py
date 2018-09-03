@@ -4,21 +4,29 @@ from framework.result_list import *
 import time
 import threading
 
+
 class Test:
-	
-	def __init__(self, sequence: Sequence, resultList: ResultList):
-		self.sequence = sequence
-		self.resultList = resultList
-	
-	def run(self):
-		self.resultList.clear()
-		self.sequence.pre()
-		self.sequence.main()
-		self.sequence.post()
-		self.sequence.final()
+
+    def __init__(self, sequence: Sequence, resultList: ResultList):
+        self.sequence = sequence
+        self.resultList = resultList
+
+    def run(self):
+        logging.info("Test started")
+        self.resultList.clear()
+        logging.info("Result list cleared")
+        self.sequence.pre()
+        logging.info("Pre-sequence actions completed")
+        self.sequence.main()
+        logging.info("Sequence completed")
+        self.sequence.post()
+        logging.info("Post-sequence actions completed")
+        self.sequence.final()
+        logging.info("Test completed with result {}".format(self.sequence.status.name))
 
 
 def main():
-	pass
+    pass
 
-if __name__ == "__main__" : main()
+
+if __name__ == "__main__": main()

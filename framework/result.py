@@ -17,7 +17,7 @@ class Result:
 	
 	def post(self, sequence: Sequence):
 		self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S.%f')
-		logging.info("{:^10} {:>30} = {:10} {:20} {:>20}".format("("+self.step.type.name+")", self.step.name, str(self.value), "("+str(self.step.limits)+")", "["+self.timestamp+"]"))
+		logging.info("Step \'{}\' = {} {}".format(self.step.name, str(self.value), "("+str(self.step.limits)+")"))
 		
 		if self.status == StepResultEnum.PASSED:
 			sequence.onPass(self)
