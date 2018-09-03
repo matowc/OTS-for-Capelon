@@ -42,7 +42,7 @@ class Gui:
 		self.colors['light green'] = '#C5E6A6'
 		self.colors['green'] = '#7FB069'
 		self.colors['red'] = '#DA4167'
-		self.colors['light grey'] = 'light grey'
+		self.colors['light grey'] = '#808080'
 
 		self._root = Tk()
 		self._root.geometry("1900x1000+0+0")
@@ -96,12 +96,13 @@ class Gui:
 		self._frames['interactive'] = Frame(self._frames['content'], background = 'white')
 		self._frames['message'] = Frame(self._frames['content'])
 		self._frames['customFrame'] = Frame(self._frames['content'])
+		self._frames['authentication'] = Frame(self._frames['content'])
 		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'], padx = 10, pady = 10)
 		self._frames['logs'] = LabelFrame(self._frames['content'], background='white', text='Logs', pady=10, padx=10)
 		self._frames['statistics'] = Frame(self._frames['content'], background ='white')
 		self._frames['testStatus'] = Frame(self._frames['content'])
 
-		self._frames['interactive'].grid(row=1, column=0, columnspan=2)
+		self._frames['authentication'].grid(row=1, column=0, columnspan=2)
 		self._frames['message'].grid(row=0, column=0, columnspan=2)
 		self._frames['resultList'].grid(row=0, column=3, rowspan=4)
 		self._frames['logs'].grid(row=3, column=0, columnspan=2, rowspan=2)
@@ -113,7 +114,7 @@ class Gui:
 		
 		# content widgets
 		self._widgets['message.message'] = \
-			ttk.Label(self._frames['message'], text='', font=('Arial',20), anchor='center', wraplength=30)
+			ttk.Label(self._frames['message'], text='', font=('Arial',20), anchor='center', wraplength=400)
 		self._widgets['interactive.sequenceList'] = \
 			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
 		self._widgets['interactive.sequenceListLabel'] = \
@@ -129,6 +130,7 @@ class Gui:
 		self.initializeStatisticsFrame()
 		self._widgets['customFrame.message'] = \
 			ttk.Label(self._frames['customFrame'], text = '', font = ('Arial', 20), anchor='center', wraplength=400, justify='center')
+		self.initializeAuthenticationFrame()
 		
 		self._widgets['message.message'].pack()
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
@@ -171,7 +173,7 @@ class Gui:
 			('Treeview.treearea', {'sticky': 'nswe'})
 		])
 		style.configure("Custom.Treeview.Heading",
-						background="light grey", foreground="white", relief="flat")
+						background=self.colors['light grey'], foreground="white", relief="flat")
 		style.map("Custom.Treeview.Heading",
 				  relief=[('active', 'groove'), ('pressed', 'sunken')])
 		style.configure('Treeview', rowheight=15, borderwidth=10, bordercolor='black')
@@ -221,10 +223,32 @@ class Gui:
 		#self._widgets['statistics.statistics'].grid(row=0, column=0)
 		self._widgets['statistics.canvas'].grid(row=0,column=0)
 
+		self._widgets['statistics.timer'] = Label(self._frames['statistics'], text="f",background=self.colors['light grey'],foreground='white', pady=10, padx=20, font=('Arial',20,'bold'))
+		self._widgets['statistics.timer'].grid(row=2,column=0)
+
+
 		self._frames['statistics'].grid_rowconfigure(0, weight=1)
 		self._frames['statistics'].grid_columnconfigure(0, weight=1)
+		self._frames['statistics'].grid_rowconfigure(1, weight=1,minsize=100)
+		self._frames['statistics'].grid_rowconfigure(2, weight=1)
 		#self._frames['statistics'].grid_columnconfigure(1, weight=1)
 
+	def initializeAuthenticationFrame(self):
+		self._widgets['authentication.loginLabel'] = Label(self._frames['authentication'], text='Login:')
+		self._widgets['authentication.login'] = Entry(self._frames['authentication'])
+		self._widgets['authentication.passwordLabel'] = Label(self._frames['authentication'], text='Login:')
+		self._widgets['authentication.password'] = Entry(self._frames['authentication'])
+		self._widgets['authentication.loginButton'] = Button(self._frames['authentication'], text='Log in', command=self.callback_loginButtonClock)
+
+		self._widgets['authentication.loginLabel'].pack()
+		self._widgets['authentication.login'].pack()
+		self._widgets['authentication.passwordLabel'].pack()
+		self._widgets['authentication.password'].pack()
+		self._widgets['authentication.loginButton'].pack()
+
+
+	def updateTestTime(self, time):
+		self._widgets['statistics.timer'].config(text = str(round(time)))
 
 	
 	
@@ -257,6 +281,15 @@ class Gui:
 			time.sleep(0.1)
 			self._root.destroy()
 			self._root = None
+
+	def callback_loginButtonClock(self):
+		user = self.ots.login(self._widgets['authentication.login']['text'], self._widgets['authentication.password']['text'])
+		if user:
+			self.displaySequenceChoice()
+		else:
+			self._widgets['message.message']['text'] = 'Wrong login or password'
+
+
 
 	def displaySequenceChoice(self):
 		if self._root:
