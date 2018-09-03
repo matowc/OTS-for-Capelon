@@ -42,6 +42,7 @@ class Gui:
 		self.colors['light green'] = '#C5E6A6'
 		self.colors['green'] = '#7FB069'
 		self.colors['red'] = '#DA4167'
+		self.colors['light grey'] = '#808080'
 
 		self._root = Tk()
 		self._root.geometry("1900x1000+0+0")
