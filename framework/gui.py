@@ -168,8 +168,8 @@ class Gui:
 		self.ots.station.addDriver(JLinkExe("JLinkExe1"))
 
 		from framework.gui_result_list import GuiResultList
-		resultList1 = GuiResultList()
-		resultList1.bindGui(self, self._widgets['resultList.tree'])
+		self._resultList = GuiResultList()
+		self._resultList.bindGui(self, self._widgets['resultList.tree'])
 
 	def init(self):
 		# TODO dynamic import of values
@@ -339,7 +339,7 @@ class Gui:
 		if not self.ots.batch:
 			self.ots.batch = Batch(self._widgets['interactive.batchNumber'].get())
 
-		self.ots.test = Test(sequence1, resultList1)
+		self.ots.test = Test(sequence1, resultList)
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
 
