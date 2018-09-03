@@ -2,6 +2,8 @@ import logging
 from exceptions.step_fail import StepFail
 from framework.sequence_result_enum import *
 from exceptions.step_fail import *
+import time
+import threading
 
 class Sequence:
 	
@@ -11,14 +13,26 @@ class Sequence:
 		self._resultList = resultList
 		self._gui = gui
 		self.status = SequenceStatusEnum.NOT_RUN
+		self.startTime = None
+		self.endTime = None
 	
 	def evaluateStep(self, stepName:str, value):
 		return self.steps[stepName].evaluate(self, value, self._resultList)
+
+	def updateTimer(self):
+		if self._gui:
+			self._gui.updateTestTime(time.time()-self.startTime)
+			if self.status == SequenceStatusEnum.RUNNING:
+				threading.Timer(1, self.updateTimer).start()
 	
 	def pre (self) :
+		self.startTime = time.time()
 		self.status = SequenceStatusEnum.RUNNING
+		self.updateTimer()
+
 		if self._gui:
 			self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey")
+
 		# returns
 		pass
 	
@@ -35,6 +49,7 @@ class Sequence:
 		pass
 
 	def final(self):
+		self.endTime = time.time()
 		if self.status == SequenceStatusEnum.RUNNING:
 			self.status = SequenceStatusEnum.PASSED
 		if self._gui:
@@ -52,6 +67,7 @@ class Sequence:
 				self._gui.incrementFailedStatistics()
 
 			self._gui.displaySequenceChoice()
+
 
 	def postStep(self, result):
 		if self.status == SequenceStatusEnum.TERMINATING:

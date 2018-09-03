@@ -1,14 +1,14 @@
 import logging
 from framework import *
 from framework.result_list import *
-
+import time
+import threading
 
 class Test:
 	
 	def __init__(self, sequence: Sequence, resultList: ResultList):
 		self.sequence = sequence
 		self.resultList = resultList
-		pass
 	
 	def run(self):
 		self.resultList.clear()
