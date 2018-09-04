@@ -18,8 +18,6 @@ class Step:
 	def evaluate(self, sequence:Sequence, value, resultList):
 		status = StepResultEnum.NOT_RUN
 
-
-		
 		if self.type == StepTypeEnum.NUMERIC:
 			[LL, HL] = map(float, self.limits.split(':',2))
 			if value >= LL and value <= HL:

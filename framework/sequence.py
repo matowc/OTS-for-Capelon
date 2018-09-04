@@ -32,7 +32,7 @@ class Sequence:
         self.updateTimer()
 
         if self._gui:
-            self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey")
+            self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey", True)
 
         # returns
         pass
@@ -45,7 +45,7 @@ class Sequence:
 
     def post(self):
         if self._gui:
-            self._gui.updateTestStatus("Sequence post-actions in progress...", self._gui.colors['light grey'])
+            self._gui.updateTestStatus("Sequence post-actions in progress...", self._gui.colors['light grey'], True)
         # returns
         pass
 

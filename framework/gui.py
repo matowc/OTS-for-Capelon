@@ -45,7 +45,9 @@ class Gui:
 		self.colors['light green'] = '#C5E6A6'
 		self.colors['green'] = '#7FB069'
 		self.colors['red'] = '#DA4167'
-		self.colors['light grey'] = '#808080'
+		self.colors['light grey'] = '#9B9B9B'
+		self.colors['white'] = 'white'
+		self.colors['dark grey'] = '#5f6363'
 
 		self._root = Tk()
 		self._root.geometry("1900x1000+0+0")
@@ -66,6 +68,11 @@ class Gui:
 
 		self._frames['header'].pack()
 		self._frames['content'].pack()
+		self._frames['content'].grid_columnconfigure(0, minsize=400)
+		self._frames['content'].grid_columnconfigure(1, minsize=20)
+		self._frames['content'].grid_columnconfigure(2, minsize=500)
+		self._frames['content'].grid_columnconfigure(3, minsize=20)
+		self._frames['content'].grid_columnconfigure(4, minsize=300)
 
 		# header subframes
 		self._frames['logo'] = ttk.Frame(self._frames['header'])
@@ -104,55 +111,48 @@ class Gui:
 		self._frames['message'] = Frame(self._frames['content'], background='white')
 		self._frames['customFrame'] = Frame(self._frames['content'], background='white')
 		self._frames['authentication'] = Frame(self._frames['content'], background='white')
-		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'],
-										   padx=10, pady=10)
+		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'], padx=10, pady=10)
 		self._frames['logs'] = LabelFrame(self._frames['content'], background='white', text='Logs', pady=10, padx=10)
 		self._frames['statistics'] = Frame(self._frames['content'], background='white')
-		self._frames['testStatus'] = Frame(self._frames['content'])
+		self._frames['testStatus'] = Frame(self._frames['content'], background=self.colors['light grey'])
 
-		self._frames['user'].grid(row=0, column=0, columnspan=2)
-		self._frames['authentication'].grid(row=2, column=0, columnspan=2)
-		self._frames['message'].grid(row=1, column=0, columnspan=2)
-		self._frames['resultList'].grid(row=0, column=3, rowspan=5)
-		self._frames['logs'].grid(row=4, column=0, columnspan=2, rowspan=2)
+		self._frames['user'].grid(row=0, column=0, sticky='nwe')
+		self._frames['user'].grid_columnconfigure(0, weight=1)
+		self._frames['authentication'].grid(row=2, column=0, sticky='nsew', padx=0, pady=20)
+		self._frames['message'].grid(row=1, column=0, sticky='s')
+		self._frames['resultList'].grid(row=0, column=2, rowspan=5)
+		#self._frames['logs'].grid(row=4, column=0, rowspan=2)
 		self._frames['statistics'].grid(row=0, column=4, sticky='nsew', rowspan=3)
-		self._frames['testStatus'].grid(row=5, column=3, sticky='nsew')
+		self._frames['testStatus'].grid(row=5, column=2, sticky='nsew')
 		self._frames['content'].grid_columnconfigure(2, minsize=30, weight=1)
 
 		# content widgets
-		self._widgets['user.user'] = Label(self._frames['user'], background=self.colors['light grey'],
-										   text='NO USER LOGGED IN', font=('Arial', 14, 'bold'), foreground='white',
-										   padx=30, pady=10)
+		self._widgets['user.user'] = Label(self._frames['user'], background=self.colors['light grey'], text='NO USER LOGGED IN', font=('Arial', 14, 'bold'), foreground='white', padx=30, pady=10)
 		self._widgets['message.message'] = \
 			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400)
 		self._widgets['logs.logs'] = \
-			scrolledtext.ScrolledText(self._frames['logs'], height=10, width=80, state='disabled', bd=0,
-									  highlightthickness=0, relief='ridge')
+			scrolledtext.ScrolledText(self._frames['logs'], height=10, width=80, state='disabled', bd=0, highlightthickness=0, relief='ridge')
 		self._widgets['resultList.tree'] = self.initializeResultListTree()
 		self._widgets['logs.logs'].configure(font=('TkFixedFont', 7))
 		self._widgets['testStatus.currentStatus'] = \
-			ttk.Label(self._frames['testStatus'], text='', font=('Arial', 18, 'bold'),
-					  background=self.colors['light grey'], anchor=CENTER)
+			ttk.Label(self._frames['testStatus'], text='', font=('Arial', 18, 'bold'), background=self.colors['light grey'], anchor=CENTER)
 		self._widgets['testStatus.currentStatusButton'] = \
-			ttk.Button(self._frames['testStatus'], text='TERMINATE',
-					   command=lambda: self.callback_terminateButtonClick())
+			Button(self._frames['testStatus'], text='TERMINATE', command=lambda: self.callback_terminateButtonClick(), background='#5f6363', foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 
 		self.initializeStatisticsFrame()
 		self.initializeSequenceChoiceFrame()
-		self._widgets['customFrame.message'] = \
-			ttk.Label(self._frames['customFrame'], text='', font=('Arial', 20), anchor='center', wraplength=400,
-					  justify='center')
+		self._widgets['customFrame.message'] = ttk.Label(self._frames['customFrame'], text='', font=('Arial', 20), anchor='center', wraplength=400, justify='center')
 		self.initializeAuthenticationFrame()
 
-		self._widgets['user.user'].pack()
+		self._widgets['user.user'].grid(column=0, row=0, sticky='nsew')
 		self._widgets['message.message'].pack()
 		self._widgets['logs.logs'].pack()
 
 		self._frames['testStatus'].grid_rowconfigure(0, weight=1)
-		self._frames['testStatus'].grid_columnconfigure(0, weight=1)
-		self._frames['testStatus'].grid_columnconfigure(0, weight=2)
+		self._frames['testStatus'].grid_columnconfigure(0, weight=4)
+		self._frames['testStatus'].grid_columnconfigure(1, weight=1)
 		self._widgets['testStatus.currentStatus'].grid(row=0, column=0, sticky='wnse', ipadx=10, ipady=10)
-		self._widgets['testStatus.currentStatusButton'].grid(row=0, column=1)
+		self._widgets['testStatus.currentStatusButton'].grid(row=0, column=1, sticky='nse', padx=10)
 		self._widgets['resultList.tree'].grid(row=0, column=0)
 		self._widgets['customFrame.message'].grid(row=0, column=0)
 
@@ -174,25 +174,29 @@ class Gui:
 	def init(self):
 		# TODO dynamic import of values
 		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
+		self.updateTestStatus('', '', False)
 
 	def initializeSequenceChoiceFrame(self):
-			self._widgets['interactive.sequenceList'] = \
-				ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
-			self._widgets['interactive.sequenceListLabel'] = \
-				ttk.Label(self._frames['interactive'], text='Choose test sequence:', font=('Arial', 20))
-			self._widgets['interactive.batchNumber'] = \
-				ttk.Entry(self._frames['interactive'])
-			self._widgets['interactive.batchNumberLabel'] = \
-				ttk.Label(self._frames['interactive'], text='Enter batch number:', font=('Arial', 20))
-			self._widgets['interactive.startButton'] = \
-				ttk.Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick())
-			self._widgets['interactive.closeBatchButton'] = \
-				ttk.Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick())
-			self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
-			self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
-			self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=30)
-			self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=10)
-			self._widgets['interactive.startButton'].grid(row=4, column=0)
+		self._widgets['interactive.sequenceList'] = \
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
+		self._widgets['interactive.sequenceListLabel'] = \
+			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font=('Arial', 20))
+		self._widgets['interactive.batchNumber'] = \
+			ttk.Entry(self._frames['interactive'])
+		self._widgets['interactive.batchNumberLabel'] = \
+			ttk.Label(self._frames['interactive'], text='Enter batch number:', font=('Arial', 20))
+		self._widgets['interactive.startButtonLabel'] = \
+			ttk.Label(self._frames['interactive'], text='Click START:', font=('Arial', 20))
+		self._widgets['interactive.startButton'] = \
+			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+		self._widgets['interactive.closeBatchButton'] = \
+			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
+		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
+		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=30)
+		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=10)
+		self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=10, pady=10)
+		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=10, pady=10)
 
 	def initializeResultListTree(self):
 		style = ttk.Style()
@@ -217,7 +221,7 @@ class Gui:
 
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
-			columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=40)
+				columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=40)
 
 		resultListTree.heading('#0', text='')
 		resultListTree.heading('stepName', text='Step Name')
@@ -225,7 +229,7 @@ class Gui:
 		resultListTree.heading('value', text='Value')
 		resultListTree.heading('limits', text='Limits')
 		resultListTree.heading('result', text='Result')
-		resultListTree.heading('timestamp', text='Timestamp')
+		resultListTree.heading('timestamp', text='Time')
 
 		resultListTree.column('#0', width=0)
 		resultListTree.column('stepName', width=350)
@@ -245,81 +249,60 @@ class Gui:
 		text_gap = 50
 		text_width = 100
 
-		self._widgets['statistics.canvas'] = Canvas(self._frames['statistics'],
-													width=left + diameter + text_gap + text_width,
-													height=(top + 3 * diameter + 2 * gap + 10), background='white',
-													bd=0, highlightthickness=0, relief='ridge')
-		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(left, top, left + diameter,
-																							top + diameter,
-																							outline=self.colors[
-																								'green'],
-																							fill=self.colors['green'])
-		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2,
-																								 top + diameter / 2,
-																								 fill="white", font=(
-			'Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(
-			left + diameter + text_gap, top + diameter / 2, fill=self.colors['green'], font=('Arial', 20, 'bold'),
-			text="OK")
-		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(left, top + diameter + gap,
-																							left + diameter,
-																							top + diameter + gap + diameter,
-																							outline=self.colors['red'],
-																							fill=self.colors['red'])
-		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2,
-																								 top + diameter + gap + diameter / 2,
-																								 fill="white", font=(
-			'Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(
-			left + diameter + text_gap, top + diameter + gap + diameter / 2, fill=self.colors['red'],
-			font=('Arial', 20, 'bold'), text="NOK")
-		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(left,
-																						   top + diameter + gap + diameter + gap,
-																						   left + diameter,
-																						   top + diameter + gap + diameter + gap + diameter,
-																						   outline=self.colors[
-																							   'light grey'],
-																						   fill=self.colors[
-																							   'light grey'])
-		self._widgets['statistics.totalCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2,
-																								top + diameter + gap + diameter + gap + diameter / 2,
-																								fill="white", font=(
-			'Arial', 20, 'bold'), text="0")
-		self._widgets['statistics.totalLabel'] = self._widgets['statistics.canvas'].create_text(
-			left + diameter + text_gap, top + diameter + gap + diameter + gap + diameter / 2,
-			fill=self.colors['light grey'], font=('Arial', 20, 'bold'), text="Total")
 
-		# self._widgets['statistics.statistics'].grid(row=0, column=0)
+		self._widgets['statistics.canvas'] = Canvas(self._frames['statistics'], width=left + diameter + text_gap + text_width, height=(top + 4 * diameter + 3 * gap + 10), background='white', bd=0, highlightthickness=0, relief='ridge')
+		ypos = 0
+		self._widgets['statistics.passed'] = self._widgets['statistics.canvas'].create_oval(left, top + ypos*(diameter + gap), left + diameter, top + diameter + ypos*(gap+diameter), outline=self.colors['green'], fill=self.colors['green'])
+		self._widgets['statistics.passedCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2, top + ypos*(diameter + gap) + diameter / 2, fill="white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.passedLabel'] = self._widgets['statistics.canvas'].create_text(left + diameter + text_gap, top + ypos*(diameter + gap) + diameter / 2, fill=self.colors['green'], font=('Arial', 20, 'bold'), text="OK")
+		ypos = 1
+		self._widgets['statistics.failed'] = self._widgets['statistics.canvas'].create_oval(left, top + ypos*(diameter + gap), left + diameter, top + diameter + ypos*(gap+diameter), outline=self.colors['red'], fill=self.colors['red'])
+		self._widgets['statistics.failedCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2, top + ypos*(diameter + gap) + diameter / 2, fill="white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.failedLabel'] = self._widgets['statistics.canvas'].create_text(left + diameter + text_gap, top + ypos*(diameter + gap) + diameter / 2, fill=self.colors['red'], font=('Arial', 20, 'bold'), text="NOK")
+		ypos = 2
+		self._widgets['statistics.total'] = self._widgets['statistics.canvas'].create_oval(left, top + ypos*(diameter + gap), left + diameter, top + diameter + ypos*(gap+diameter), outline=self.colors['light grey'], fill=self.colors[ 'light grey'])
+		self._widgets['statistics.totalCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2, top + ypos*(diameter + gap) + diameter / 2, fill="white", font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.totalLabel'] = self._widgets['statistics.canvas'].create_text(left + diameter + text_gap, top + ypos*(diameter + gap) + diameter / 2, fill=self.colors['light grey'], font=('Arial', 20, 'bold'), text="Total")
+		ypos = 3
+		self._widgets['statistics.time'] = self._widgets['statistics.canvas'].create_oval(left, top + ypos*(diameter + gap), left + diameter, top + diameter + ypos*(gap+diameter), outline=self.colors['dark grey'], fill=self.colors['white'], width=5)
+		self._widgets['statistics.timeCount'] = self._widgets['statistics.canvas'].create_text(left + diameter / 2, top + ypos*(diameter + gap) + diameter / 2, fill=self.colors['dark grey'], font=('Arial', 20, 'bold'), text="0")
+		self._widgets['statistics.timeLabel'] = self._widgets['statistics.canvas'].create_text(left + diameter + text_gap, top + ypos*(diameter + gap) + diameter / 2, fill=self.colors['dark grey'], font=('Arial', 20, 'bold'), text="Time")
+
 		self._widgets['statistics.canvas'].grid(row=0, column=0)
-
-		self._widgets['statistics.timer'] = Label(self._frames['statistics'], text="",
-												  background=self.colors['light grey'], foreground='white', pady=10,
-												  padx=20, font=('Arial', 20, 'bold'))
-		self._widgets['statistics.timer'].grid(row=2, column=0)
 
 		self._frames['statistics'].grid_rowconfigure(0, weight=1)
 		self._frames['statistics'].grid_columnconfigure(0, weight=1)
 		self._frames['statistics'].grid_rowconfigure(1, weight=1, minsize=100)
 		self._frames['statistics'].grid_rowconfigure(2, weight=1)
 
-	# self._frames['statistics'].grid_columnconfigure(1, weight=1)
-
 	def initializeAuthenticationFrame(self):
-		self._widgets['authentication.loginLabel'] = Label(self._frames['authentication'], text='Login:')
-		self._widgets['authentication.login'] = Entry(self._frames['authentication'])
-		self._widgets['authentication.passwordLabel'] = Label(self._frames['authentication'], text='Login:')
-		self._widgets['authentication.password'] = Entry(self._frames['authentication'])
-		self._widgets['authentication.loginButton'] = Button(self._frames['authentication'], text='Log in',
-															 command=self.callback_loginButtonClick)
+		self._frames['authentication'].configure(background = self.colors['light grey'])
 
-		self._widgets['authentication.loginLabel'].pack()
-		self._widgets['authentication.login'].pack()
-		self._widgets['authentication.passwordLabel'].pack()
-		self._widgets['authentication.password'].pack()
-		self._widgets['authentication.loginButton'].pack()
+		self._widgets['authentication.loginLabel'] = Label(self._frames['authentication'], text='Login', font=('Arial', 16), background=self.colors['light grey'], foreground='white')
+		self._widgets['authentication.login'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat')
+		self._widgets['authentication.passwordLabel'] = Label(self._frames['authentication'], text='Password', font=('Arial', 16), background=self.colors['light grey'], foreground='white')
+		self._widgets['authentication.password'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat', show='*')
+		self._widgets['authentication.loginButton'] = \
+			Button(self._frames['authentication'], text='LOG IN', command=self.callback_loginButtonClick, background='#5f6363', foreground=self.colors['white'], font=('Arial', 20, 'bold'))
+
+		self._widgets['authentication.loginLabel'].grid(row=0, column=0, sticky='e')
+		self._widgets['authentication.login'].grid(row=0, column=2)
+		self._widgets['authentication.passwordLabel'].grid(row=1, column=0, sticky='e')
+		self._widgets['authentication.password'].grid(row=1, column=2)
+		self._widgets['authentication.loginButton'].grid(row=2, column=0, columnspan=3, sticky='new', padx=10, pady=5)
+
+		self._frames['authentication'].grid_rowconfigure(0, weight=1)
+		self._frames['authentication'].grid_rowconfigure(1, weight=1)
+		self._frames['authentication'].grid_rowconfigure(2, weight=1)
+		self._frames['authentication'].grid_columnconfigure(0, weight=1)
+		self._frames['authentication'].grid_columnconfigure(1, weight=1, minsize=10)
+		self._frames['authentication'].grid_columnconfigure(2, weight=1)
+
+		self.displayMemo("Please log in")
+
 
 	def updateTestTime(self, time):
-		self._widgets['statistics.timer'].config(text=str(round(time)))
+		self._widgets['statistics.canvas'].itemconfigure(self._widgets['statistics.timeCount'], text=str(round(time)))
 
 	def callback_startButtonClick(self):
 
@@ -374,29 +357,35 @@ class Gui:
 	def displaySequenceChoice(self):
 		if self._root:
 			self._frames['customFrame'].grid_forget()
-			self._frames['interactive'].grid(row=2, column=0, columnspan=2)
+			self._frames['interactive'].grid(row=2, column=0, columnspan=2, sticky='nwe')
+			self._frames['interactive'].grid_columnconfigure(0, weight=1)
 
 			if self.ots.batch and self.ots.batch.batchNumber:
-				self._widgets['interactive.sequenceList'].config(state = 'disabled')
+				self._widgets['interactive.sequenceList'].config(state='disabled')
 				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number: {}'.format(self.ots.batch.batchNumber)
 				self._widgets['interactive.batchNumber'].grid_remove()
 				self._widgets['interactive.closeBatchButton'].grid()
 			else:
-				self._widgets['interactive.sequenceList'].config(state= 'readonly')
+				self._widgets['interactive.sequenceList'].config(state='readonly')
 				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:'
 				self._widgets['interactive.batchNumber'].grid()
 				self._widgets['interactive.closeBatchButton'].grid_remove()
+
+	def displayMemo(self, text):
+		self._widgets['message.message']['text'] = text
+
 	def displayCustomMessage(self, type, displayText):
 		if self._root:
 			self._widgets['customFrame.message'].config(text=displayText)
 			self._frames['interactive'].grid_forget()
 			self._frames['customFrame'].grid(row=1, column=0, columnspan=2)
 
-	def updateTestStatus(self, text, bgcolor=None, showTerminateButton=True):
+	def updateTestStatus(self, text, bgcolor=None, showTerminateButton=False):
 		if self._root:
 			self._widgets['testStatus.currentStatus']['text'] = text
 			if bgcolor:
 				self._widgets['testStatus.currentStatus'].config(background=bgcolor, foreground='white')
+				self._frames['testStatus'].config(background=bgcolor)
 
 			if showTerminateButton:
 				self._widgets['testStatus.currentStatusButton'].grid()

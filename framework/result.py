@@ -14,9 +14,14 @@ class Result:
 		self.status = status
 		self.value = value
 		self.timestamp = None
+		self.relativeTimestamp = None
 	
 	def post(self, sequence: Sequence):
-		self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S.%f')
+		currentTime = time.time()
+		self.timestamp = datetime.datetime.fromtimestamp(currentTime).strftime('%H:%M:%S.%f')
+		self.relativeTimestamp = currentTime - sequence.startTime
+
+
 		logging.info("Step \'{}\' = {} {}".format(self.step.name, str(self.value), "("+str(self.step.limits)+")"))
 		
 		if self.status == StepResultEnum.PASSED:

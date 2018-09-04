@@ -24,11 +24,15 @@ class GuiResultList(ResultList):
 		self._resultListTree.tag_configure('DONE', background=self.gui.colors['light green'])
 		self._resultListTree.tag_configure('result', font=('Arial', 8))
 	
-	def add (self, result: Result):
+	def add(self, result: Result):
 		super().add(result)
-		
+
+		#secs, msecs = divmod(result.relativeTimestamp, 1)
+		#msecs = msecs * 1000
+		secs = result.relativeTimestamp
+		mins, secs = divmod(secs, 60)
 		self._resultListTree.insert('', 'end', text=result.step.name,
-									values=(result.step.name, result.step.type.name, result.value, result.step.limits, result.status.name, result.timestamp),
+									values=(result.step.name, result.step.type.name, result.value, result.step.limits, result.status.name, '{:0>2.0f}:{:0>6.3f}'.format(mins, secs)),
 									tags = (result.status.name, 'result') )
 
 		# returns
