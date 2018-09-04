@@ -80,7 +80,7 @@ class MqttClient(Driver):
 		logging.info(msg.topic+" "+str(msg.qos)+" "+str(msg.payload.decode("utf-8")))
 	
 	def onConnect(self, client, userdata, flags, rc):
-		logging.info("CONNACK received with code %d." % (rc))
+		logging.info("MQTT CONNACK received with code %d." % (rc))
 
 
 

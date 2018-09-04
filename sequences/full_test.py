@@ -179,17 +179,13 @@ class FullTest(Sequence):
     def sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
         self._MqttClient1.clearMostRecentMessage(mqttAckTopic)
         logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
-        logging.debug(mqttAckTopic)
         self._MqttClient1.publish(mqttCmdTopic, json.dumps(message))
 
         timeout = time.time() + timeout_s
         response = ''
         while time.time() <= timeout:
-            print(self._MqttClient1.mostRecentMessages.keys())
             if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
-                print(self._MqttClient1.mostRecentMessages)
                 response = self._MqttClient1.mostRecentMessages[mqttAckTopic]
-                logging.debug(response)
                 response = json.loads(response)
                 break
             else:

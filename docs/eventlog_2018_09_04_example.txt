@@ -1,0 +1,151 @@
+2018-09-03 15:01:27,457 | Driver 'MqttClient1' initialized
+2018-09-03 15:01:27,457 | Driver MqttClient1 added to station
+2018-09-03 15:01:27,459 | Driver 'JLinkExe1' initialized
+2018-09-03 15:01:27,460 | Driver JLinkExe1 added to station
+2018-09-03 15:01:27,460 | ResultList initialized
+2018-09-03 15:01:27,463 | CONNACK received with code 0.
+2018-09-03 15:01:28,237 | Subscribed: 1 (1,)
+2018-09-03 15:01:35,617 | User 'mateusz' (Mateusz Owczarek) logged in
+2018-09-03 15:01:46,894 | Sequence: 'OLC NEMA PP - full test'
+2018-09-03 15:03:18,577 | Driver 'MqttClient1' initialized
+2018-09-03 15:03:18,578 | Driver MqttClient1 added to station
+2018-09-03 15:03:18,579 | Driver 'JLinkExe1' initialized
+2018-09-03 15:03:18,580 | Driver JLinkExe1 added to station
+2018-09-03 15:03:18,580 | ResultList initialized
+2018-09-03 15:03:18,584 | CONNACK received with code 0.
+2018-09-03 15:03:18,593 | Subscribed: 1 (1,)
+2018-09-03 15:03:28,385 | User 'mateusz' (Mateusz Owczarek) logged in
+2018-09-03 15:03:33,509 | Sequence: 'OLC NEMA PP - full test'
+2018-09-03 15:05:23,510 | Driver 'MqttClient1' initialized
+2018-09-03 15:05:23,510 | Driver MqttClient1 added to station
+2018-09-03 15:05:23,511 | Driver 'JLinkExe1' initialized
+2018-09-03 15:05:23,511 | Driver JLinkExe1 added to station
+2018-09-03 15:05:23,515 | ResultList initialized
+2018-09-03 15:05:23,519 | CONNACK received with code 0.
+2018-09-03 15:05:23,525 | Subscribed: 1 (1,)
+2018-09-03 15:05:42,776 | User 'mateusz' (Mateusz Owczarek) logged in
+2018-09-03 15:05:52,817 | Sequence: 'OLC NEMA PP - full test'
+2018-09-03 15:05:52,827 | Batch '76786786786' opened
+2018-09-03 15:05:52,833 | Test started
+2018-09-03 15:05:52,840 | Result list cleared
+2018-09-03 15:05:53,068 | Pre-sequence actions completed
+2018-09-03 15:05:54,078 | Step 'Power up the device' = True ()
+2018-09-03 15:05:55,103 | Subscribed: 2 (1,)
+2018-09-03 15:06:35,235 | Step '[Cycle1] MQTT: start-up message' = False ()
+2018-09-03 15:06:35,239 | Subscribed: 3 (1,)
+2018-09-03 15:06:35,245 | Step [Cycle1] MQTT: start-up message FAILED
+2018-09-03 15:06:35,247 | Subscribed: 4 (1,)
+2018-09-03 15:06:35,261 | Step failed - sequence terminated
+2018-09-03 15:06:35,264 | Sequence completed
+2018-09-03 15:06:35,272 | Post-sequence actions completed
+2018-09-03 15:06:35,289 | Test completed with result FAILED
+2018-09-03 15:07:11,710 | /1234/90FD9FFFFEDA59D3/attrs 0 {"AOEstart":{"ts":1535980043}}
+2018-09-03 15:07:33,248 | Batch '76786786786' closed
+2018-09-03 15:07:41,700 | Sequence: 'OLC NEMA PP - full test'
+2018-09-03 15:07:41,701 | Batch '1234' opened
+2018-09-03 15:07:41,710 | Test started
+2018-09-03 15:07:41,720 | Result list cleared
+2018-09-03 15:07:41,732 | Pre-sequence actions completed
+2018-09-03 15:07:42,737 | Step 'Power up the device' = True ()
+2018-09-03 15:07:43,751 | Subscribed: 5 (1,)
+2018-09-03 15:07:49,777 | /1234/90FD9FFFFEDA59D3/attrs 0 {"AOEstart":{"ts":1535980081}}
+2018-09-03 15:07:49,800 | Step '[Cycle1] MQTT: start-up message' = True ()
+2018-09-03 15:07:49,801 | Subscribed: 6 (1,)
+2018-09-03 15:07:49,804 | Subscribed: 7 (1,)
+2018-09-03 15:07:49,805 | Step '[Cycle1] MQTT: DID' = 90FD9FFFFEDA59D3 ()
+2018-09-03 15:07:49,807 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'C12Vout': False}
+2018-09-03 15:07:49,861 | /1234/90FD9FFFFEDA59D3/cmd 1 {"C12Vout": false}
+2018-09-03 15:07:49,921 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"C12Vout":0}
+2018-09-03 15:07:50,826 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'C12Vout': 0}
+2018-09-03 15:07:50,828 | Step '[Cycle1] MQTT: turn 12V off' = True ()
+2018-09-03 15:07:50,838 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'Cdiags': 1}
+2018-09-03 15:07:50,863 | /1234/90FD9FFFFEDA59D3/cmd 1 {"Cdiags": 1}
+2018-09-03 15:07:51,116 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"Cdiags":{"accl":{"angl":{"x":51.98316192626953,"y":-20.396451950073242,"z":-30.517488479614258},"io":true},"dali":{"als":100,"drv":4,"errs":0,"io":true},"digin":true,"rtc":{"bkup":true,"io":true,"run":true,"sys":1535980082,"ts":1535980083}}}
+2018-09-03 15:07:51,867 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'Cdiags': {'dali': {'drv': 4, 'als': 100, 'io': True, 'errs': 0}, 'rtc': {'run': True, 'ts': 1535980083, 'io': True, 'bkup': True, 'sys': 1535980082}, 'digin': True, 'accl': {'angl': {'z': -30.517488479614258, 'y': -20.396451950073242, 'x': 51.98316192626953}, 'io': True}}}
+2018-09-03 15:07:51,869 | Step '[Cycle1] MQTT: number of retries' = 0 ()
+2018-09-03 15:07:51,870 | Step '[Cycle1] MQTT: run full test' = True ()
+2018-09-03 15:07:51,871 | Step '[Cycle1] MQTT: RTC test' = True ()
+2018-09-03 15:07:51,879 | Step '[Cycle1] MQTT: RTC - run ' = False (0:0)
+2018-09-03 15:07:51,880 | Step '[Cycle1] MQTT: RTC - bckup' = False (0:0)
+2018-09-03 15:07:51,881 | Step '[Cycle1] MQTT: digital input' = True ()
+2018-09-03 15:07:51,883 | Step '[Cycle1] MQTT: DALI test' = True ()
+2018-09-03 15:07:51,890 | Step '[Cycle1] MQTT: DALI - errs' = 0 (0:0)
+2018-09-03 15:07:51,901 | Step '[Cycle1] MQTT: DALI - als' = 100 (0:100)
+2018-09-03 15:07:51,915 | Step '[Cycle1] MQTT: Accelerometer test' = True ()
+2018-09-03 15:07:51,916 | Step '[Cycle1] MQTT: Accelerometer - X angle' = 51.98316192626953 (-90:90)
+2018-09-03 15:07:51,917 | Step '[Cycle1] MQTT: Accelerometer - Y angle' = -20.396451950073242 (-90:90)
+2018-09-03 15:07:51,918 | Step '[Cycle1] MQTT: Accelerometer - Z angle' = -30.517488479614258 (-90:90)
+2018-09-03 15:07:51,924 | Subscribed: 10 (1,)
+2018-09-03 15:08:32,001 | Subscribed: 11 (1,)
+2018-09-03 15:08:32,005 | Step '[Cycle2] MQTT: start-up message' = False ()
+2018-09-03 15:08:32,019 | Step [Cycle2] MQTT: start-up message FAILED
+2018-09-03 15:08:32,022 | Subscribed: 12 (1,)
+2018-09-03 15:08:32,028 | Step failed - sequence terminated
+2018-09-03 15:08:32,031 | Sequence completed
+2018-09-03 15:08:32,032 | Post-sequence actions completed
+2018-09-03 15:08:32,039 | Test completed with result FAILED
+2018-09-03 15:08:39,561 | Sequence: 'OLC NEMA PP - full test'
+2018-09-03 15:08:39,575 | Test started
+2018-09-03 15:08:39,581 | Result list cleared
+2018-09-03 15:08:39,586 | Pre-sequence actions completed
+2018-09-03 15:08:40,589 | Step 'Power up the device' = True ()
+2018-09-03 15:08:41,602 | Subscribed: 13 (1,)
+2018-09-03 15:08:46,172 | /1234/90FD9FFFFEDA59D3/attrs 0 {"AOEstart":{"ts":1535980137}}
+2018-09-03 15:08:46,614 | Step '[Cycle1] MQTT: start-up message' = True ()
+2018-09-03 15:08:46,616 | Subscribed: 14 (1,)
+2018-09-03 15:08:46,620 | Step '[Cycle1] MQTT: DID' = 90FD9FFFFEDA59D3 ()
+2018-09-03 15:08:46,620 | Subscribed: 15 (1,)
+2018-09-03 15:08:46,623 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'C12Vout': False}
+2018-09-03 15:08:46,677 | /1234/90FD9FFFFEDA59D3/cmd 1 {"C12Vout": false}
+2018-09-03 15:08:46,709 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"C12Vout":0}
+2018-09-03 15:08:47,647 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'C12Vout': 0}
+2018-09-03 15:08:47,658 | Step '[Cycle1] MQTT: turn 12V off' = True ()
+2018-09-03 15:08:47,670 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'Cdiags': 1}
+2018-09-03 15:08:47,690 | /1234/90FD9FFFFEDA59D3/cmd 1 {"Cdiags": 1}
+2018-09-03 15:08:47,948 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"Cdiags":{"accl":{"angl":{"x":51.58734130859375,"y":-20.754575729370117,"z":-30.687637329101562},"io":true},"dali":{"als":100,"drv":4,"errs":0,"io":true},"digin":true,"rtc":{"bkup":true,"io":true,"run":true,"sys":1535980139,"ts":1535980140}}}
+2018-09-03 15:08:48,706 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'Cdiags': {'dali': {'drv': 4, 'als': 100, 'io': True, 'errs': 0}, 'rtc': {'run': True, 'ts': 1535980140, 'io': True, 'bkup': True, 'sys': 1535980139}, 'digin': True, 'accl': {'angl': {'z': -30.687637329101562, 'y': -20.754575729370117, 'x': 51.58734130859375}, 'io': True}}}
+2018-09-03 15:08:48,718 | Step '[Cycle1] MQTT: number of retries' = 0 ()
+2018-09-03 15:08:48,727 | Step '[Cycle1] MQTT: run full test' = True ()
+2018-09-03 15:08:48,732 | Step '[Cycle1] MQTT: RTC test' = True ()
+2018-09-03 15:08:48,734 | Step '[Cycle1] MQTT: RTC - run ' = False (0:0)
+2018-09-03 15:08:48,740 | Step '[Cycle1] MQTT: RTC - bckup' = False (0:0)
+2018-09-03 15:08:48,742 | Step '[Cycle1] MQTT: digital input' = True ()
+2018-09-03 15:08:48,743 | Step '[Cycle1] MQTT: DALI test' = True ()
+2018-09-03 15:08:48,745 | Step '[Cycle1] MQTT: DALI - errs' = 0 (0:0)
+2018-09-03 15:08:48,747 | Step '[Cycle1] MQTT: DALI - als' = 100 (0:100)
+2018-09-03 15:08:48,750 | Step '[Cycle1] MQTT: Accelerometer test' = True ()
+2018-09-03 15:08:48,754 | Step '[Cycle1] MQTT: Accelerometer - X angle' = 51.58734130859375 (-90:90)
+2018-09-03 15:08:48,765 | Step '[Cycle1] MQTT: Accelerometer - Y angle' = -20.754575729370117 (-90:90)
+2018-09-03 15:08:48,768 | Step '[Cycle1] MQTT: Accelerometer - Z angle' = -30.687637329101562 (-90:90)
+2018-09-03 15:08:48,776 | Subscribed: 18 (1,)
+2018-09-03 15:09:20,332 | /1234/90FD9FFFFEDA59D3/attrs 0 {"AOEstart":{"ts":1535980171}}
+2018-09-03 15:09:20,882 | Step '[Cycle2] MQTT: start-up message' = True ()
+2018-09-03 15:09:20,883 | Subscribed: 19 (1,)
+2018-09-03 15:09:20,885 | Subscribed: 20 (1,)
+2018-09-03 15:09:20,886 | Step '[Cycle2] MQTT: DID' = 90FD9FFFFEDA59D3 ()
+2018-09-03 15:09:20,892 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'C12Vout': False}
+2018-09-03 15:09:20,941 | /1234/90FD9FFFFEDA59D3/cmd 1 {"C12Vout": false}
+2018-09-03 15:09:21,160 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"C12Vout":0}
+2018-09-03 15:09:21,897 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'C12Vout': 0}
+2018-09-03 15:09:21,899 | Step '[Cycle2] MQTT: turn 12V off' = True ()
+2018-09-03 15:09:21,902 | MQTT publish /1234/90FD9FFFFEDA59D3/cmd = {'Cdiags': 1}
+2018-09-03 15:09:21,927 | /1234/90FD9FFFFEDA59D3/cmd 1 {"Cdiags": 1}
+2018-09-03 15:09:22,148 | /1234/90FD9FFFFEDA59D3/cmdexe 0 {"Cdiags":{"accl":{"angl":{"x":51.725276947021484,"y":-20.538602828979492,"z":-30.69708251953125},"io":true},"dali":{"als":100,"drv":4,"errs":0,"io":true},"digin":true,"rtc":{"bkup":true,"io":true,"run":true,"sys":1535980173,"ts":1535980174}}}
+2018-09-03 15:09:22,953 | MQTT received /1234/90FD9FFFFEDA59D3/cmdexe = {'Cdiags': {'dali': {'drv': 4, 'als': 100, 'io': True, 'errs': 0}, 'rtc': {'run': True, 'ts': 1535980174, 'io': True, 'bkup': True, 'sys': 1535980173}, 'digin': True, 'accl': {'angl': {'z': -30.69708251953125, 'y': -20.538602828979492, 'x': 51.725276947021484}, 'io': True}}}
+2018-09-03 15:09:22,956 | Step '[Cycle2] MQTT: number of retries' = 0 ()
+2018-09-03 15:09:22,972 | Step '[Cycle2] MQTT: run full test' = True ()
+2018-09-03 15:09:22,981 | Step '[Cycle2] MQTT: RTC test' = True ()
+2018-09-03 15:09:22,982 | Step '[Cycle2] MQTT: RTC - run ' = False (0:0)
+2018-09-03 15:09:22,982 | Step '[Cycle2] MQTT: RTC - bckup' = False (0:0)
+2018-09-03 15:09:22,983 | Step '[Cycle2] MQTT: digital input' = True ()
+2018-09-03 15:09:22,984 | Step '[Cycle2] MQTT: DALI test' = True ()
+2018-09-03 15:09:22,984 | Step '[Cycle2] MQTT: DALI - errs' = 0 (0:0)
+2018-09-03 15:09:22,985 | Step '[Cycle2] MQTT: DALI - als' = 100 (0:100)
+2018-09-03 15:09:23,047 | Step '[Cycle2] MQTT: Accelerometer test' = True ()
+2018-09-03 15:09:23,051 | Step '[Cycle2] MQTT: Accelerometer - X angle' = 51.725276947021484 (-90:90)
+2018-09-03 15:09:23,066 | Step '[Cycle2] MQTT: Accelerometer - Y angle' = -20.538602828979492 (-90:90)
+2018-09-03 15:09:23,067 | Step '[Cycle2] MQTT: Accelerometer - Z angle' = -30.69708251953125 (-90:90)
+2018-09-03 15:09:23,068 | Sequence completed
+2018-09-03 15:09:23,068 | Post-sequence actions completed
+2018-09-03 15:09:23,076 | Test completed with result PASSED
+2018-09-03 15:09:28,747 | Batch '1234' closed

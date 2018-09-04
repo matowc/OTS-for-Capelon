@@ -12,17 +12,24 @@ class Test:
         self.resultList = resultList
 
     def run(self):
-        logging.info("Test started")
-        self.resultList.clear()
-        logging.info("Result list cleared")
-        self.sequence.pre()
-        logging.info("Pre-sequence actions completed")
-        self.sequence.main()
-        logging.info("Sequence completed")
-        self.sequence.post()
-        logging.info("Post-sequence actions completed")
-        self.sequence.final()
-        logging.info("Test completed with result {}".format(self.sequence.status.name))
+        try:
+            logging.info("Test started")
+            self.resultList.clear()
+            logging.info("Result list cleared")
+            self.sequence.pre()
+            logging.info("Pre-sequence actions completed")
+            self.sequence.main()
+            logging.info("Sequence completed")
+            self.sequence.post()
+            logging.info("Post-sequence actions completed")
+        except Exception:
+            logging.exception('ERROR occured')
+            self.sequence.requestTerminateOnError()
+            self.sequence._gui._widgets['message.message']['text'] = 'Error has occured. Sequence will be terminated.'
+            pass
+        finally:
+            self.sequence.final()
+            logging.info("Test completed with result {}".format(self.sequence.status.name))
 
 
 def main():

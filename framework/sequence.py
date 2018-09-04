@@ -61,7 +61,7 @@ class Sequence:
                 self._gui.updateTestStatus("TEST FAILED", self._gui.colors['red'])
                 self._gui.incrementFailedStatistics()
             elif self.status == SequenceStatusEnum.ERROR:
-                self._gui.updateTestStatus("TEST FINISHED WITH ERROR", self._gui.colors['red'])
+                self._gui.updateTestStatus("SEQUENCE TERMINATED WITH ERROR", self._gui.colors['red'])
                 self._gui.incrementFailedStatistics()
             elif self.status == SequenceStatusEnum.TERMINATED:
                 self._gui.updateTestStatus("SEQUENCE TERMINATED", self._gui.colors['red'])
@@ -102,6 +102,8 @@ class Sequence:
     def requestTerminate(self):
         self.status = SequenceStatusEnum.TERMINATED
 
+    def requestTerminateOnError(self):
+        self.status = SequenceStatusEnum.ERROR
 
 def main():
     pass
