@@ -39,11 +39,11 @@ class Step:
 
 		try:
 			result = Result(self, value, status)
-			sequence.postStep(result)
-			result.post(sequence)
+			sequence.postStep(result) #postStep action
 		except Exception:
 			raise
 		finally:
+			result.post(sequence) #onFail, onPass, onError actions
 			resultList.add(result)
 
 

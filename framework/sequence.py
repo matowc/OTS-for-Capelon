@@ -96,15 +96,18 @@ class Sequence:
 			raise QuitEvent
 
 	def onFail(self, result):
-		logging.info("Step \'{}\' FAILED".format(result.step.name))
-		self.status = SequenceStatusEnum.FAILED
-		raise StepFail
+		if self.status != SequenceStatusEnum.TERMINATED:
+			logging.info("Step \'{}\' FAILED".format(result.step.name))
+			self.status = SequenceStatusEnum.FAILED
+			raise StepFail
 
 	def onPass(self, result):
-		pass
+		if self.status != SequenceStatusEnum.TERMINATED:
+			pass
 
 	def onError(self, result):
-		self.status = SequenceStatusEnum.ERROR
+		if self.status != SequenceStatusEnum.TERMINATED:
+			self.status = SequenceStatusEnum.ERROR
 
 	def displayCustomMessage(self, type, displayText):
 		if self._gui:
