@@ -5,6 +5,7 @@ import time
 import threading
 from framework.result_csv_report_generator import ResultCsvReportGenerator
 from datetime import datetime
+from collections import OrderedDict
 
 class Test:
 
@@ -30,14 +31,13 @@ class Test:
 		finally:
 			self.sequence.final()
 			ots = Application() #singleton
-			fields = {
-				'datetime': datetime.fromtimestamp(self.sequence.endTime).strftime('%Y-%m-%d %H:%M:%S'),
-				'sequence': self.sequence.name,
-				'operator': ots.loggedUser,
-				'batch number': ots.batch.batchNumber,
-				'test result': self.sequence.status.name,
-				'test time': round(self.sequence.endTime - self.sequence.startTime, 2),
-			}
+			fields = OrderedDict()
+			fields['datetime']: datetime.fromtimestamp(self.sequence.endTime).strftime('%Y-%m-%d %H:%M:%S')
+			fields['sequence']: self.sequence.name
+			fields['operator']: ots.loggedUser
+			fields['batch number']: ots.batch.batchNumber
+			fields['test result']: self.sequence.status.name
+			fields['test time']: round(self.sequence.endTime - self.sequence.startTime, 2)
 
 			report = ResultCsvReportGenerator(ots.reportsPath+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
 			report.generate()

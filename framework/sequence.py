@@ -68,7 +68,7 @@ class Sequence:
 			self.status = SequenceStatusEnum.PASSED
 		if self._gui:
 			if self.status == SequenceStatusEnum.PASSED:
-				self._gui.updateTestStatus("TEST PASSED", self._gui.colors['light green'])
+				self._gui.updateTestStatus("TEST PASSED", self._gui.colors['green'])
 				self._gui.incrementPassedStatistics()
 			elif self.status == SequenceStatusEnum.FAILED:
 				self._gui.updateTestStatus("TEST FAILED", self._gui.colors['red'])

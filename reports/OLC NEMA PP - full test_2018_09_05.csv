@@ -2,3 +2,4 @@ datetime;sequence;operator;batch number;test result;test time;powerUp;deviceDete
 2018-09-05 20:12:53;OLC NEMA PP - full test;mateusz;12345;FAILED;3.0;True;0;0;False;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
 2018-09-05 20:13:03;OLC NEMA PP - full test;mateusz;12345;FAILED;3.06;True;0;0;False;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
 2018-09-05 20:15:04;OLC NEMA PP - full test;mateusz;32432;FAILED;3.09;True;0;0;False;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+True;0;0;False;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
