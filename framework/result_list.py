@@ -5,10 +5,12 @@ from framework.result import *
 
 class ResultList:
 
-
-
 	def __init__(self) :
 		self.results = []
+		self.sequence = None
+
+	def bindSequence(self, sequence):
+		self.sequence = sequence
 	
 	def add (self, result: Result):
 
@@ -21,6 +23,7 @@ class ResultList:
 
 	def clear(self):
 		self.results = []
+		logging.info("Result list cleared")
 
 def main():
 	pass

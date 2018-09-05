@@ -9,8 +9,9 @@ from framework.result import Result
 
 class Step:
 	
-	def __init__(self, name=None, type: StepTypeEnum=None, limits=None):
+	def __init__(self, name=None, displayName=None, type: StepTypeEnum=None, limits=None):
 		self.name = name
+		self.displayName = displayName
 		self.type = type
 		self.limits = limits
 		pass

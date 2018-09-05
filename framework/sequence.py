@@ -6,6 +6,7 @@ import time
 import threading
 import csv
 from framework.step_type_enum import StepTypeEnum
+from collections import OrderedDict
 
 
 class Sequence:
@@ -17,7 +18,7 @@ class Sequence:
 		self.status = SequenceStatusEnum.NOT_RUN
 		self.startTime = None
 		self.endTime = None
-		self.steps = {}
+		self.steps = OrderedDict()
 
 		if stepsFilepath:
 			with open(stepsFilepath, 'r') as f:
@@ -31,7 +32,7 @@ class Sequence:
 					except IndexError:
 						limits = ''
 					from framework.step import Step
-					self.steps[row[0]] = Step(displayName, StepTypeEnum[type], limits)
+					self.steps[name] = Step(name, displayName, StepTypeEnum[type], limits)
 
 	def evaluateStep(self, stepName: str, value):
 
@@ -50,21 +51,16 @@ class Sequence:
 
 		if self._gui:
 			self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey", True)
-
-		# returns
-		pass
+		logging.info("Pre-sequence actions completed")
 
 	def main(self):
 		if self._gui:
 			self._gui.updateTestStatus("Test in progress...", self._gui.colors['light grey'], True)
 
-		pass
-
 	def post(self):
 		if self._gui:
 			self._gui.updateTestStatus("Sequence post-actions in progress...", self._gui.colors['light grey'], True)
-		# returns
-		pass
+		logging.info("Post-sequence actions completed")
 
 	def final(self):
 		self.endTime = time.time()
@@ -88,6 +84,7 @@ class Sequence:
 				self._gui.incrementFailedStatistics()
 
 			self._gui.displaySequenceChoice()
+		logging.info("Test completed with result {}".format(self.status.name))
 
 	def postStep(self, result):
 		if self.status == SequenceStatusEnum.TERMINATED:
@@ -98,7 +95,7 @@ class Sequence:
 			raise QuitEvent
 
 	def onFail(self, result):
-		logging.info("Step {} FAILED".format(result.step.name))
+		logging.info("Step \'{}\' FAILED".format(result.step.name))
 		self.status = SequenceStatusEnum.FAILED
 		raise StepFail
 
@@ -111,6 +108,10 @@ class Sequence:
 	def displayCustomMessage(self, type, displayText):
 		if self._gui:
 			self._gui.displayCustomMessage(type, displayText)
+
+	def displayMemo(self, displayText):
+		if self._gui:
+			self._gui.displayMemo(displayText)
 
 	def clearCustomMessage(self):
 		if self._gui:

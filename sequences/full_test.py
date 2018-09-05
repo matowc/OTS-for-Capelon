@@ -23,7 +23,7 @@ class FullTest(Sequence):
         self._gui = gui
 
         self._config = {
-            'startUpTimeout_s': 40,
+            'startUpTimeout_s': 1,
             'fullTestTimeout_s': 2,
             'defaultCommandTimeout_s': 2
         }
@@ -151,23 +151,16 @@ class FullTest(Sequence):
 
     def post(self):
         super().post()
-        pass
 
     def onFail(self, result: Result):
         super().onFail(result)
         # raise StepFail()
-        # returns
-        pass
 
     def onPass(self, result: Result):
         super().onPass(result)
-        # returns
-        pass
 
     def onError(self, result: Result):
         super().onError(result)
-        # returns
-        pass
 
 
 def main():

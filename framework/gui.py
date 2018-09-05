@@ -9,13 +9,6 @@ from tkinter import messagebox
 from tkinter import scrolledtext
 import sys
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
-					handlers=[
-						logging.FileHandler(datetime.now().strftime('events_%d_%m_%Y.log')),
-						logging.StreamHandler(sys.stdout)])
-
-
-
 class TextHandler(logging.Handler):
 	# This class allows you to log to a Tkinter Text or ScrolledText widget
 	# Adapted from Moshe Kaplan: https://gist.github.com/moshekaplan/c425f861de7bbf28ef06
@@ -171,10 +164,6 @@ class Gui:
 		self.ots.station.addDriver(MqttClient("MqttClient1"))
 		self.ots.station.addDriver(JLinkExe("JLinkExe1"))
 
-		from framework.gui_result_list import GuiResultList
-		self._resultList = GuiResultList()
-		self._resultList.bindGui(self, self._widgets['resultList.tree'])
-
 		self.init()
 
 	def init(self):
@@ -324,7 +313,11 @@ class Gui:
 		self._frames['interactive'].grid_forget()
 		logging.debug('Sequence: \'{}\''.format(sequenceName))
 
+		from framework.gui_result_list import GuiResultList
+		self._resultList = GuiResultList()
+		self._resultList.bindGui(self, self._widgets['resultList.tree'])
 		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self, 'sequences/full_test.csv')
+		self._resultList.bindSequence(sequence1)
 
 		from framework.test import Test
 		from framework.batch import Batch

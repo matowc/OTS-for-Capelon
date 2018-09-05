@@ -10,7 +10,7 @@ from tkinter import ttk
 
 class GuiResultList(ResultList):
 
-	def __init__(self) :
+	def __init__(self):
 		super().__init__()
 		self.gui = None
 		self._resultListTree = None
@@ -40,8 +40,8 @@ class GuiResultList(ResultList):
 
 	def clear(self):
 		super().clear()
-		self._resultListTree.delete(*self._resultListTree.get_children())
-
+		if self.gui:
+			self._resultListTree.delete(*self._resultListTree.get_children())
 
 
 def main():

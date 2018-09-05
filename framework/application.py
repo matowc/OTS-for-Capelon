@@ -2,9 +2,24 @@ from framework.station import Station
 from sequences import *
 import logging
 import configparser
+from datetime import datetime
+import sys
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
+					handlers=[
+						logging.FileHandler(datetime.now().strftime('events_%Y_%m_%d.log')),
+						logging.StreamHandler(sys.stdout)])
 
 
-class Application:
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class Application(metaclass=Singleton):
 
 	def __init__(self, configFilepath):
 		self.eventLogger = None  # EventLogger
@@ -24,6 +39,7 @@ class Application:
 			}
 		}
 		self.loggedUser = None
+		self.reportsPath = 'reports/'
 		config = configparser.ConfigParser()
 		config.read(configFilepath)
 		logging.debug('Setttings file: {}'.format(configFilepath))
