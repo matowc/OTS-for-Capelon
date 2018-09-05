@@ -4,109 +4,125 @@ from framework.sequence_result_enum import *
 from exceptions.step_fail import *
 import time
 import threading
+import csv
+from framework.step_type_enum import StepTypeEnum
 
 
 class Sequence:
+	def __init__(self, station, name, resultList, gui=None, stepsFilepath=None):
+		self._station = station
+		self.name = name
+		self._resultList = resultList
+		self._gui = gui
+		self.status = SequenceStatusEnum.NOT_RUN
+		self.startTime = None
+		self.endTime = None
+		self.steps = {}
 
-    def __init__(self, station, name, resultList, gui=None):
-        self._station = station
-        self.name = name
-        self._resultList = resultList
-        self._gui = gui
-        self.status = SequenceStatusEnum.NOT_RUN
-        self.startTime = None
-        self.endTime = None
+		if stepsFilepath:
+			with open(stepsFilepath, 'r') as f:
+				reader = csv.reader(f, delimiter=';')
+				for row in reader:
+					name = row[0]
+					displayName = row[1]
+					type = row[2]
+					try:
+						limits = row[3]
+					except IndexError:
+						limits = ''
+					from framework.step import Step
+					self.steps[row[0]] = Step(displayName, StepTypeEnum[type], limits)
 
-    def evaluateStep(self, stepName: str, value):
-        return self.steps[stepName].evaluate(self, value, self._resultList)
+	def evaluateStep(self, stepName: str, value):
 
-    def updateTimer(self):
-        if self._gui:
-            self._gui.updateTestTime(time.time() - self.startTime)
-            if self.status == SequenceStatusEnum.RUNNING:
-                threading.Timer(1, self.updateTimer).start()
+		return self.steps[stepName].evaluate(self, value, self._resultList)
 
-    def pre(self):
-        self.startTime = time.time()
-        self.status = SequenceStatusEnum.RUNNING
-        self.updateTimer()
+	def updateTimer(self):
+		if self._gui:
+			self._gui.updateTestTime(time.time() - self.startTime)
+			if self.status == SequenceStatusEnum.RUNNING:
+				threading.Timer(1, self.updateTimer).start()
 
-        if self._gui:
-            self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey", True)
+	def pre(self):
+		self.startTime = time.time()
+		self.status = SequenceStatusEnum.RUNNING
+		self.updateTimer()
 
-        # returns
-        pass
+		if self._gui:
+			self._gui.updateTestStatus("Sequence pre-actions in progress...", "light grey", True)
 
-    def main(self):
-        if self._gui:
-            self._gui.updateTestStatus("Test in progress...", self._gui.colors['light grey'], True)
+		# returns
+		pass
 
-        pass
+	def main(self):
+		if self._gui:
+			self._gui.updateTestStatus("Test in progress...", self._gui.colors['light grey'], True)
 
-    def post(self):
-        if self._gui:
-            self._gui.updateTestStatus("Sequence post-actions in progress...", self._gui.colors['light grey'], True)
-        # returns
-        pass
+		pass
 
-    def final(self):
-        self.endTime = time.time()
-        if self.status == SequenceStatusEnum.RUNNING:
-            self.status = SequenceStatusEnum.PASSED
-        if self._gui:
-            if self.status == SequenceStatusEnum.PASSED:
-                self._gui.updateTestStatus("TEST PASSED", self._gui.colors['light green'])
-                self._gui.incrementPassedStatistics()
-            elif self.status == SequenceStatusEnum.FAILED:
-                self._gui.updateTestStatus("TEST FAILED", self._gui.colors['red'])
-                self._gui.incrementFailedStatistics()
-            elif self.status == SequenceStatusEnum.ERROR:
-                self._gui.updateTestStatus("SEQUENCE TERMINATED WITH ERROR", self._gui.colors['red'])
-                self._gui.incrementFailedStatistics()
-            elif self.status == SequenceStatusEnum.TERMINATED:
-                self._gui.updateTestStatus("SEQUENCE TERMINATED", self._gui.colors['red'])
-                self._gui.incrementFailedStatistics()
-            else:
-                self._gui.updateTestStatus("UNKNOWN ERROR", self._gui.colors['red'])
-                self._gui.incrementFailedStatistics()
+	def post(self):
+		if self._gui:
+			self._gui.updateTestStatus("Sequence post-actions in progress...", self._gui.colors['light grey'], True)
+		# returns
+		pass
 
-            self._gui.displaySequenceChoice()
+	def final(self):
+		self.endTime = time.time()
+		if self.status == SequenceStatusEnum.RUNNING:
+			self.status = SequenceStatusEnum.PASSED
+		if self._gui:
+			if self.status == SequenceStatusEnum.PASSED:
+				self._gui.updateTestStatus("TEST PASSED", self._gui.colors['light green'])
+				self._gui.incrementPassedStatistics()
+			elif self.status == SequenceStatusEnum.FAILED:
+				self._gui.updateTestStatus("TEST FAILED", self._gui.colors['red'])
+				self._gui.incrementFailedStatistics()
+			elif self.status == SequenceStatusEnum.ERROR:
+				self._gui.updateTestStatus("SEQUENCE TERMINATED WITH ERROR", self._gui.colors['red'])
+				self._gui.incrementFailedStatistics()
+			elif self.status == SequenceStatusEnum.TERMINATED:
+				self._gui.updateTestStatus("SEQUENCE TERMINATED", self._gui.colors['red'])
+				self._gui.incrementFailedStatistics()
+			else:
+				self._gui.updateTestStatus("UNKNOWN ERROR", self._gui.colors['red'])
+				self._gui.incrementFailedStatistics()
 
-    def postStep(self, result):
-        if self.status == SequenceStatusEnum.TERMINATED:
-            raise QuitEvent
+			self._gui.displaySequenceChoice()
 
-    def pingStatus(self):
-        if self.status == SequenceStatusEnum.TERMINATED:
-            raise QuitEvent
+	def postStep(self, result):
+		if self.status == SequenceStatusEnum.TERMINATED:
+			raise QuitEvent
 
-    def onFail(self, result):
-        logging.info("Step {} FAILED".format(result.step.name))
-        self.status = SequenceStatusEnum.FAILED
-        raise StepFail
+	def pingStatus(self):
+		if self.status == SequenceStatusEnum.TERMINATED:
+			raise QuitEvent
 
-    def onPass(self, result):
-        pass
+	def onFail(self, result):
+		logging.info("Step {} FAILED".format(result.step.name))
+		self.status = SequenceStatusEnum.FAILED
+		raise StepFail
 
-    def onError(self, result):
-        self.status = SequenceStatusEnum.ERROR
+	def onPass(self, result):
+		pass
 
-    def displayCustomMessage(self, type, displayText):
-        if self._gui:
-            self._gui.displayCustomMessage(type, displayText)
+	def onError(self, result):
+		self.status = SequenceStatusEnum.ERROR
 
-    def clearCustomMessage(self):
-        if self._gui:
-            self._gui.displayCustomMessage('', '')
+	def displayCustomMessage(self, type, displayText):
+		if self._gui:
+			self._gui.displayCustomMessage(type, displayText)
 
-    def requestTerminate(self):
-        self.status = SequenceStatusEnum.TERMINATED
+	def clearCustomMessage(self):
+		if self._gui:
+			self._gui.displayCustomMessage('', '')
 
-    def requestTerminateOnError(self):
-        self.status = SequenceStatusEnum.ERROR
+	def requestTerminate(self):
+		self.status = SequenceStatusEnum.TERMINATED
+
+	def requestTerminateOnError(self):
+		self.status = SequenceStatusEnum.ERROR
 
 def main():
-    pass
-
+	pass
 
 if __name__ == "__main__": main()

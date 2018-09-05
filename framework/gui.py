@@ -7,8 +7,13 @@ from datetime import datetime
 import logging
 from tkinter import messagebox
 from tkinter import scrolledtext
+import sys
 
-logging.basicConfig(level=logging.DEBUG, filename=datetime.now().strftime('events_%d_%m_%Y.log'), format='%(asctime)-15s | %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
+					handlers=[
+						logging.FileHandler(datetime.now().strftime('events_%d_%m_%Y.log')),
+						logging.StreamHandler(sys.stdout)])
+
 
 
 class TextHandler(logging.Handler):
@@ -34,7 +39,6 @@ class TextHandler(logging.Handler):
 		# This is necessary because we can't modify the Text from other threads
 		self.text.after(0, append)
 
-
 class Gui:
 	def __init__(self):
 
@@ -53,6 +57,8 @@ class Gui:
 		self._root.geometry("1900x1000+0+0")
 		self._root.title("Owczarek Test System (OTS) for Capelon")
 		self._root.configure(background='white')
+
+
 
 		self._style = ttk.Style()
 		self._style.configure('TFrame', background='white')
@@ -156,14 +162,12 @@ class Gui:
 		self._widgets['resultList.tree'].grid(row=0, column=0)
 		self._widgets['customFrame.message'].grid(row=0, column=0)
 
-		self.init()
-
 		textHandler = TextHandler(self._widgets['logs.logs'])
 		logger = logging.getLogger()
 		logger.addHandler(textHandler)
 
 		from framework.application import Application
-		self.ots = Application()
+		self.ots = Application('settings.ini')
 		self.ots.station.addDriver(MqttClient("MqttClient1"))
 		self.ots.station.addDriver(JLinkExe("JLinkExe1"))
 
@@ -171,10 +175,15 @@ class Gui:
 		self._resultList = GuiResultList()
 		self._resultList.bindGui(self, self._widgets['resultList.tree'])
 
+		self.init()
+
 	def init(self):
 		# TODO dynamic import of values
 		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
 		self.updateTestStatus('', '', False)
+		if self.ots.loggedUser:
+			self._loginSuccess()
+
 
 	def initializeSequenceChoiceFrame(self):
 		self._widgets['interactive.sequenceList'] = \
@@ -315,7 +324,7 @@ class Gui:
 		self._frames['interactive'].grid_forget()
 		logging.debug('Sequence: \'{}\''.format(sequenceName))
 
-		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self)
+		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self, 'sequences/full_test.csv')
 
 		from framework.test import Test
 		from framework.batch import Batch
@@ -347,12 +356,18 @@ class Gui:
 		user = self.ots.login(self._widgets['authentication.login'].get(),
 							  self._widgets['authentication.password'].get())
 		if user:
-			self._frames['authentication'].grid_forget()
-			self._widgets['message.message']['text'] = ''
-			self.displaySequenceChoice()
-			self._widgets['user.user']['text'] = 'User: ' + user['name']
+			self._loginSuccess()
 		else:
-			self._widgets['message.message']['text'] = 'Wrong login or password'
+			self._loginFailed()
+
+	def _loginSuccess(self):
+		self._frames['authentication'].grid_forget()
+		self._widgets['message.message']['text'] = ''
+		self.displaySequenceChoice()
+		self._widgets['user.user']['text'] = 'User: ' + self.ots.users[self.ots.loggedUser]['name']
+
+	def _loginFailed(self):
+		self._widgets['message.message']['text'] = 'Wrong login or password'
 
 	def displaySequenceChoice(self):
 		if self._root:

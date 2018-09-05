@@ -1,6 +1,6 @@
 import logging
 import time
-from framework.sequence import *
+from framework.sequence import Sequence
 from framework.result import Result
 import json
 from typing import NewType
@@ -12,8 +12,8 @@ from framework.step import *
 
 class FullTest(Sequence):
 
-    def __init__(self, station, name, resultList, gui: Gui = None):
-        super().__init__(station, name, resultList)
+    def __init__(self, station, name, resultList, gui: Gui = None, stepsFilepath=None):
+        super().__init__(station, name, resultList, gui, stepsFilepath)
 
         # get drivers
         MqttClient_t = NewType('MqttClient_t', MqttClient)
@@ -21,52 +21,6 @@ class FullTest(Sequence):
         self._MqttClient1 = MqttClient_t(self._station.drivers['MqttClient1'])
         self._JLinkExe1 = JLinkExe_t(self._station.drivers['JLinkExe1'])
         self._gui = gui
-
-        # define steps
-        self.steps = {
-            'powerUp': Step("Power up the device", StepTypeEnum.ACTION),
-            'deviceDetect': Step("Programmer: device detection", StepTypeEnum.BOOL),
-            'deviceProgramming': Step("Programmer: programming", StepTypeEnum.BOOL),
-            'c1_startUp': Step("[Cycle1] MQTT: start-up message", StepTypeEnum.BOOL),
-            'c1_deviceId': Step("[Cycle1] MQTT: DID", StepTypeEnum.ACTION),
-            'c1_turnOff12V': Step("[Cycle1] MQTT: turn 12V off", StepTypeEnum.BOOL),
-            'c1_fullTestResponse': Step("[Cycle1] MQTT: run full test", StepTypeEnum.BOOL),
-            'c1_fullTestResponseRetries': Step("[Cycle1] MQTT: number of retries", StepTypeEnum.ACTION),
-            'c1_rtcTest': Step("[Cycle1] MQTT: RTC test", StepTypeEnum.BOOL),
-            'c1_rtcRunTest': Step("[Cycle1] MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
-            'c1_rtcBkupTest': Step("[Cycle1] MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
-            'c1_digitalInputTest': Step("[Cycle1] MQTT: digital input", StepTypeEnum.BOOL),
-            'c1_daliTest': Step("[Cycle1] MQTT: DALI test", StepTypeEnum.BOOL),
-            'c1_daliErrsTest': Step("[Cycle1] MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
-            'c1_daliAlsTest': Step("[Cycle1] MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
-            'c1_accelerometerTest': Step("[Cycle1] MQTT: Accelerometer test", StepTypeEnum.BOOL),
-            'c1_accelerometerAngleXTest': Step("[Cycle1] MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC,
-                                               "-90:90"),
-            'c1_accelerometerAngleYTest': Step("[Cycle1] MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC,
-                                               "-90:90"),
-            'c1_accelerometerAngleZTest': Step("[Cycle1] MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC,
-                                               "-90:90"),
-            'powerCycle': Step("Power cycle the device", StepTypeEnum.ACTION),
-            'c2_startUp': Step("[Cycle2] MQTT: start-up message", StepTypeEnum.BOOL),
-            'c2_deviceId': Step("[Cycle2] MQTT: DID", StepTypeEnum.ACTION),
-            'c2_turnOff12V': Step("[Cycle2] MQTT: turn 12V off", StepTypeEnum.BOOL),
-            'c2_fullTestResponse': Step("[Cycle2] MQTT: run full test", StepTypeEnum.BOOL),
-            'c2_fullTestResponseRetries': Step("[Cycle2] MQTT: number of retries", StepTypeEnum.ACTION),
-            'c2_rtcTest': Step("[Cycle2] MQTT: RTC test", StepTypeEnum.BOOL),
-            'c2_rtcRunTest': Step("[Cycle2] MQTT: RTC - run ", StepTypeEnum.NUMERIC, "0:0"),
-            'c2_rtcBkupTest': Step("[Cycle2] MQTT: RTC - bckup", StepTypeEnum.NUMERIC, "0:0"),
-            'c2_digitalInputTest': Step("[Cycle2] MQTT: digital input", StepTypeEnum.BOOL),
-            'c2_daliTest': Step("[Cycle2] MQTT: DALI test", StepTypeEnum.BOOL),
-            'c2_daliErrsTest': Step("[Cycle2] MQTT: DALI - errs", StepTypeEnum.NUMERIC, "0:0"),
-            'c2_daliAlsTest': Step("[Cycle2] MQTT: DALI - als", StepTypeEnum.NUMERIC, "0:100"),
-            'c2_accelerometerTest': Step("[Cycle2] MQTT: Accelerometer test", StepTypeEnum.BOOL),
-            'c2_accelerometerAngleXTest': Step("[Cycle2] MQTT: Accelerometer - X angle", StepTypeEnum.NUMERIC,
-                                               "-90:90"),
-            'c2_accelerometerAngleYTest': Step("[Cycle2] MQTT: Accelerometer - Y angle", StepTypeEnum.NUMERIC,
-                                               "-90:90"),
-            'c2_accelerometerAngleZTest': Step("[Cycle2] MQTT: Accelerometer - Z angle", StepTypeEnum.NUMERIC, "-90:90")
-
-        }
 
         self._config = {
             'startUpTimeout_s': 40,
