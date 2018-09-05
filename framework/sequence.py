@@ -19,6 +19,7 @@ class Sequence:
 		self.startTime = None
 		self.endTime = None
 		self.steps = OrderedDict()
+		self.deviceId = ''
 
 		if stepsFilepath:
 			with open(stepsFilepath, 'r') as f:

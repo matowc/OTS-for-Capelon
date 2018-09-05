@@ -83,7 +83,9 @@ class FullTest(Sequence):
                 self._MqttClient1.subscribe(mqttAttrTopic, 1)
 
                 self.evaluateStep(cycle + 'startUp', bool(topic))
+                self.deviceId = DID
                 self.evaluateStep(cycle + 'deviceId', DID)
+
 
                 response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
                                                               self._config['defaultCommandTimeout_s'])
