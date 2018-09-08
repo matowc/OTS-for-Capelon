@@ -6,16 +6,10 @@ from drivers.driver import Driver
 
 class JLinkExe(Driver):
 	
-	def __init__(self, name):
-		# for debuggig
-
-		
+	def __init__(self, name, configFilepath=None):
+		super().__init__(name, configFilepath)
 		self._JLinkExePath = "/opt/SEGGER/JLink/JLinkExe"
-		self._scriptPath = ""
-		self._device = "d"
-		
-		super().__init__(name)
-	
+
 	def __del__(self):
 		self.deinitialize()
 	
@@ -32,20 +26,18 @@ class JLinkExe(Driver):
 	def safeReset(self):
 		pass
 	
-	def program(self):
-		result = subprocess.run([self._JLinkExePath, '-device', self._device, '-CommandFile', self._scriptPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	def program(self, scriptPath):
+		result = subprocess.run([self._JLinkExePath, '-CommandFile', scriptPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		# consider replacing with check_errors method and catching exception
 		if result.returncode == 0:
 			return True
 		else:
 			logging.warning(result.stdout)
 			return False
-		
-
 
 def main():
-	# jlinkexe = JLinkExe('j')
-	# jlinkexe.program()
+	jlinkexe = JLinkExe('JLinkExe1', 'EFR32FG12PXXXF1024')
+	jlinkexe.program('programming_script.txt')
 	pass
 
 if __name__ == "__main__" : main()

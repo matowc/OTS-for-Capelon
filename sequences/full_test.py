@@ -12,21 +12,14 @@ from framework.step import *
 
 class FullTest(Sequence):
 
-    def __init__(self, station, name, resultList, gui: Gui = None, stepsFilepath=None):
-        super().__init__(station, name, resultList, gui, stepsFilepath)
+    def __init__(self, station, name, resultList, gui: Gui = None, stepsFilepath=None, configFilepath=None):
+        super().__init__(station, name, resultList, gui, stepsFilepath, configFilepath)
 
         # get drivers
         MqttClient_t = NewType('MqttClient_t', MqttClient)
         JLinkExe_t = NewType('JLinkExe_t', JLinkExe)
-        self._MqttClient1 = MqttClient_t(self._station.drivers['MqttClient1'])
-        self._JLinkExe1 = JLinkExe_t(self._station.drivers['JLinkExe1'])
-        self._gui = gui
-
-        self._config = {
-            'startUpTimeout_s': 1,
-            'fullTestTimeout_s': 2,
-            'defaultCommandTimeout_s': 2
-        }
+        self._MqttClient = MqttClient_t(self._station.drivers['MqttClient1'])
+        self._JLinkExe = JLinkExe_t(self._station.drivers['JLinkExe1'])
 
     def pre(self):
         super().pre()
@@ -58,19 +51,19 @@ class FullTest(Sequence):
 
                 # we do not know DID until it send the first message (AOEstart),
                 # so I clear all messages and waits for the first one
-                self._MqttClient1.clearAllMostRecentMessages()
-                self._MqttClient1.subscribe(mqttAttrTopic)
+                self._MqttClient.clearAllMostRecentMessages()
+                self._MqttClient.subscribe(mqttAttrTopic)
 
                 # wait until new message appears (empty dict evaluates as False in Python)
                 # timeout = 60s
-                timeout = time.time() + self._config['startUpTimeout_s']
-                while not self._MqttClient1.mostRecentMessages and time.time() < timeout:
+                timeout = time.time() + float(self._config['general']['startUpTimeout_s'])
+                while not self._MqttClient.mostRecentMessages and time.time() < timeout:
                     self.pingStatus()
-                    time.sleep(1)
+                    time.sleep(0.1)
 
                 topic = ''
-                if self._MqttClient1.mostRecentMessages:
-                    [topic] = self._MqttClient1.mostRecentMessages.keys()
+                if self._MqttClient.mostRecentMessages:
+                    [topic] = self._MqttClient.mostRecentMessages.keys()
                     [null, APIKEY, DID, null] = topic.split('/')
 
                 self.clearCustomMessage()
@@ -79,8 +72,8 @@ class FullTest(Sequence):
                 mqttAckTopic = '/' + APIKEY + '/' + DID + '/cmdexe'
                 mqttAttrTopic = '/' + APIKEY + '/' + DID + '/attrs'
 
-                self._MqttClient1.subscribe(mqttAckTopic, 1)
-                self._MqttClient1.subscribe(mqttAttrTopic, 1)
+                self._MqttClient.subscribe(mqttAckTopic, 1)
+                self._MqttClient.subscribe(mqttAttrTopic, 1)
 
                 self.evaluateStep(cycle + 'startUp', bool(topic))
                 self.deviceId = DID
@@ -88,14 +81,14 @@ class FullTest(Sequence):
 
 
                 response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
-                                                              self._config['defaultCommandTimeout_s'])
+                                                              float(self._config['general']['defaultCommandTimeout_s']))
                 self.evaluateStep(cycle + 'turnOff12V', (response and response['C12Vout'] == 0))
 
                 response = False
                 retryCount = 0
                 while retryCount < 3:
                     response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic,
-                                                                  self._config['fullTestTimeout_s'])
+                                                                  float(self._config['general']['fullTestTimeout_s']))
                     if response:
                         break
                     else:
@@ -133,20 +126,20 @@ class FullTest(Sequence):
         return
 
     def sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
-        self._MqttClient1.clearMostRecentMessage(mqttAckTopic)
+        self._MqttClient.clearMostRecentMessage(mqttAckTopic)
         logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
-        self._MqttClient1.publish(mqttCmdTopic, json.dumps(message))
+        self._MqttClient.publish(mqttCmdTopic, json.dumps(message))
 
         timeout = time.time() + timeout_s
         response = ''
         while time.time() <= timeout:
-            if mqttAckTopic in self._MqttClient1.mostRecentMessages.keys():
-                response = self._MqttClient1.mostRecentMessages[mqttAckTopic]
+            if mqttAckTopic in self._MqttClient.mostRecentMessages.keys():
+                response = self._MqttClient.mostRecentMessages[mqttAckTopic]
                 response = json.loads(response)
                 break
             else:
                 self.pingStatus()
-                time.sleep(1)
+                time.sleep(0.1)
         logging.debug('MQTT received {} = {}'.format(mqttAckTopic, response))
 
         return response

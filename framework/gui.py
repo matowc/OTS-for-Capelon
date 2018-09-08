@@ -160,9 +160,9 @@ class Gui:
 		logger.addHandler(textHandler)
 
 		from framework.application import Application
-		self.ots = Application('settings.ini')
-		self.ots.station.addDriver(MqttClient("MqttClient1"))
-		self.ots.station.addDriver(JLinkExe("JLinkExe1"))
+		self.ots = Application('settings.ini', 'hardware_configuration.ini')
+		self.ots.station.addDriver(MqttClient("MqttClient1", self.ots.hardwareConfigFilepath))
+		self.ots.station.addDriver(JLinkExe("JLinkExe1", self.ots.hardwareConfigFilepath))
 
 		self.init()
 
@@ -316,7 +316,7 @@ class Gui:
 		from framework.gui_result_list import GuiResultList
 		self._resultList = GuiResultList()
 		self._resultList.bindGui(self, self._widgets['resultList.tree'])
-		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self, 'sequences/full_test.csv')
+		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self, 'sequences/full_test.csv', 'sequences/full_test.ini')
 		self._resultList.bindSequence(sequence1)
 
 		from framework.test import Test

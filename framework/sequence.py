@@ -1,4 +1,5 @@
 import logging
+import configparser
 from exceptions.step_fail import StepFail
 from framework.sequence_result_enum import *
 from exceptions.step_fail import *
@@ -9,8 +10,9 @@ from framework.step_type_enum import StepTypeEnum
 from collections import OrderedDict
 
 
+
 class Sequence:
-	def __init__(self, station, name, resultList, gui=None, stepsFilepath=None):
+	def __init__(self, station, name, resultList, gui=None, stepsFilepath=None, configFilepath=None):
 		self._station = station
 		self.name = name
 		self._resultList = resultList
@@ -20,23 +22,17 @@ class Sequence:
 		self.endTime = None
 		self.steps = OrderedDict()
 		self.deviceId = ''
+		self.steps = {}
+		self._stepsFilepath = stepsFilepath
+		self._configFilepath = configFilepath
 
 		if stepsFilepath:
-			with open(stepsFilepath, 'r') as f:
-				reader = csv.reader(f, delimiter=';')
-				for row in reader:
-					name = row[0]
-					displayName = row[1]
-					type = row[2]
-					try:
-						limits = row[3]
-					except IndexError:
-						limits = ''
-					from framework.step import Step
-					self.steps[name] = Step(name, displayName, StepTypeEnum[type], limits)
+			self.loadStepsFromFile()
+
+		if configFilepath:
+			self._config = self.loadConfigFromFile()
 
 	def evaluateStep(self, stepName: str, value):
-
 		return self.steps[stepName].evaluate(self, value, self._resultList)
 
 	def updateTimer(self):
@@ -44,6 +40,26 @@ class Sequence:
 			self._gui.updateTestTime(time.time() - self.startTime)
 			if self.status == SequenceStatusEnum.RUNNING:
 				threading.Timer(1, self.updateTimer).start()
+
+	def loadStepsFromFile(self):
+		with open(self._stepsFilepath, 'r') as f:
+			reader = csv.reader(f, delimiter=';')
+			for row in reader:
+				name = row[0]
+				displayName = row[1]
+				type = row[2]
+				try:
+					limits = row[3]
+				except IndexError:
+					limits = ''
+				from framework.step import Step
+				self.steps[name] = Step(name, displayName, StepTypeEnum[type], limits)
+
+	def loadConfigFromFile(self):
+		config = configparser.ConfigParser()
+		config.read(self._configFilepath)
+		logging.debug('Sequece settings file: {}'.format(self._configFilepath))
+		return config
 
 	def pre(self):
 		self.startTime = time.time()

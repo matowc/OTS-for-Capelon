@@ -3,9 +3,10 @@ import logging
 
 class Driver:
 
-	def __init__(self, name):
+	def __init__(self, name, configFilepath=None):
 		self.name = name
-		self.loadConfiguration()
+		self._configFilePath = configFilepath
+		self.config = self.loadConfiguration()
 		self.initialize()
 
 		logging.info("Driver \'{}\' initialized".format(self.name))
@@ -20,7 +21,14 @@ class Driver:
 		pass
 
 	def loadConfiguration(self):
-		pass
+		return self.loadConfigFromFile()
+
+	def loadConfigFromFile(self):
+		if self._configFilePath:
+			config = configparser.ConfigParser()
+			config.read(self._configFilepath)
+			logging.debug('Driver {} settings file: {}'.format(self.name, self._configFilepath))
+			return config[self.name]
 
 	def safeReset(self):
 		pass

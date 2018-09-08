@@ -6,20 +6,14 @@ from drivers.driver import Driver
 
 class MqttClient(Driver):
 
-	def __init__(self, name):
-		
-		# for debuggig
-		logging.basicConfig(level=logging.DEBUG)
-		
+	def __init__(self, name, configFilepath=None):
 		self._client = None
 		self._clientId = 'ots'
 		self._server = 'localhost'
 		self._port = 1883
 		self._topics = [{'name': '/1234/#', 'qos': 1}]
-
 		self.mostRecentMessages = {}
-		
-		super().__init__(name)
+		super().__init__(name, configFilepath)
 		
 	def __del__(self):
 		self.deinitialize()

@@ -21,7 +21,7 @@ class Singleton(type):
 
 class Application(metaclass=Singleton):
 
-	def __init__(self, configFilepath):
+	def __init__(self, configFilepath, hardwareConfigurationFilepath):
 		self.eventLogger = None  # EventLogger
 		self.resultLogger = None  # ResultLogger
 		self.station = Station()
@@ -40,17 +40,27 @@ class Application(metaclass=Singleton):
 		}
 		self.loggedUser = None
 		self.reportsPath = 'reports/'
-		config = configparser.ConfigParser()
-		config.read(configFilepath)
-		logging.debug('Setttings file: {}'.format(configFilepath))
 		self._configFilepath = configFilepath
-		self.config = config
-		if config['general']['autologin'] == 'true' and config['general']['autologinUser'] and self.users[config['general']['autologinUser']]:
-			self.loggedUser = config['general']['autologinUser']
+		self.hardwareConfigFilepath = hardwareConfigurationFilepath
+		self.config = self.loadConfigFromFile()
+
+		self.autologin()
 
 	def launch(self):
 		# returns
 		pass
+
+	def autologin(self):
+		if self.config['general']['autologin'] == 'true' and self.config['general']['autologinUser'] and self.users[self.config['general']['autologinUser']]:
+			self.loggedUser = self.config['general']['autologinUser']
+
+
+	def loadConfigFromFile(self):
+		config = configparser.ConfigParser()
+		config.read(self._configFilepath)
+		logging.debug('Setttings file: {}'.format(self._configFilepath))
+		return config
+
 
 	def login(self, user, password):
 		for login, data in self.users.items():
