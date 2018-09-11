@@ -68,16 +68,18 @@ class Application(metaclass=Singleton):
 				self.loggedUser = login
 				logging.info('User \'{}\' ({}) logged in'.format(login, data['name']))
 				if self.config['general']['autologin'] == 'true':
-					config = configparser.ConfigParser()
-					config['general']['autologinUser'] = self.loggedUser
+					self.config['general']['autologinUser'] = self.loggedUser
 					with open(self._configFilepath, 'w') as configfile:
-						config.write(configfile)
+						self.config.write(configfile)
 				return data
 		return None
 
 	def logout(self):
 		logging.info('User \'{}\' ({}) logged out'.format(self.loggedUser, self.users[self.loggedUser]))
-		self.loggedUser = None
+		self.loggedUser = ''
+		self.config['general']['autologinUser'] = self.loggedUser
+		with open(self._configFilepath, 'w') as configfile:
+			self.config.write(configfile)
 
 
 def main():

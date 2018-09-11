@@ -105,7 +105,7 @@ class Gui:
 		# self._widgets['menuButtons.exitButton'].grid(row=0, column=3)
 
 		# content subframes
-		self._frames['user'] = Frame(self._frames['content'])
+		self._frames['user'] = Frame(self._frames['content'], background=self.colors['light grey'])
 		self._frames['interactive'] = Frame(self._frames['content'], background='white')
 		self._frames['message'] = Frame(self._frames['content'], background='white')
 		self._frames['customFrame'] = Frame(self._frames['content'], background='white')
@@ -117,7 +117,7 @@ class Gui:
 
 		self._frames['user'].grid(row=0, column=0, sticky='nwe')
 		self._frames['user'].grid_columnconfigure(0, weight=1)
-		self._frames['authentication'].grid(row=2, column=0, sticky='nsew', padx=0, pady=20)
+		self._frames['authentication'].grid(row=0, column=0, sticky='nsew', padx=0, pady=0)
 		self._frames['message'].grid(row=1, column=0, sticky='s')
 		self._frames['resultList'].grid(row=0, column=2, rowspan=5)
 		#self._frames['logs'].grid(row=4, column=0, rowspan=2)
@@ -127,6 +127,7 @@ class Gui:
 
 		# content widgets
 		self._widgets['user.user'] = Label(self._frames['user'], background=self.colors['light grey'], text='NO USER LOGGED IN', font=('Arial', 14, 'bold'), foreground='white', padx=30, pady=10)
+		self._widgets['user.logout'] = Button(self._frames['user'], background=self.colors['dark grey'], text='LOG OUT', command=lambda: self.callback_logoutButtonClick(), foreground=self.colors['white'], font=('Arial', 12, 'bold'))
 		self._widgets['message.message'] = \
 			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400)
 		self._widgets['logs.logs'] = \
@@ -144,6 +145,7 @@ class Gui:
 		self.initializeAuthenticationFrame()
 
 		self._widgets['user.user'].grid(column=0, row=0, sticky='nsew')
+		self._widgets['user.logout'].grid(column=1, row=0, sticky='nsew', padx=10, pady=20)
 		self._widgets['message.message'].pack()
 		self._widgets['logs.logs'].pack()
 
@@ -168,7 +170,7 @@ class Gui:
 
 	def init(self):
 		# TODO dynamic import of values
-		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
+
 		self.updateTestStatus('', '', False)
 		if self.ots.loggedUser:
 			self._loginSuccess()
@@ -195,6 +197,8 @@ class Gui:
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=10)
 		self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=10, pady=10)
 		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=10, pady=10)
+
+		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
 
 	def initializeResultListTree(self):
 		style = ttk.Style()
@@ -296,9 +300,6 @@ class Gui:
 		self._frames['authentication'].grid_columnconfigure(1, weight=1, minsize=10)
 		self._frames['authentication'].grid_columnconfigure(2, weight=1)
 
-		self.displayMemo("Please log in")
-
-
 	def updateTestTime(self, time):
 		self._widgets['statistics.canvas'].itemconfigure(self._widgets['statistics.timeCount'], text=str(round(time)))
 
@@ -310,7 +311,7 @@ class Gui:
 			return
 
 		self._widgets['message.message']['text'] = ''
-		self._frames['interactive'].grid_forget()
+		self._frames['interactive'].grid_remove()
 		logging.debug('Sequence: \'{}\''.format(sequenceName))
 
 		from framework.gui_result_list import GuiResultList
@@ -353,18 +354,30 @@ class Gui:
 		else:
 			self._loginFailed()
 
+	def callback_logoutButtonClick(self):
+		user = self.ots.logout()
+		self._logout()
+		self.initializeAuthenticationFrame()
+
 	def _loginSuccess(self):
-		self._frames['authentication'].grid_forget()
+		self._frames['authentication'].grid_remove()
+		self._frames['user'].grid()
 		self._widgets['message.message']['text'] = ''
 		self.displaySequenceChoice()
 		self._widgets['user.user']['text'] = 'User: ' + self.ots.users[self.ots.loggedUser]['name']
+
+	def _logout(self):
+		self._frames['user'].grid_remove()
+		self._frames['interactive'].grid_remove()
+		self._frames['authentication'].grid()
+		self._widgets['message.message']['text'] = ''
 
 	def _loginFailed(self):
 		self._widgets['message.message']['text'] = 'Wrong login or password'
 
 	def displaySequenceChoice(self):
 		if self._root:
-			self._frames['customFrame'].grid_forget()
+			self._frames['customFrame'].grid_remove()
 			self._frames['interactive'].grid(row=2, column=0, columnspan=2, sticky='nwe')
 			self._frames['interactive'].grid_columnconfigure(0, weight=1)
 
@@ -385,7 +398,7 @@ class Gui:
 	def displayCustomMessage(self, type, displayText):
 		if self._root:
 			self._widgets['customFrame.message'].config(text=displayText)
-			self._frames['interactive'].grid_forget()
+			self._frames['interactive'].grid_remove()
 			self._frames['customFrame'].grid(row=1, column=0, columnspan=2)
 
 	def updateTestStatus(self, text, bgcolor=None, showTerminateButton=False):
