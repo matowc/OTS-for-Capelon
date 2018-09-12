@@ -32,7 +32,7 @@ class GuiResultList(ResultList):
 		secs = result.relativeTimestamp
 		mins, secs = divmod(secs, 60)
 		self._resultListTree.insert('', 'end', text=result.step.name,
-									values=(result.step.name, result.step.type.name, result.value, result.step.limits, result.status.name, '{:0>2.0f}:{:0>6.3f}'.format(mins, secs)),
+									values=(result.step.displayName, result.step.type.name, result.value, result.step.limits, result.status.name, '{:0>2.0f}:{:0>6.3f}'.format(mins, secs)),
 									tags = (result.status.name, 'result') )
 
 		# returns
