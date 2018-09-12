@@ -27,7 +27,7 @@ class FullTest(Sequence):
     def pre(self):
         super().pre()
 
-        mqttAckTopic = '/' + self.APIKEY + '/' +self. DID + '/cmdexe'
+        mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.subscribe(mqttAttrTopic)
         self._MqttClient.subscribe(mqttAckTopic)
@@ -151,7 +151,7 @@ class FullTest(Sequence):
 
     def post(self):
         super().post()
-        mqttAckTopic = '/' + self.APIKEY + '/' +self. DID + '/cmdexe'
+        mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.unsubscribe(mqttAttrTopic)
         self._MqttClient.unsubscribe(mqttAckTopic)
