@@ -11,7 +11,7 @@ ots.station.addDriver(JLinkExe("JLinkExe1"))
 from framework.gui_result_list import GuiResultList
 
 resultList = ResultList()
-sequence = ots.sequences['OLC NEMA PP - full test'](ots.station, 'OLC NEMA PP - full test', resultList, None, 'sequences/full_test.csv')
+sequence = ots.sequences['OLC NEMA PP - full test'](ots.station, 'OLC NEMA PP - full test', resultList, None, 'sequences/full_test.csv', 'sequences/full_test.ini')
 resultList.bindSequence(sequence)
 
 from framework.test import Test

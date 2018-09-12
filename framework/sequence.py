@@ -29,8 +29,10 @@ class Sequence:
 		if stepsFilepath:
 			self.loadStepsFromFile()
 
+		self._config = {}
 		if configFilepath:
 			self._config = self.loadConfigFromFile()
+
 
 	def evaluateStep(self, stepName: str, value):
 		return self.steps[stepName].evaluate(self, value, self._resultList)
