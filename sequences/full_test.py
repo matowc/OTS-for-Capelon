@@ -33,17 +33,17 @@ class FullTest(Sequence):
             DID = ""
             mqttAttrTopic = '/' + APIKEY + '/+/attrs'
 
-            self.displayCustomMessage('', 'Please power up the device')
-            time.sleep(1)
-            # power up - to clarify if we can verify it
-            self.evaluateStep('powerUp', True)
-            self.clearCustomMessage()
+            # self.displayCustomMessage('', 'Please power up the device')
+            # time.sleep(1)
+            # #power up - to clarify if we can verify it
+            # self.evaluateStep('powerUp', True)
+            # self.clearCustomMessage()
 
-            self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
-            # programming
-            self.evaluateStep('deviceProgramming', self._JLinkExe.program('programming_script.txt'))
-            time.sleep(1)
-            self.clearCustomMessage()
+            if(self._config['programming']['enable'] == 'true'):
+                self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
+                # programming
+                self.evaluateStep('deviceProgramming', self._JLinkExe.program('programming_script.txt'))
+                self.clearCustomMessage()
 
             self.displayCustomMessage('', 'Device starting up...')
 

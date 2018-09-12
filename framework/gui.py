@@ -53,7 +53,7 @@ class Gui:
 
 		self._style = ttk.Style()
 		self._style.configure('TFrame', background='white')
-		self._style.configure('TLabel', background=self.colors['light grey'], foreground=self.colors['white'])
+		self._style.configure('TLabel', background=self.colors['light grey'], foreground=self.colors['white'], font=('Arial',16,'bold'))
 		self._style.configure('WhiteBg.TLabel', background=self.colors['white'], foreground='black')
 		self._style.configure('TButton', background='white')
 		self._style.configure('TreeView', background='white')
@@ -62,6 +62,7 @@ class Gui:
 
 		self._frames = {}
 		self._widgets = {}
+		self._style = ttk.Style()
 
 		self._frames['header'] = ttk.Frame(self._root)
 		self._frames['content'] = ttk.Frame(self._root)
@@ -110,14 +111,15 @@ class Gui:
 		self._frames['message'] = Frame(self._frames['content'], background='white')
 		self._frames['customFrame'] = Frame(self._frames['content'], background='white')
 		self._frames['authentication'] = Frame(self._frames['content'], background='white')
-		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'], padx=10, pady=10)
+		self._frames['resultList'] = Frame(self._frames['content'], borderwidth=2, background=self.colors['light grey'], padx=10, pady=5)
 		self._frames['logs'] = LabelFrame(self._frames['content'], background='white', text='Logs', pady=10, padx=10)
 		self._frames['statistics'] = Frame(self._frames['content'], background='white')
 		self._frames['testStatus'] = Frame(self._frames['content'], background=self.colors['light grey'])
 
 		self._frames['user'].grid(row=0, column=0, sticky='nwe')
 		self._frames['user'].grid_columnconfigure(0, weight=1)
-		self._frames['authentication'].grid(row=0, column=0, sticky='nsew', padx=0, pady=0)
+		self._frames['user'].grid_remove()
+		self._frames['authentication'].grid(row=0, column=0, sticky='new', padx=0, pady=0)
 		self._frames['message'].grid(row=1, column=0, sticky='nsew')
 		self._frames['resultList'].grid(row=0, column=2, rowspan=5)
 		#self._frames['logs'].grid(row=4, column=0, rowspan=2)
@@ -127,9 +129,9 @@ class Gui:
 
 		# content widgets
 		self._widgets['user.user'] = Label(self._frames['user'], background=self.colors['light grey'], text='NO USER LOGGED IN', font=('Arial', 14, 'bold'), foreground='white', padx=30, pady=10)
-		self._widgets['user.logout'] = Button(self._frames['user'], background=self.colors['dark grey'], text='LOG OUT', command=lambda: self.callback_logoutButtonClick(), foreground=self.colors['white'], font=('Arial', 12, 'bold'))
+		self._widgets['user.logout'] = Button(self._frames['user'], text='Log out', command=lambda: self.callback_logoutButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['message.message'] = \
-			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400, style='WhiteBg.TLabel')
+			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400, style='WhiteBg.TLabel', justify='center')
 		self._widgets['logs.logs'] = \
 			scrolledtext.ScrolledText(self._frames['logs'], height=10, width=80, state='disabled', bd=0, highlightthickness=0, relief='ridge')
 		self._widgets['resultList.tree'] = self.initializeResultListTree()
@@ -137,7 +139,7 @@ class Gui:
 		self._widgets['testStatus.currentStatus'] = \
 			ttk.Label(self._frames['testStatus'], text='', font=('Arial', 18, 'bold'), background=self.colors['light grey'], anchor=CENTER)
 		self._widgets['testStatus.currentStatusButton'] = \
-			Button(self._frames['testStatus'], text='TERMINATE', command=lambda: self.callback_terminateButtonClick(), background='#5f6363', foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+			Button(self._frames['testStatus'], text='TERMINATE', command=lambda: self.callback_terminateButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 
 		self.initializeStatisticsFrame()
 		self.initializeSequenceChoiceFrame()
@@ -149,11 +151,11 @@ class Gui:
 		self._widgets['message.message'].pack()
 		self._widgets['logs.logs'].pack()
 
-		self._frames['testStatus'].grid_rowconfigure(0, weight=1)
+		self._frames['testStatus'].grid_rowconfigure(0, weight=1, minsize=60)
 		self._frames['testStatus'].grid_columnconfigure(0, weight=4)
 		self._frames['testStatus'].grid_columnconfigure(1, weight=1)
 		self._widgets['testStatus.currentStatus'].grid(row=0, column=0, sticky='wnse', ipadx=10, ipady=10)
-		self._widgets['testStatus.currentStatusButton'].grid(row=0, column=1, sticky='nse', padx=10)
+		self._widgets['testStatus.currentStatusButton'].grid(row=0, column=1, sticky='nse', padx=10, pady=10)
 		self._widgets['resultList.tree'].grid(row=0, column=0)
 		self._widgets['customFrame.message'].grid(row=0, column=0)
 
@@ -180,31 +182,35 @@ class Gui:
 		self._widgets['interactive.sequenceList'] = \
 			ttk.Combobox(self._frames['interactive'], font=('Arial', 16, 'bold'), justify='center', foreground=self.colors['dark grey'], state='readonly')
 		self._widgets['interactive.sequenceListLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font=('Arial', 20), foreground=self.colors['white'], justify='center')
+			ttk.Label(self._frames['interactive'], text='Choose test sequence:', foreground=self.colors['white'], justify='center')
 		self._widgets['interactive.batchNumber'] = \
-			ttk.Entry(self._frames['interactive'], font=('Arial', 16, 'bold'), foreground=self.colors['dark grey'], justify='center')
+			Entry(self._frames['interactive'],
+					  font=('Arial', 16, 'bold'),
+					  foreground=self.colors['dark grey'],
+					  justify='center',
+					  highlightbackground=self.colors['light grey'],
+					  highlightcolor=self.colors['light grey'],
+					  highlightthickness=0)
 		self._widgets['interactive.batchNumberLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Enter batch number:', font=('Arial', 20), justify='center')
-		self._widgets['interactive.startButtonLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Click START:', font=('Arial', 20))
+			ttk.Label(self._frames['interactive'], text='Enter batch number:',  justify='center')
 		self._widgets['interactive.startButton'] = \
 			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['interactive.closeBatchButton'] = \
 			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
-		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
-		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
-		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=30)
-		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=10)
-		#self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=10, pady=10)
-		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=50, pady=10)
-		self._widgets['interactive.closeBatchButton'].grid(row=6, column=0, padx=50, pady=10)
+		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=(10,0))
+		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=5)
+		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=(10,0))
+		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=5)
+		self._widgets['interactive.closeBatchButton'].grid(row=4, column=0, padx=50, pady=(10,10))
+		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=0, pady=(30,10))
+
+
 
 		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
 
 	def initializeResultListTree(self):
-		style = ttk.Style()
-		style.element_create("Custom.Treeheading.border", "from", "default")
-		style.layout("Custom.Treeview.Heading", [
+		self._style.element_create("Custom.Treeheading.border", "from", "default")
+		self._style.layout("Custom.Treeview.Heading", [
 			("Custom.Treeheading.cell", {'sticky': 'nswe'}),
 			("Custom.Treeheading.border", {'sticky': 'nswe', 'children': [
 				("Custom.Treeheading.padding", {'sticky': 'nswe', 'children': [
@@ -213,14 +219,15 @@ class Gui:
 				]})
 			]}),
 		])
-		style.layout("Treeview", [
+		self._style.layout("Treeview", [
 			('Treeview.treearea', {'sticky': 'nswe'})
 		])
-		style.configure("Custom.Treeview.Heading",
-						background=self.colors['light grey'], foreground="white", relief="flat")
-		style.map("Custom.Treeview.Heading",
+		self._style.configure("Custom.Treeview.Heading",
+						background=self.colors['light grey'], foreground="white", relief="flat",
+						font=('Arial', 10, 'bold'))
+		self._style.map("Custom.Treeview.Heading",
 				  relief=[('active', 'groove'), ('pressed', 'sunken')])
-		style.configure('Treeview', rowheight=15, borderwidth=10, bordercolor='black')
+		self._style.configure('Treeview', rowheight=15, borderwidth=10, bordercolor='black')
 
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
@@ -282,23 +289,23 @@ class Gui:
 		self._frames['authentication'].configure(background = self.colors['light grey'])
 
 		self._widgets['authentication.loginLabel'] = Label(self._frames['authentication'], text='Login', font=('Arial', 16), background=self.colors['light grey'], foreground='white')
-		self._widgets['authentication.login'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat')
+		self._widgets['authentication.login'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat', width=15)
 		self._widgets['authentication.passwordLabel'] = Label(self._frames['authentication'], text='Password', font=('Arial', 16), background=self.colors['light grey'], foreground='white')
-		self._widgets['authentication.password'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat', show='*')
+		self._widgets['authentication.password'] = Entry(self._frames['authentication'], font=('Arial', 16), relief='flat', show='*', width=15)
 		self._widgets['authentication.loginButton'] = \
-			Button(self._frames['authentication'], text='LOG IN', command=self.callback_loginButtonClick, background='#5f6363', foreground=self.colors['white'], font=('Arial', 20, 'bold'))
+			Button(self._frames['authentication'], text='Log in', command=self.callback_loginButtonClick, background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 
-		self._widgets['authentication.loginLabel'].grid(row=0, column=0, sticky='e')
-		self._widgets['authentication.login'].grid(row=0, column=2)
-		self._widgets['authentication.passwordLabel'].grid(row=1, column=0, sticky='e')
-		self._widgets['authentication.password'].grid(row=1, column=2)
-		self._widgets['authentication.loginButton'].grid(row=2, column=0, columnspan=3, sticky='new', padx=10, pady=5)
+		self._widgets['authentication.loginLabel'].grid(row=0, column=0, sticky='e', pady=(10,0))
+		self._widgets['authentication.login'].grid(row=0, column=2, pady=(10,0), sticky='w')
+		self._widgets['authentication.passwordLabel'].grid(row=1, column=0, sticky='e', pady=(10,0))
+		self._widgets['authentication.password'].grid(row=1, column=2, pady=(10,0), sticky='w')
+		self._widgets['authentication.loginButton'].grid(row=2, column=0, columnspan=3, ipadx=10, pady=(20,20))
 
 		self._frames['authentication'].grid_rowconfigure(0, weight=1)
 		self._frames['authentication'].grid_rowconfigure(1, weight=1)
 		self._frames['authentication'].grid_rowconfigure(2, weight=1)
 		self._frames['authentication'].grid_columnconfigure(0, weight=1)
-		self._frames['authentication'].grid_columnconfigure(1, weight=1, minsize=10)
+		self._frames['authentication'].grid_columnconfigure(1, weight=1, minsize=5)
 		self._frames['authentication'].grid_columnconfigure(2, weight=1)
 
 	def updateTestTime(self, time):
@@ -410,6 +417,8 @@ class Gui:
 			if bgcolor:
 				self._widgets['testStatus.currentStatus'].config(background=bgcolor, foreground='white')
 				self._frames['testStatus'].config(background=bgcolor)
+				self._frames['resultList'].config(background=bgcolor)
+				self._style.configure("Custom.Treeview.Heading", background=bgcolor)
 
 			if showTerminateButton:
 				self._widgets['testStatus.currentStatusButton'].grid()
