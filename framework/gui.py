@@ -159,9 +159,9 @@ class Gui:
 		self._widgets['resultList.tree'].grid(row=0, column=0)
 		self._widgets['customFrame.message'].grid(row=0, column=0)
 
-		textHandler = TextHandler(self._widgets['logs.logs'])
-		logger = logging.getLogger()
-		logger.addHandler(textHandler)
+		# textHandler = TextHandler(self._widgets['logs.logs'])
+		# logger = logging.getLogger()
+		# logger.addHandler(textHandler)
 
 		from framework.application import Application
 		self.ots = Application('settings.ini', 'hardware_configuration.ini')
