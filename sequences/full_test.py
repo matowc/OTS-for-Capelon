@@ -21,17 +21,22 @@ class FullTest(Sequence):
         self._MqttClient = MqttClient_t(self._station.drivers['MqttClient1'])
         self._JLinkExe = JLinkExe_t(self._station.drivers['JLinkExe1'])
 
+        APIKEY = "1234"
+        DID = ""
+
     def pre(self):
         super().pre()
-        pass
+
+        mqttAckTopic = '/' + self.APIKEY + '/' +self. DID + '/cmdexe'
+        mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
+        self._MqttClient.subscribe(mqttAttrTopic)
+        self._MqttClient.subscribe(mqttAckTopic)
 
     def main(self):
         super().main()
         # returns
         try:
-            APIKEY = "1234"
-            DID = ""
-            mqttAttrTopic = '/' + APIKEY + '/+/attrs'
+
 
             # self.displayCustomMessage('', 'Please power up the device')
             # time.sleep(1)
@@ -52,7 +57,7 @@ class FullTest(Sequence):
                 # we do not know DID until it send the first message (AOEstart),
                 # so I clear all messages and waits for the first one
                 self._MqttClient.clearAllMostRecentMessages()
-                self._MqttClient.subscribe(mqttAttrTopic)
+
 
                 # wait until new message appears (empty dict evaluates as False in Python)
                 # timeout = 60s
@@ -64,20 +69,17 @@ class FullTest(Sequence):
                 topic = ''
                 if self._MqttClient.mostRecentMessages:
                     [topic] = self._MqttClient.mostRecentMessages.keys()
-                    [null, APIKEY, DID, null] = topic.split('/')
+                    [null, self.APIKEY, self.DID, null] = topic.split('/')
 
                 self.clearCustomMessage()
 
-                mqttCmdTopic = '/' + APIKEY + '/' + DID + '/cmd'
-                mqttAckTopic = '/' + APIKEY + '/' + DID + '/cmdexe'
-                mqttAttrTopic = '/' + APIKEY + '/' + DID + '/attrs'
-
-                self._MqttClient.subscribe(mqttAckTopic, 1)
-                self._MqttClient.subscribe(mqttAttrTopic, 1)
+                mqttCmdTopic = '/' + self.APIKEY + '/' + self.DID + '/cmd'
+                mqttAckTopic = '/' + self.APIKEY + '/' + self.DID + '/cmdexe'
+                mqttAttrTopic = '/' + self.APIKEY + '/' + self.DID + '/attrs'
 
                 self.evaluateStep(cycle + 'startUp', bool(topic))
-                self.deviceId = DID
-                self.evaluateStep(cycle + 'deviceId', DID)
+                self.deviceId = self.DID
+                self.evaluateStep(cycle + 'deviceId', self.DID)
 
 
                 response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
@@ -149,6 +151,10 @@ class FullTest(Sequence):
 
     def post(self):
         super().post()
+        mqttAckTopic = '/' + self.APIKEY + '/' +self. DID + '/cmdexe'
+        mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
+        self._MqttClient.unsubscribe(mqttAttrTopic)
+        self._MqttClient.unsubscribe(mqttAckTopic)
 
     def onFail(self, result: Result):
         super().onFail(result)

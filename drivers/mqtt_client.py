@@ -55,7 +55,10 @@ class MqttClient(Driver):
 	def subscribe(self, topic, _qos=1):
 		logging.info('Subscribing to {} ({})'.format(topic, _qos))
 		self._client.subscribe(topic, qos=_qos)
-		pass
+
+	def unsubscribe(self, topic):
+		logging.info('Unsubscribing from {}'.format(topic))
+		self._client.unsubscribe(topic)
 
 	def disconnect(self):
 		pass

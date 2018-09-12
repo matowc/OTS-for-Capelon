@@ -242,12 +242,12 @@ class Gui:
 		resultListTree.heading('timestamp', text='Time')
 
 		resultListTree.column('#0', width=0)
-		resultListTree.column('stepName', width=350)
-		resultListTree.column('stepType', width=90)
-		resultListTree.column('value', width=100)
-		resultListTree.column('limits', width=140)
-		resultListTree.column('result', width=80)
-		resultListTree.column('timestamp', width=120)
+		resultListTree.column('stepName', width=330)
+		resultListTree.column('stepType', width=90, anchor='center')
+		resultListTree.column('value', width=120, anchor='center')
+		resultListTree.column('limits', width=140, anchor='center')
+		resultListTree.column('result', width=80, anchor='center')
+		resultListTree.column('timestamp', width=120, anchor='center')
 
 		return resultListTree
 
