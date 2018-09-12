@@ -4,7 +4,7 @@ speed 5000
 Device EFR32FG12PXXXF1024
 connect
 erase
-loadfile final_image_olcnema_pp.hex
+loadfile /home/user/final_image_olcnema_pp.hex
 r
 g
 q
