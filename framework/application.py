@@ -7,7 +7,7 @@ import sys
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
 					handlers=[
-						logging.FileHandler(datetime.now().strftime('events_%Y_%m_%d.log')),
+						logging.FileHandler(datetime.now().strftime('logs/events_%Y_%m_%d.log')),
 						logging.StreamHandler(sys.stdout)])
 
 
