@@ -1,0 +1,8 @@
+swdselect
+si swd
+speed 5000
+Device EFR32FG12PXXXF1024
+connect
+r
+g
+q

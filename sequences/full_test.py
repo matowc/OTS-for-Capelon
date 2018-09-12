@@ -111,8 +111,11 @@ class FullTest(Sequence):
                     self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
 
                 if cycle == 'c1_':
-                    self.displayCustomMessage('',
-                                              'Please power cycle the device and wait until the device starts up...')
+                    self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
+                    if self._config['power cycle']['simulate'] == 'true':
+                        # programming
+                        self._JLinkExe.program('reset_script.txt')
+                        self.displayCustomMessage('', 'Device starting up...')
 
         except StepFail:
             logging.info("Step failed - sequence terminated")
