@@ -21,8 +21,8 @@ class FullTest(Sequence):
         self._MqttClient = MqttClient_t(self._station.drivers['MqttClient1'])
         self._JLinkExe = JLinkExe_t(self._station.drivers['JLinkExe1'])
 
-        APIKEY = "1234"
-        DID = ""
+        self.APIKEY = "1234"
+        self.DID = ""
 
     def pre(self):
         super().pre()
