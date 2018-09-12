@@ -41,7 +41,7 @@ class FullTest(Sequence):
 
             self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
             # programming
-            self.evaluateStep('deviceProgramming', self._JLinkExe.program())
+            self.evaluateStep('deviceProgramming', self._JLinkExe.program('programming_script.txt'))
             time.sleep(1)
             self.clearCustomMessage()
 
