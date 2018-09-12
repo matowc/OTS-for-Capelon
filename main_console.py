@@ -4,7 +4,7 @@ from framework.application import *
 from framework.application import Application
 from framework.result_list import ResultList
 
-ots = Application('settings.ini')
+ots = Application('settings.ini', 'hardware_configuration.ini')
 ots.station.addDriver(MqttClient("MqttClient1"))
 ots.station.addDriver(JLinkExe("JLinkExe1"))
 
