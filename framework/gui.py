@@ -51,13 +51,14 @@ class Gui:
 		self._root.title("Owczarek Test System (OTS) for Capelon")
 		self._root.configure(background='white')
 
-
-
 		self._style = ttk.Style()
 		self._style.configure('TFrame', background='white')
-		self._style.configure('TLabel', background='white')
+		self._style.configure('TLabel', background=self.colors['light grey'], foreground=self.colors['white'])
+		self._style.configure('WhiteBg.TLabel', background=self.colors['white'], foreground='black')
 		self._style.configure('TButton', background='white')
 		self._style.configure('TreeView', background='white')
+		comboboxListFont = ("Arial", 16)
+		self._root.option_add("*TCombobox*Listbox*Font", comboboxListFont)
 
 		self._frames = {}
 		self._widgets = {}
@@ -82,9 +83,8 @@ class Gui:
 
 		# header widgets
 		self._widgets['logo.image'] = PhotoImage(file='docs/logo2.PNG')
-		self._widgets['logo.logo'] = ttk.Label(self._frames['logo'], image=self._widgets['logo.image'])
-		self._widgets['logo.name'] = ttk.Label(self._frames['logo'], text='TEST STATION', font=['Arial', 18, 'bold'],
-											   foreground='grey')
+		self._widgets['logo.logo'] = ttk.Label(self._frames['logo'], image=self._widgets['logo.image'], style='WhiteBg.TLabel')
+		self._widgets['logo.name'] = ttk.Label(self._frames['logo'], text='TEST STATION', font=['Arial', 18, 'bold'], foreground='grey', style='WhiteBg.TLabel')
 		self._widgets['menuButtons.settingsButton'] = \
 			ttk.Button(self._frames['menuButtons'], text='SETTINGS',
 					   command=lambda: self.callback_settingsButtonClick())
@@ -106,7 +106,7 @@ class Gui:
 
 		# content subframes
 		self._frames['user'] = Frame(self._frames['content'], background=self.colors['light grey'])
-		self._frames['interactive'] = Frame(self._frames['content'], background='white')
+		self._frames['interactive'] = Frame(self._frames['content'], background=self.colors['light grey'])
 		self._frames['message'] = Frame(self._frames['content'], background='white')
 		self._frames['customFrame'] = Frame(self._frames['content'], background='white')
 		self._frames['authentication'] = Frame(self._frames['content'], background='white')
@@ -118,7 +118,7 @@ class Gui:
 		self._frames['user'].grid(row=0, column=0, sticky='nwe')
 		self._frames['user'].grid_columnconfigure(0, weight=1)
 		self._frames['authentication'].grid(row=0, column=0, sticky='nsew', padx=0, pady=0)
-		self._frames['message'].grid(row=1, column=0, sticky='s')
+		self._frames['message'].grid(row=1, column=0, sticky='nsew')
 		self._frames['resultList'].grid(row=0, column=2, rowspan=5)
 		#self._frames['logs'].grid(row=4, column=0, rowspan=2)
 		self._frames['statistics'].grid(row=0, column=4, sticky='nsew', rowspan=3)
@@ -129,7 +129,7 @@ class Gui:
 		self._widgets['user.user'] = Label(self._frames['user'], background=self.colors['light grey'], text='NO USER LOGGED IN', font=('Arial', 14, 'bold'), foreground='white', padx=30, pady=10)
 		self._widgets['user.logout'] = Button(self._frames['user'], background=self.colors['dark grey'], text='LOG OUT', command=lambda: self.callback_logoutButtonClick(), foreground=self.colors['white'], font=('Arial', 12, 'bold'))
 		self._widgets['message.message'] = \
-			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400)
+			ttk.Label(self._frames['message'], text='', font=('Arial', 20), anchor='center', wraplength=400, style='WhiteBg.TLabel')
 		self._widgets['logs.logs'] = \
 			scrolledtext.ScrolledText(self._frames['logs'], height=10, width=80, state='disabled', bd=0, highlightthickness=0, relief='ridge')
 		self._widgets['resultList.tree'] = self.initializeResultListTree()
@@ -141,7 +141,7 @@ class Gui:
 
 		self.initializeStatisticsFrame()
 		self.initializeSequenceChoiceFrame()
-		self._widgets['customFrame.message'] = ttk.Label(self._frames['customFrame'], text='', font=('Arial', 20), anchor='center', wraplength=400, justify='center')
+		self._widgets['customFrame.message'] = ttk.Label(self._frames['customFrame'], text='', font=('Arial', 20), anchor='center', wraplength=400, justify='center', style='WhiteBg.TLabel')
 		self.initializeAuthenticationFrame()
 
 		self._widgets['user.user'].grid(column=0, row=0, sticky='nsew')
@@ -178,25 +178,26 @@ class Gui:
 
 	def initializeSequenceChoiceFrame(self):
 		self._widgets['interactive.sequenceList'] = \
-			ttk.Combobox(self._frames['interactive'], font=('Arial', 20))
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 16, 'bold'), justify='center', foreground=self.colors['dark grey'], state='readonly')
 		self._widgets['interactive.sequenceListLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font=('Arial', 20))
+			ttk.Label(self._frames['interactive'], text='Choose test sequence:', font=('Arial', 20), foreground=self.colors['white'], justify='center')
 		self._widgets['interactive.batchNumber'] = \
-			ttk.Entry(self._frames['interactive'])
+			ttk.Entry(self._frames['interactive'], font=('Arial', 16, 'bold'), foreground=self.colors['dark grey'], justify='center')
 		self._widgets['interactive.batchNumberLabel'] = \
-			ttk.Label(self._frames['interactive'], text='Enter batch number:', font=('Arial', 20))
+			ttk.Label(self._frames['interactive'], text='Enter batch number:', font=('Arial', 20), justify='center')
 		self._widgets['interactive.startButtonLabel'] = \
 			ttk.Label(self._frames['interactive'], text='Click START:', font=('Arial', 20))
 		self._widgets['interactive.startButton'] = \
 			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['interactive.closeBatchButton'] = \
 			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
-		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
 		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=10)
+		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=30)
 		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=30)
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=10)
-		self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=10, pady=10)
-		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=10, pady=10)
+		#self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=10, pady=10)
+		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=50, pady=10)
+		self._widgets['interactive.closeBatchButton'].grid(row=6, column=0, padx=50, pady=10)
 
 		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
 
@@ -378,16 +379,18 @@ class Gui:
 	def displaySequenceChoice(self):
 		if self._root:
 			self._frames['customFrame'].grid_remove()
-			self._frames['interactive'].grid(row=2, column=0, columnspan=2, sticky='nwe')
+			self._frames['interactive'].grid(row=2, column=0, columnspan=1, sticky='nwe')
 			self._frames['interactive'].grid_columnconfigure(0, weight=1)
 
 			if self.ots.batch and self.ots.batch.batchNumber:
-				self._widgets['interactive.sequenceList'].config(state='disabled')
-				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number: {}'.format(self.ots.batch.batchNumber)
+				self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:\n{}'.format(self._widgets['interactive.sequenceList'].get())
+				self._widgets['interactive.sequenceList'].grid_remove()
+				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:\n{}'.format(self.ots.batch.batchNumber)
 				self._widgets['interactive.batchNumber'].grid_remove()
 				self._widgets['interactive.closeBatchButton'].grid()
 			else:
-				self._widgets['interactive.sequenceList'].config(state='readonly')
+				self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:'
+				self._widgets['interactive.sequenceList'].grid()
 				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:'
 				self._widgets['interactive.batchNumber'].grid()
 				self._widgets['interactive.closeBatchButton'].grid_remove()
