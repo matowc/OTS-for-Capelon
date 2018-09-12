@@ -53,6 +53,7 @@ class MqttClient(Driver):
 		pass
 
 	def subscribe(self, topic, _qos=1):
+		logging.info('Subscribing to {} ({})'.format(topic, _qos))
 		self._client.subscribe(topic, qos=_qos)
 		pass
 
