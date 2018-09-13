@@ -145,6 +145,8 @@ class Gui:
 		self.initializeStatisticsFrame()
 		self.initializeSequenceChoiceFrame()
 		self._widgets['customFrame.message'] = ttk.Label(self._frames['customFrame'], text='', font=('Arial', 20), anchor='center', wraplength=400, justify='center', style='WhiteBg.TLabel')
+		self._widgets['customFrame.image'] = PhotoImage(file='docs/wait.png')
+		self._widgets['customFrame.imageContainer'] = ttk.Label(self._frames['customFrame'], anchor='center', justify='center', image=self._widgets['customFrame.image'], style='WhiteBg.TLabel')
 		self.initializeAuthenticationFrame()
 
 		self._widgets['user.user'].grid(column=0, row=0, sticky='nsew')
@@ -158,7 +160,8 @@ class Gui:
 		self._widgets['testStatus.currentStatus'].grid(row=0, column=0, sticky='wnse', ipadx=10, ipady=10)
 		self._widgets['testStatus.currentStatusButton'].grid(row=0, column=1, sticky='nse', padx=10, pady=10)
 		self._widgets['resultList.tree'].grid(row=0, column=0)
-		self._widgets['customFrame.message'].grid(row=0, column=0)
+		self._widgets['customFrame.message'].grid(row=0, column=0, pady=(0,30))
+		self._widgets['customFrame.imageContainer'].grid(row=1, column=0)
 
 		# textHandler = TextHandler(self._widgets['logs.logs'])
 		# logger = logging.getLogger()
@@ -198,15 +201,17 @@ class Gui:
 		self._widgets['interactive.startButton'] = \
 			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['interactive.startButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
+		self._widgets['interactive.closeBatchButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
 		self._widgets['interactive.closeBatchButton'] = \
 			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=(20,0))
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=5)
 		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=(30,0))
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=5)
-		self._widgets['interactive.closeBatchButton'].grid(row=4, column=0, padx=50, pady=(10,10))
-		self._widgets['interactive.startButtonLabel'].grid(row=5, column=0, padx=0, pady=(30,0))
-		self._widgets['interactive.startButton'].grid(row=6, column=0, padx=0, pady=(5,20))
+		self._widgets['interactive.closeBatchButtonLabel'].grid(row=6, column=0, padx=0, pady=(30,0))
+		self._widgets['interactive.closeBatchButton'].grid(row=7, column=0, padx=50, pady=(5,20))
+		self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=0, pady=(30,0))
+		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=0, pady=(5,20))
 
 	def initializeResultListTree(self):
 		self._style.element_create("Custom.Treeheading.border", "from", "default")
@@ -255,7 +260,7 @@ class Gui:
 		resultListTree.tag_configure('PASSED', background=self.colors['light green'])
 		resultListTree.tag_configure('FAILED', background=self.colors['red'])
 		resultListTree.tag_configure('DONE', background=self.colors['light green'])
-		resultListTree.tag_configure('result', font=('Arial', 14), foreground=self.colors['black'])
+		resultListTree.tag_configure('result', font=('Arial', 14), foreground=self.colors['dark grey'])
 
 		return resultListTree
 
@@ -399,25 +404,35 @@ class Gui:
 			self._frames['interactive'].grid_columnconfigure(0, weight=1)
 
 			if self.ots.batch and self.ots.batch.batchNumber:
-				self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:\n{}'.format(self._widgets['interactive.sequenceList'].get())
-				self._widgets['interactive.sequenceList'].grid_remove()
-				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:\n{}'.format(self.ots.batch.batchNumber)
+				# self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:\n{}'.format(self._widgets['interactive.sequenceList'].get())
+				# self._widgets['interactive.sequenceList'].grid_remove()
+				# self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:\n{}'.format(self.ots.batch.batchNumber)
+				# self._widgets['interactive.batchNumber'].grid_remove()
 				self._widgets['interactive.batchNumber'].grid_remove()
+				self._widgets['interactive.batchNumberLabel'].grid_remove()
+				self._widgets['interactive.sequenceList'].grid_remove()
+				self._widgets['interactive.sequenceListLabel'].grid_remove()
+
 				self._widgets['interactive.startButtonLabel'].grid()
-				self._widgets['interactive.startButtonLabel']['text'] = 'Click START'
+				self._widgets['interactive.startButtonLabel']['text'] = 'Click to CONTINUE'
 				self._widgets['interactive.startButton'].grid()
+				self._widgets['interactive.closeBatchButtonLabel'].grid()
+				self._widgets['interactive.closeBatchButtonLabel']['text'] = 'Click to STOP'
 				self._widgets['interactive.closeBatchButton'].grid()
 				self.displayMemo('Click START to continue')
 
 			else:
 				self._widgets['interactive.sequenceListLabel']['text'] = '1. Choose test sequence:'
+				self._widgets['interactive.sequenceListLabel'].grid()
 				self._widgets['interactive.sequenceList'].grid()
 				self._widgets['interactive.batchNumberLabel']['text'] = '2. Enter batch number:'
+				self._widgets['interactive.batchNumberLabel'].grid()
 				self._widgets['interactive.batchNumber'].grid()
 				self._widgets['interactive.startButtonLabel'].grid()
 				self._widgets['interactive.startButtonLabel']['text'] = '3. Click START'
 				self._widgets['interactive.startButton'].grid()
 				self._widgets['interactive.closeBatchButton'].grid_remove()
+				self._widgets['interactive.closeBatchButtonLabel'].grid_remove()
 
 	def displayMemo(self, text):
 		self._widgets['message.message']['text'] = text

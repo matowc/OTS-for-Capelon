@@ -96,10 +96,18 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'deviceId', self.DID)
                 self.displayCustomMessage('', 'Device {} detected.\nStarting test'.format(self.DID))
 
+                C12Vout = ''
+                C12VoutStepName = ''
+                if (cycle == 'c1_'):
+                    C12Vout = False
+                    C12VoutStepName = 'c1_turnOff12V'
+                else:
+                    C12Vout = True
+                    C12VoutStepName = 'c2_turnOn12V'
 
-                response = self._sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
+                response = self._sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": C12Vout}, mqttAckTopic,
                                                                float(self._config['general']['defaultCommandTimeout_s']))
-                self.evaluateStep(cycle + 'turnOff12V', (response and response['C12Vout'] == 0))
+                self.evaluateStep(C12VoutStepName, (response and response['C12Vout'] == 0))
 
                 response = False
                 retryCount = 0

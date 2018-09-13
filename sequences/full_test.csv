@@ -17,13 +17,13 @@ c1_accelerometerAngleYTest;[Cycle1] Accelerometer - Y angle;False;NUMERIC;-90:90
 c1_accelerometerAngleZTest;[Cycle1] Accelerometer - Z angle;False;NUMERIC;-90:90
 c2_startUp;[Cycle2] Device found;True;BOOL
 c2_deviceId;[Cycle2] Device ID;True;ACTION
-c2_turnOff12V;[Cycle2] turn 12V off;False;BOOL
+c2_turnOn12V;[Cycle2] turn 12V off;False;BOOL
 c2_fullTestResponse;[Cycle2] MQTT: run full test;False;BOOL
 c2_fullTestResponseRetries;[Cycle2] MQTT: number of retries;False;ACTION
 c2_rtcTest;[Cycle2] RTC;True;BOOL
 c2_rtcRunTest;[Cycle2] RTC - run ;True;BOOL
 c2_rtcBkupTest;[Cycle2] RTC - bckup;True;BOOL
-c2_digitalInputTest;[Cycle2] Dig IN;True;BOOL
+c2_digitalInputTest;[Cycle2] Dig IN;True;BOOL;False
 c2_daliTest;[Cycle2] DALI test;True;BOOL
 c2_daliErrsTest;[Cycle2] DALI - errs;True;NUMERIC; 0:0
 c2_daliAlsTest;[Cycle2] DALI - als;True;NUMERIC; -1:100
