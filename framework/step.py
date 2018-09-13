@@ -27,7 +27,7 @@ class Step:
 				status = StepResultEnum.FAILED
 		
 		elif self.type == StepTypeEnum.BOOL:
-			if value == True:
+			if (self.limits and value == self.limits) or value == True:
 				status = StepResultEnum.PASSED
 			else:
 				status = StepResultEnum.FAILED

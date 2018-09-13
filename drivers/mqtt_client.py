@@ -11,7 +11,7 @@ class MqttClient(Driver):
 		self._clientId = 'ots'
 		self._server = 'localhost'
 		self._port = 1883
-		self._topics = [{'name': '/1234/#', 'qos': 1}]
+		self._topics = []
 		self.mostRecentMessages = {}
 		super().__init__(name, configFilepath)
 		
@@ -30,7 +30,8 @@ class MqttClient(Driver):
 
 		for topic in self._topics:
 			self.subscribe(topic['name'], topic['qos'])
-			self._client.loop_start()
+
+		self._client.loop_start()
 
 	def deinitialize(self):
 		self._client.loop_stop()

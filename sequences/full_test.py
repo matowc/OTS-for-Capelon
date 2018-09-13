@@ -23,6 +23,8 @@ class FullTest(Sequence):
 
         self.APIKEY = "1234"
         self.DID = ""
+        self.relayCmdTopic = '/FAC0/90FD9FFFFEDA59ED/cmd'
+        self.relayAckTopic = '/FAC0/90FD9FFFFEDA59ED/cmdexe'
 
     def pre(self):
         super().pre()
@@ -31,6 +33,19 @@ class FullTest(Sequence):
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.subscribe(mqttAttrTopic)
         self._MqttClient.subscribe(mqttAckTopic)
+        self._MqttClient.subscribe(self.relayAckTopic)
+
+    def controlRelay(self, state, timeout_s=3):
+        response = self.sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s )
+        logging.debug('Relay: {}'.format(state))
+
+        return response['Crelay'] == 0
+
+    def relayOn(self, timeout_s=3):
+        self.controlRelay(True, timeout_s)
+
+    def relayOff(self, timeout_s=3):
+        self.controlRelay(False, timeout_s)
 
     def main(self):
         super().main()
@@ -67,9 +82,12 @@ class FullTest(Sequence):
                     time.sleep(0.1)
 
                 topic = ''
+                response = {}
                 if self._MqttClient.mostRecentMessages:
                     [topic] = self._MqttClient.mostRecentMessages.keys()
                     [null, self.APIKEY, self.DID, null] = topic.split('/')
+                    response = json.loads(self._MqttClient.mostRecentMessages[topic])
+
 
                 self.clearCustomMessage()
 
@@ -77,7 +95,7 @@ class FullTest(Sequence):
                 mqttAckTopic = '/' + self.APIKEY + '/' + self.DID + '/cmdexe'
                 mqttAttrTopic = '/' + self.APIKEY + '/' + self.DID + '/attrs'
 
-                self.evaluateStep(cycle + 'startUp', bool(topic))
+                self.evaluateStep(cycle + 'startUp', 'AOEstart' in response.keys())
                 self.deviceId = self.DID
                 self.evaluateStep(cycle + 'deviceId', self.DID)
 
@@ -101,8 +119,8 @@ class FullTest(Sequence):
 
                 if response:
                     self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
-                    self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'] == 0)
-                    self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'] == 0)
+                    self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
+                    self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
                     self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
                     self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
                     self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
@@ -113,11 +131,17 @@ class FullTest(Sequence):
                     self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
 
                 if cycle == 'c1_':
-                    self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
-                    if self._config['power cycle']['simulate'] == 'true':
-                        # programming
+                    if self._config['power cycle']['mode'] == 'reset':
                         self._JLinkExe.program('reset_script.txt')
                         self.displayCustomMessage('', 'Device starting up...')
+                    elif self._config['power cycle']['mode'] == 'auto':
+                        self.displayCustomMessage('', 'Automatic power cycle')
+                        self.relayOff()
+                        time.sleep(float(self._config['power cycle']['delay']))
+                        self.relayOn()
+                        self.displayCustomMessage('', 'Device starting up...')
+                    else:
+                        self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
 
         except StepFail:
             logging.info("Step failed - sequence terminated")
@@ -155,6 +179,7 @@ class FullTest(Sequence):
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.unsubscribe(mqttAttrTopic)
         self._MqttClient.unsubscribe(mqttAckTopic)
+        self._MqttClient.unsubscribe(self.relayAckTopic)
 
     def onFail(self, result: Result):
         super().onFail(result)
