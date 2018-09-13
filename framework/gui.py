@@ -167,6 +167,7 @@ class Gui:
 		self.ots = Application('settings.ini', 'hardware_configuration.ini')
 		self.ots.station.addDriver(MqttClient("MqttClient1", self.ots.hardwareConfigFilepath))
 		self.ots.station.addDriver(JLinkExe("JLinkExe1", self.ots.hardwareConfigFilepath))
+		self._widgets['interactive.sequenceList'].configure(value=list(self.ots.sequences.keys()))
 
 		self.init()
 
@@ -180,7 +181,7 @@ class Gui:
 
 	def initializeSequenceChoiceFrame(self):
 		self._widgets['interactive.sequenceList'] = \
-			ttk.Combobox(self._frames['interactive'], font=('Arial', 16, 'bold'), justify='center', foreground=self.colors['dark grey'], state='readonly')
+			ttk.Combobox(self._frames['interactive'], font=('Arial', 16, 'bold'), justify='center', foreground=self.colors['dark grey'], state='readonly', width=30)
 		self._widgets['interactive.sequenceListLabel'] = \
 			ttk.Label(self._frames['interactive'], text='Choose test sequence:', foreground=self.colors['white'], justify='center')
 		self._widgets['interactive.batchNumber'] = \
@@ -203,10 +204,6 @@ class Gui:
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=5)
 		self._widgets['interactive.closeBatchButton'].grid(row=4, column=0, padx=50, pady=(10,10))
 		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=0, pady=(30,10))
-
-
-
-		self._widgets['interactive.sequenceList'].configure(value=['OLC NEMA PP - full test'])
 
 	def initializeResultListTree(self):
 		self._style.element_create("Custom.Treeheading.border", "from", "default")
@@ -327,7 +324,8 @@ class Gui:
 		from framework.gui_result_list import GuiResultList
 		self._resultList = GuiResultList()
 		self._resultList.bindGui(self, self._widgets['resultList.tree'])
-		sequence1 = self.ots.sequences[sequenceName](self.ots.station, sequenceName, self._resultList, self, 'sequences/full_test.csv', 'sequences/full_test.ini')
+		sequenceData = self.ots.sequences[sequenceName]
+		sequence1 = sequenceData['sequence'](self.ots.station, sequenceName, self._resultList, self, sequenceData['stepsFilepath'], sequenceData['configFilepath'])
 		self._resultList.bindSequence(sequence1)
 
 		from framework.test import Test

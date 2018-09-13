@@ -1,1 +1,2 @@
 from sequences.full_test import FullTest
+from sequences.programming_only import ProgrammingOnly

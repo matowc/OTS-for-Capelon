@@ -1,7 +1,5 @@
 import logging
 import time
-from framework.sequence import Sequence
-from framework.result import Result
 import json
 from typing import NewType
 from drivers import *
@@ -23,6 +21,8 @@ class FullTest(Sequence):
 
         self.APIKEY = "1234"
         self.DID = ""
+
+        # fixed RF module (with power relay) topics
         self.relayCmdTopic = '/FAC0/90FD9FFFFEDA59ED/cmd'
         self.relayAckTopic = '/FAC0/90FD9FFFFEDA59ED/cmdexe'
 
@@ -35,17 +35,13 @@ class FullTest(Sequence):
         self._MqttClient.subscribe(mqttAckTopic)
         self._MqttClient.subscribe(self.relayAckTopic)
 
-    def controlRelay(self, state, timeout_s=3):
-        response = self.sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s )
-        logging.debug('Relay: {}'.format(state))
-
-        return response['Crelay'] == 0
-
-    def relayOn(self, timeout_s=3):
-        self.controlRelay(True, timeout_s)
-
-    def relayOff(self, timeout_s=3):
-        self.controlRelay(False, timeout_s)
+    def post(self):
+        super().post()
+        mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
+        mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
+        self._MqttClient.unsubscribe(mqttAttrTopic)
+        self._MqttClient.unsubscribe(mqttAckTopic)
+        self._MqttClient.unsubscribe(self.relayAckTopic)
 
     def main(self):
         super().main()
@@ -62,7 +58,7 @@ class FullTest(Sequence):
             if(self._config['programming']['enable'] == 'true'):
                 self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
                 # programming
-                self.evaluateStep('deviceProgramming', self._JLinkExe.program('programming_script.txt'))
+                self.evaluateStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
                 self.clearCustomMessage()
 
             self.displayCustomMessage('', 'Device starting up...')
@@ -100,15 +96,15 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'deviceId', self.DID)
 
 
-                response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
-                                                              float(self._config['general']['defaultCommandTimeout_s']))
+                response = self._sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
+                                                               float(self._config['general']['defaultCommandTimeout_s']))
                 self.evaluateStep(cycle + 'turnOff12V', (response and response['C12Vout'] == 0))
 
                 response = False
                 retryCount = 0
                 while retryCount < 3:
-                    response = self.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic,
-                                                                  float(self._config['general']['fullTestTimeout_s']))
+                    response = self._sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic,
+                                                                   float(self._config['general']['fullTestTimeout_s']))
                     if response:
                         break
                     else:
@@ -136,9 +132,9 @@ class FullTest(Sequence):
                         self.displayCustomMessage('', 'Device starting up...')
                     elif self._config['power cycle']['mode'] == 'auto':
                         self.displayCustomMessage('', 'Automatic power cycle')
-                        self.relayOff()
+                        self._relayOff()
                         time.sleep(float(self._config['power cycle']['delay']))
-                        self.relayOn()
+                        self._relayOn()
                         self.displayCustomMessage('', 'Device starting up...')
                     else:
                         self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
@@ -154,7 +150,7 @@ class FullTest(Sequence):
 
         return
 
-    def sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
+    def _sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
         self._MqttClient.clearMostRecentMessage(mqttAckTopic)
         logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
         self._MqttClient.publish(mqttCmdTopic, json.dumps(message))
@@ -173,23 +169,18 @@ class FullTest(Sequence):
 
         return response
 
-    def post(self):
-        super().post()
-        mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
-        mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
-        self._MqttClient.unsubscribe(mqttAttrTopic)
-        self._MqttClient.unsubscribe(mqttAckTopic)
-        self._MqttClient.unsubscribe(self.relayAckTopic)
+    def _controlRelay(self, state, timeout_s=3):
+        response = self._sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s)
+        logging.debug('Relay: {}'.format(state))
 
-    def onFail(self, result: Result):
-        super().onFail(result)
-        # raise StepFail()
+        return response['Crelay'] == 0
 
-    def onPass(self, result: Result):
-        super().onPass(result)
+    def _relayOn(self, timeout_s=3):
+        self._controlRelay(True, timeout_s)
 
-    def onError(self, result: Result):
-        super().onError(result)
+    def _relayOff(self, timeout_s=3):
+        self._controlRelay(False, timeout_s)
+
 
 
 def main():

@@ -30,7 +30,22 @@ class Application(metaclass=Singleton):
 		self.test = None
 		self.batch = None
 		self.sequences = {
-			'OLC NEMA PP - full test': FullTest
+			'OLC NEMA PP - full test (auto)': {
+				'sequence': FullTest,
+				'stepsFilepath': 'sequences/full_test.csv',
+				'configFilepath': 'sequences/full_test.ini'
+			},
+			'OLC NEMA PP - full test (manual)': {
+				'sequence': FullTest,
+				'stepsFilepath': 'sequences/full_test.csv',
+				'configFilepath': 'sequences/full_test_manual.ini'
+			},
+			'Programming only': {
+				'sequence': ProgrammingOnly,
+				'stepsFilepath': 'sequences/programming_only.csv',
+				'configFilepath': 'sequences/programming_only.ini'
+			},
+
 		}
 		self.users = {
 			'mateusz': {
