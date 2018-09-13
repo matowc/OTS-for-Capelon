@@ -1,36 +1,33 @@
-powerUp;Power up the device;ACTION
-deviceDetect;Programmer: device detection;BOOL
-deviceProgramming;Programmer: programming;BOOL
-c1_startUp;[Cycle1] MQTT: start-up message;BOOL
-c1_deviceId;[Cycle1] MQTT: DID;ACTION
-c1_turnOff12V;[Cycle1] MQTT: turn 12V off;BOOL
-c1_fullTestResponse;[Cycle1] MQTT: run full test;BOOL
-c1_fullTestResponseRetries;[Cycle1] MQTT: number of retries;ACTION
-c1_rtcTest;[Cycle1] MQTT: RTC test;BOOL
-c1_rtcRunTest;[Cycle1] MQTT: RTC - run ;BOOL
-c1_rtcBkupTest;[Cycle1] MQTT: RTC - bckup;BOOL
-c1_digitalInputTest;[Cycle1] MQTT: digital input;BOOL
-c1_daliTest;[Cycle1] MQTT: DALI test;BOOL
-c1_daliErrsTest;[Cycle1] MQTT: DALI - errs;NUMERIC; 0:0
-c1_daliAlsTest;[Cycle1] MQTT: DALI - als;NUMERIC; -1:100
-c1_accelerometerTest;[Cycle1] MQTT: Accelerometer test;BOOL
-c1_accelerometerAngleXTest;[Cycle1] MQTT: Accelerometer - X angle;NUMERIC;-90:90
-c1_accelerometerAngleYTest;[Cycle1] MQTT: Accelerometer - Y angle;NUMERIC;-90:90
-c1_accelerometerAngleZTest;[Cycle1] MQTT: Accelerometer - Z angle;NUMERIC;-90:90
-powerCycle;Power cycle the device;ACTION
-c2_startUp;[Cycle2] MQTT: start-up message;BOOL
-c2_deviceId;[Cycle2] MQTT: DID;ACTION
-c2_turnOff12V;[Cycle2] MQTT: turn 12V off;BOOL
-c2_fullTestResponse;[Cycle2] MQTT: run full test;BOOL
-c2_fullTestResponseRetries;[Cycle2] MQTT: number of retries;ACTION
-c2_rtcTest;[Cycle2] MQTT: RTC test;BOOL
-c2_rtcRunTest;[Cycle2] MQTT: RTC - run ;BOOL
-c2_rtcBkupTest;[Cycle2] MQTT: RTC - bckup;BOOL
-c2_digitalInputTest;[Cycle2] MQTT: digital input;BOOL
-c2_daliTest;[Cycle2] MQTT: DALI test;BOOL
-c2_daliErrsTest;[Cycle2] MQTT: DALI - errs;NUMERIC; 0:0
-c2_daliAlsTest;[Cycle2] MQTT: DALI - als;NUMERIC; -1:100
-c2_accelerometerTest;[Cycle2] MQTT: Accelerometer test;BOOL
-c2_accelerometerAngleXTest;[Cycle2] MQTT: Accelerometer - X angle;NUMERIC;-90:90
-c2_accelerometerAngleYTest;[Cycle2] MQTT: Accelerometer - Y angle;NUMERIC;-90:90
-c2_accelerometerAngleZTest;[Cycle2] MQTT: Accelerometer - Z angle;NUMERIC;-90:90
+deviceProgramming;Programming device...;True;BOOL
+c1_startUp;[Cycle1] Device found;True;BOOL
+c1_deviceId;[Cycle1] Device ID;True;ACTION
+c1_turnOff12V;[Cycle1] turn 12V off;False;BOOL
+c1_fullTestResponse;[Cycle1] MQTT: run full test;False;BOOL
+c1_fullTestResponseRetries;[Cycle1] MQTT: number of retries;False;ACTION
+c1_rtcTest;[Cycle1] RTC - test1;True;BOOL
+c1_rtcRunTest;[Cycle1] RTC - run;True;BOOL
+c1_rtcBkupTest;[Cycle1] RTC - bkup;True;BOOL
+c1_digitalInputTest;[Cycle1] Dig IN;True;BOOL
+c1_daliTest;[Cycle1] DALI ;True;BOOL
+c1_daliErrsTest;[Cycle1] DALI - errs;True;NUMERIC; 0:0
+c1_daliAlsTest;[Cycle1] DALI - als;True;NUMERIC; -1:100
+c1_accelerometerTest;[Cycle1] Accelerometer;True;BOOL
+c1_accelerometerAngleXTest;[Cycle1] Accelerometer - X angle;False;NUMERIC;-90:90
+c1_accelerometerAngleYTest;[Cycle1] Accelerometer - Y angle;False;NUMERIC;-90:90
+c1_accelerometerAngleZTest;[Cycle1] Accelerometer - Z angle;False;NUMERIC;-90:90
+c2_startUp;[Cycle2] Device found;True;BOOL
+c2_deviceId;[Cycle2] Device ID;True;ACTION
+c2_turnOff12V;[Cycle2] turn 12V off;False;BOOL
+c2_fullTestResponse;[Cycle2] MQTT: run full test;False;BOOL
+c2_fullTestResponseRetries;[Cycle2] MQTT: number of retries;False;ACTION
+c2_rtcTest;[Cycle2] RTC;True;BOOL
+c2_rtcRunTest;[Cycle2] RTC - run ;True;BOOL
+c2_rtcBkupTest;[Cycle2] RTC - bckup;True;BOOL
+c2_digitalInputTest;[Cycle2] Dig IN;True;BOOL
+c2_daliTest;[Cycle2] DALI test;True;BOOL
+c2_daliErrsTest;[Cycle2] DALI - errs;True;NUMERIC; 0:0
+c2_daliAlsTest;[Cycle2] DALI - als;True;NUMERIC; -1:100
+c2_accelerometerTest;[Cycle2] Accelerometer;True;BOOL
+c2_accelerometerAngleXTest;[Cycle2] Accelerometer - X angle;False;NUMERIC;-90:90
+c2_accelerometerAngleYTest;[Cycle2] Accelerometer - Y angle;False;NUMERIC;-90:90
+c2_accelerometerAngleZTest;[Cycle2] Accelerometer - Z angle;False;NUMERIC;-90:90

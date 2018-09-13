@@ -49,13 +49,14 @@ class Sequence:
 			for row in reader:
 				name = row[0]
 				displayName = row[1]
-				type = row[2]
+				displayMode = row[2].lower() == 'true'
+				type = row[3]
 				try:
-					limits = row[3]
+					limits = row[4]
 				except IndexError:
 					limits = ''
 				from framework.step import Step
-				self.steps[name] = Step(name, displayName, StepTypeEnum[type], limits)
+				self.steps[name] = Step(name, displayName, displayMode, StepTypeEnum[type], limits)
 
 	def loadConfigFromFile(self):
 		config = configparser.ConfigParser()

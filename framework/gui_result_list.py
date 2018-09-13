@@ -19,10 +19,7 @@ class GuiResultList(ResultList):
 	def bindGui(self, gui : Gui, resultListTreeWidget : ttk.Treeview):
 		self.gui = gui
 		self._resultListTree = resultListTreeWidget
-		self._resultListTree.tag_configure('PASSED', background=self.gui.colors['green'])
-		self._resultListTree.tag_configure('FAILED', background=self.gui.colors['red'])
-		self._resultListTree.tag_configure('DONE', background=self.gui.colors['light green'])
-		self._resultListTree.tag_configure('result', font=('Arial', 8))
+
 	
 	def add(self, result: Result):
 		super().add(result)
@@ -31,9 +28,23 @@ class GuiResultList(ResultList):
 		#msecs = msecs * 1000
 		secs = result.relativeTimestamp
 		mins, secs = divmod(secs, 60)
-		self._resultListTree.insert('', 'end', text=result.step.name,
-									values=(result.step.displayName, result.step.type.name, result.value, result.step.limits, result.status.name, '{:0>2.0f}:{:0>6.3f}'.format(mins, secs)),
-									tags = (result.status.name, 'result') )
+
+		if result.step.displayMode:
+			resultDisplayName = ''
+			resultDisplayValue = ''
+			if(result.status in [StepResultEnum.PASSED, StepResultEnum.DONE]):
+				resultDisplayName = 'OK'
+			else:
+				resultDisplayName = 'NOK'
+
+			if(result.step.type == StepTypeEnum.BOOL):
+				resultDisplayValue = ''
+			else:
+				resultDisplayValue = result.value
+
+			self._resultListTree.insert('', 'end', text=result.step.name,
+										values=(result.step.displayName, result.step.type.name, resultDisplayValue, result.step.limits, resultDisplayName, '{:0>2.0f}:{:0>6.3f}'.format(mins, secs)),
+										tags = (result.status.name, 'result') )
 
 		# returns
 		pass

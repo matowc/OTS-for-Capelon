@@ -45,6 +45,7 @@ class Gui:
 		self.colors['light grey'] = '#9B9B9B'
 		self.colors['white'] = 'white'
 		self.colors['dark grey'] = '#5f6363'
+		self.colors['black'] = 'black'
 
 		self._root = Tk()
 		self._root.geometry("1900x1000+0+0")
@@ -196,14 +197,16 @@ class Gui:
 			ttk.Label(self._frames['interactive'], text='Enter batch number:',  justify='center')
 		self._widgets['interactive.startButton'] = \
 			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+		self._widgets['interactive.startButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
 		self._widgets['interactive.closeBatchButton'] = \
 			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
-		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=(10,0))
+		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=(20,0))
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=5)
-		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=(10,0))
+		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=(30,0))
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=5)
 		self._widgets['interactive.closeBatchButton'].grid(row=4, column=0, padx=50, pady=(10,10))
-		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=0, pady=(30,10))
+		self._widgets['interactive.startButtonLabel'].grid(row=5, column=0, padx=0, pady=(30,0))
+		self._widgets['interactive.startButton'].grid(row=6, column=0, padx=0, pady=(5,20))
 
 	def initializeResultListTree(self):
 		self._style.element_create("Custom.Treeheading.border", "from", "default")
@@ -224,11 +227,11 @@ class Gui:
 						font=('Arial', 10, 'bold'))
 		self._style.map("Custom.Treeview.Heading",
 				  relief=[('active', 'groove'), ('pressed', 'sunken')])
-		self._style.configure('Treeview', rowheight=15, borderwidth=10, bordercolor='black')
+		self._style.configure('Treeview', rowheight=25, borderwidth=10, bordercolor='black')
 
 		resultListTree = ttk.Treeview(self._frames['resultList'], style='Custom.Treeview')
 		resultListTree.config(
-				columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=40)
+				columns=('stepName', 'stepType', 'value', 'limits', 'result', 'timestamp'), height=24)
 
 		resultListTree.heading('#0', text='')
 		resultListTree.heading('stepName', text='Step Name')
@@ -239,14 +242,20 @@ class Gui:
 		resultListTree.heading('timestamp', text='Time')
 
 		resultListTree['show'] = 'headings'
+		resultListTree["displaycolumns"] = ("stepName", 'result', "value", 'timestamp')
 
 		resultListTree.column('#0', width=0)
-		resultListTree.column('stepName', width=330)
-		resultListTree.column('stepType', width=90, anchor='center')
-		resultListTree.column('value', width=120, anchor='center')
+		resultListTree.column('stepName', width=280)
+		resultListTree.column('stepType', width=60, anchor='center')
+		resultListTree.column('value', width=250, anchor='center')
 		resultListTree.column('limits', width=140, anchor='center')
 		resultListTree.column('result', width=80, anchor='center')
 		resultListTree.column('timestamp', width=120, anchor='center')
+
+		resultListTree.tag_configure('PASSED', background=self.colors['light green'])
+		resultListTree.tag_configure('FAILED', background=self.colors['red'])
+		resultListTree.tag_configure('DONE', background=self.colors['light green'])
+		resultListTree.tag_configure('result', font=('Arial', 14), foreground=self.colors['black'])
 
 		return resultListTree
 
@@ -394,12 +403,20 @@ class Gui:
 				self._widgets['interactive.sequenceList'].grid_remove()
 				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:\n{}'.format(self.ots.batch.batchNumber)
 				self._widgets['interactive.batchNumber'].grid_remove()
+				self._widgets['interactive.startButtonLabel'].grid()
+				self._widgets['interactive.startButtonLabel']['text'] = 'Click START'
+				self._widgets['interactive.startButton'].grid()
 				self._widgets['interactive.closeBatchButton'].grid()
+				self.displayMemo('Click START to continue')
+
 			else:
-				self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:'
+				self._widgets['interactive.sequenceListLabel']['text'] = '1. Choose test sequence:'
 				self._widgets['interactive.sequenceList'].grid()
-				self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:'
+				self._widgets['interactive.batchNumberLabel']['text'] = '2. Enter batch number:'
 				self._widgets['interactive.batchNumber'].grid()
+				self._widgets['interactive.startButtonLabel'].grid()
+				self._widgets['interactive.startButtonLabel']['text'] = '3. Click START'
+				self._widgets['interactive.startButton'].grid()
 				self._widgets['interactive.closeBatchButton'].grid_remove()
 
 	def displayMemo(self, text):

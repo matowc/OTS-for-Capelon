@@ -56,12 +56,12 @@ class FullTest(Sequence):
             # self.clearCustomMessage()
 
             if(self._config['programming']['enable'] == 'true'):
-                self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
+                self.displayCustomMessage('', 'Programming in progress...\n\nPlease wait')
                 # programming
                 self.evaluateStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
                 self.clearCustomMessage()
 
-            self.displayCustomMessage('', 'Device starting up...')
+            self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
 
             for cycle in ['c1_', 'c2_']:
 
@@ -94,6 +94,7 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'startUp', 'AOEstart' in response.keys())
                 self.deviceId = self.DID
                 self.evaluateStep(cycle + 'deviceId', self.DID)
+                self.displayCustomMessage('', 'Device {} detected.\nStarting test'.format(self.DID))
 
 
                 response = self._sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": False}, mqttAckTopic,
@@ -129,13 +130,13 @@ class FullTest(Sequence):
                 if cycle == 'c1_':
                     if self._config['power cycle']['mode'] == 'reset':
                         self._JLinkExe.program('reset_script.txt')
-                        self.displayCustomMessage('', 'Device starting up...')
+                        self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
                     elif self._config['power cycle']['mode'] == 'auto':
-                        self.displayCustomMessage('', 'Automatic power cycle')
+                        self.displayCustomMessage('', 'Automatic power cycle in progress\n\nPlease wait')
                         self._relayOff()
                         time.sleep(float(self._config['power cycle']['delay']))
                         self._relayOn()
-                        self.displayCustomMessage('', 'Device starting up...')
+                        self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
                     else:
                         self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
 
