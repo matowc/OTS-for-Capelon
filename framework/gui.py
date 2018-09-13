@@ -241,6 +241,8 @@ class Gui:
 		resultListTree.heading('result', text='Result')
 		resultListTree.heading('timestamp', text='Time')
 
+		resultListTree['show'] = 'headings'
+
 		resultListTree.column('#0', width=0)
 		resultListTree.column('stepName', width=330)
 		resultListTree.column('stepType', width=90, anchor='center')
