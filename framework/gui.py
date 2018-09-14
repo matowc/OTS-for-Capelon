@@ -247,7 +247,7 @@ class Gui:
 		resultListTree.heading('timestamp', text='Time')
 
 		resultListTree['show'] = 'headings'
-		resultListTree["displaycolumns"] = ("stepName", 'result', "value", 'timestamp')
+		resultListTree["displaycolumns"] = ("stepName", "value", 'result',)
 
 		resultListTree.column('#0', width=0)
 		resultListTree.column('stepName', width=280)
@@ -350,6 +350,7 @@ class Gui:
 		self.ots.test = Test(sequence1, self._resultList)
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
+		self._widgets['user.logout'].grid_remove()
 
 	def callback_quitButtonClick(self):
 		if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -399,6 +400,7 @@ class Gui:
 
 	def displaySequenceChoice(self):
 		if self._root:
+			self._widgets['user.logout'].grid()
 			self._frames['customFrame'].grid_remove()
 			self._frames['interactive'].grid(row=2, column=0, columnspan=1, sticky='nwe')
 			self._frames['interactive'].grid_columnconfigure(0, weight=1)
