@@ -1,39 +1,25 @@
 deviceProgramming;Programming device...;True;BOOL;True
-c1_startUp;[Cycle1] Device found;True;BOOL;True
-c1_deviceId;[Cycle1] Device ID;True;ACTION
-c1_turnOff12V;[Cycle1] turn 12V off;False;BOOL;True
-c1_fullTestResponse;[Cycle1] MQTT: run full test;False;BOOL;True
-c1_fullTestResponseRetries;[Cycle1] MQTT: number of retries;False;ACTION
-c1_rtcTest;[Cycle1] RTC - response;False;BOOL;True
-c1_rtcRunTest;[Cycle1] RTC - run;False;BOOL;True
-c1_rtcBkupTest;[Cycle1] RTC - bkup;False;BOOL;True
-c1_rtcTotal;[Cycle1] RTC test;True;BOOL;True
-c1_digitalInputTest;[Cycle1] Dig IN;True;BOOL;True
-c1_daliTest;[Cycle1] DALI - response;False;BOOL;True
-c1_daliErrsTest;[Cycle1] DALI - errs;False;NUMERIC; 0:0
-c1_daliAlsTest;[Cycle1] DALI - als;False;NUMERIC; -1:100
-c1_daliTotal;[Cycle1] DALI test;True;BOOL;True
-c1_accelerometerTest;[Cycle1] Accelerometer - response;False;BOOL;True
-c1_accelerometerAngleXTest;[Cycle1] Accelerometer - X angle;False;NUMERIC;-180:180
-c1_accelerometerAngleYTest;[Cycle1] Accelerometer - Y angle;False;NUMERIC;-180:180
-c1_accelerometerAngleZTest;[Cycle1] Accelerometer - Z angle;False;NUMERIC;-180:180
-c1_accelerometerTotal;[Cycle1] Accelerometer test;True;BOOL;True
-c2_startUp;[Cycle2] Device restarted;True;BOOL;True
-c2_deviceId;[Cycle2] Device ID;False;ACTION
-c2_turnOn12V;[Cycle2] turn 12V off;False;BOOL;True
-c2_fullTestResponse;[Cycle2] MQTT: run full test;False;BOOL;True
-c2_fullTestResponseRetries;[Cycle2] MQTT: number of retries;False;ACTION
-c2_rtcTest;[Cycle2] RTC - response;False;BOOL;True
-c2_rtcRunTest;[Cycle2] RTC - run ;False;BOOL;True
-c2_rtcBkupTest;[Cycle2] RTC - bckup;False;BOOL;True
-c2_rtcTotal;[Cycle2] RTC test;True;BOOL;True
-c2_digitalInputTest;[Cycle2] Dig IN;True;BOOL;False
-c2_daliTest;[Cycle2] DALI - response;False;BOOL;True
-c2_daliErrsTest;[Cycle2] DALI - errs;False;NUMERIC; 0:0
-c2_daliAlsTest;[Cycle2] DALI - als;False;NUMERIC; -1:100
-c2_daliTotal;[Cycle2] DALI test;True;BOOL;True
-c2_accelerometerTest;[Cycle2] Accelerometer - response;False;BOOL;True
-c2_accelerometerAngleXTest;[Cycle2] Accelerometer - X angle;False;NUMERIC;-180:180
-c2_accelerometerAngleYTest;[Cycle2] Accelerometer - Y angle;False;NUMERIC;-180:180
-c2_accelerometerAngleZTest;[Cycle2] Accelerometer - Z angle;False;NUMERIC;-180:180
-c2_accelerometerTotal;[Cycle2] Accelerometer test;True;BOOL;True
+c1_startUp;Device found;True;BOOL;True
+c1_deviceId;Device ID;True;ACTION
+c1_turnOff12V;turn 12V off;False;BOOL;True
+c1_fullTestResponse;MQTT: run full test;False;BOOL;True
+c1_fullTestResponseRetries;MQTT: number of retries;False;ACTION
+c1_digitalInputTest;Dig IN;True;BOOL;True
+c1_daliTest;DALI - response;False;BOOL;True
+c1_daliErrsTest;DALI - errs;False;NUMERIC; 0:0
+c1_daliAlsTest;DALI - als;False;NUMERIC; -1:100
+c1_daliTotal;DALI test;True;BOOL;True
+c1_accelerometerTest;Accelerometer - response;False;BOOL;True
+c1_accelerometerAngleXTest;Accelerometer - X angle;False;NUMERIC;-180:180
+c1_accelerometerAngleYTest;Accelerometer - Y angle;False;NUMERIC;-180:180
+c1_accelerometerAngleZTest;Accelerometer - Z angle;False;NUMERIC;-180:180
+c1_accelerometerTotal;Accelerometer test;True;BOOL;True
+c2_startUp;Device restarted;True;BOOL;True
+c2_deviceId;Device ID;False;ACTION
+c2_turnOn12V;turn 12V off;False;BOOL;True
+c2_fullTestResponse;MQTT: run full test;False;BOOL;True
+c2_fullTestResponseRetries;MQTT: number of retries;False;ACTION
+c2_rtcTest;RTC - response;False;BOOL;True
+c2_rtcRunTest;RTC - run ;False;BOOL;True
+c2_rtcBkupTest;RTC - bckup;False;BOOL;True
+c2_rtcTotal;RTC test;True;BOOL;True

@@ -124,38 +124,40 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'fullTestResponse', bool(response))
 
                 if response:
-                    try:
-                        rtc1, rtc2, rtc3 = False, False, False
-                        rtc1 = self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
-                        rtc2 = self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
-                        rtc3 = self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'rtcTotal', rtc1 and rtc2 and rtc3)
+                    if cycle == 'c2_':
+                        try:
+                            rtc1, rtc2, rtc3 = False, False, False
+                            rtc1 = self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
+                            rtc2 = self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
+                            rtc3 = self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'rtcTotal', rtc1 and rtc2 and rtc3)
 
-                    self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
+                    if cycle == 'c1_':
+                        self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
 
-                    try:
-                        dali1, dali2, dali3 = False, False, False
-                        dali1 = self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
-                        dali2 = self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
-                        dali3 = self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'daliTotal', dali1 and dali2 and dali3)
+                        try:
+                            dali1, dali2, dali3 = False, False, False
+                            dali1 = self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
+                            dali2 = self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
+                            dali3 = self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'daliTotal', dali1 and dali2 and dali3)
 
-                    try:
-                        acc1, acc2, acc3, acc4 = False, False, False, False
-                        acc1 = self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
-                        acc2 = self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
-                        acc3 = self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
-                        acc4 = self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
+                        try:
+                            acc1, acc2, acc3, acc4 = False, False, False, False
+                            acc1 = self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
+                            acc2 = self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
+                            acc3 = self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
+                            acc4 = self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
 
                 if cycle == 'c1_':
                     if self._config['power cycle']['mode'] == 'reset':
