@@ -43,7 +43,7 @@ class FullTest(Sequence):
     def post(self):
         if self._config['power cycle']['mode'] == 'auto':
             self.displayCustomMessage('', 'Powering off the device...')
-            self._relayOff()
+            self._relayOff(0.5)
             self.clearCustomMessage()
 
         mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
@@ -182,7 +182,7 @@ class FullTest(Sequence):
 
         return
 
-    def _sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
+    def _sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s, ping=True):
         self._MqttClient.clearMostRecentMessage(mqttAckTopic)
         logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
         self._MqttClient.publish(mqttCmdTopic, json.dumps(message))
@@ -195,14 +195,15 @@ class FullTest(Sequence):
                 response = json.loads(response)
                 break
             else:
-                self.pingStatus()
+                if ping:
+                    self.pingStatus()
                 time.sleep(0.1)
         logging.debug('MQTT received {} = {}'.format(mqttAckTopic, response))
 
         return response
 
     def _controlRelay(self, state, timeout_s=3):
-        response = self._sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s)
+        response = self._sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s, False)
         logging.debug('Relay: {}'.format(state))
 
         return response['Crelay'] == 0

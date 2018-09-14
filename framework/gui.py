@@ -250,7 +250,7 @@ class Gui:
 		resultListTree["displaycolumns"] = ("stepName", "value", 'result',)
 
 		resultListTree.column('#0', width=0)
-		resultListTree.column('stepName', width=280, anchor='e')
+		resultListTree.column('stepName', width=280, anchor='center')
 		resultListTree.column('stepType', width=60, anchor='center')
 		resultListTree.column('value', width=250, anchor='center')
 		resultListTree.column('limits', width=140, anchor='center')
