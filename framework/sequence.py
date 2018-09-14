@@ -8,6 +8,7 @@ import threading
 import csv
 from framework.step_type_enum import StepTypeEnum
 from collections import OrderedDict
+import simpleaudio
 
 
 
@@ -89,9 +90,11 @@ class Sequence:
 		if self._gui:
 			if self.status == SequenceStatusEnum.PASSED:
 				self._gui.updateTestStatus("TEST PASSED", self._gui.colors['green'])
+				self._playSound('success.wav')
 				self._gui.incrementPassedStatistics()
 			elif self.status == SequenceStatusEnum.FAILED:
 				self._gui.updateTestStatus("TEST FAILED", self._gui.colors['red'])
+				self._playSound('error.wav')
 				self._gui.incrementFailedStatistics()
 			elif self.status == SequenceStatusEnum.ERROR:
 				self._gui.updateTestStatus("SEQUENCE TERMINATED WITH ERROR", self._gui.colors['red'])
@@ -113,6 +116,11 @@ class Sequence:
 	def pingStatus(self):
 		if self.status == SequenceStatusEnum.TERMINATED:
 			raise QuitEvent
+
+	def _playSound(self, path):
+		# wave_obj = simpleaudio.WaveObject.from_wave_file(path)
+		# play_obj = wave_obj.play()
+		pass
 
 	def onFail(self, result):
 		if self.status != SequenceStatusEnum.TERMINATED:

@@ -347,7 +347,6 @@ class Gui:
 			self.ots.batch = Batch(self._widgets['interactive.batchNumber'].get())
 
 		self.ots.test = Test(sequence1, self._resultList)
-		self._widgets['user.logout'].grid_remove()
 
 		for widget in self._frames['interactive'].winfo_children():
 			widget.grid_remove()
@@ -361,6 +360,7 @@ class Gui:
 
 
 	def callback_startButtonClick(self):
+		self._widgets['user.logout'].grid_remove()
 		self._frames['interactive'].grid_remove()
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()

@@ -104,6 +104,8 @@ class Application(metaclass=Singleton):
 	def logout(self):
 		logging.info('User \'{}\' ({}) logged out'.format(self.loggedUser, self.users[self.loggedUser]))
 		self.loggedUser = ''
+		self.batch.close()
+		self.batch = None
 		self.config['general']['autologinUser'] = self.loggedUser
 		with open(self._configFilepath, 'w') as configfile:
 			self.config.write(configfile)
