@@ -4,6 +4,7 @@ import logging
 import configparser
 from datetime import datetime
 import sys
+import csv
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
 					handlers=[
@@ -21,7 +22,7 @@ class Singleton(type):
 
 class Application(metaclass=Singleton):
 
-	def __init__(self, configFilepath, hardwareConfigurationFilepath):
+	def __init__(self, configFilepath, hardwareConfigurationFilepath, usersFilepath):
 		self.eventLogger = None  # EventLogger
 		self.resultLogger = None  # ResultLogger
 		self.station = Station()
@@ -47,12 +48,9 @@ class Application(metaclass=Singleton):
 			},
 
 		}
-		self.users = {
-			'mateusz': {
-				'name':     'Mateusz Owczarek',
-				'password': 'mateusz'
-			}
-		}
+		self.usersFilepath = usersFilepath
+		self.users = {}
+		self.loadUsersFromFile()
 		self.loggedUser = None
 		self.reportsPath = 'reports/'
 		self._configFilepath = configFilepath
@@ -66,20 +64,34 @@ class Application(metaclass=Singleton):
 		pass
 
 	def autologin(self):
-		if self.config['general']['autologin'] == 'true' and self.config['general']['autologinUser'] and self.users[self.config['general']['autologinUser']]:
-			self.loggedUser = self.config['general']['autologinUser']
-
+		try:
+			if self.config['general']['autologin'] == 'true' and self.config['general']['autologinUser'] and self.users[self.config['general']['autologinUser']]:
+				self.loggedUser = self.config['general']['autologinUser']
+		except KeyError:
+			pass
 
 	def loadConfigFromFile(self):
 		config = configparser.ConfigParser()
 		config.read(self._configFilepath)
-		logging.debug('Setttings file: {}'.format(self._configFilepath))
+		logging.debug('Settings file: {}'.format(self._configFilepath))
 		return config
 
+	def loadUsersFromFile(self):
+		with open(self.usersFilepath, 'r') as f:
+			reader = csv.reader(f, delimiter=';')
+			for row in reader:
+				login = row[0]
+				displayName = row[1]
+				passwordHash = row[2]
+				self.users[login] = {
+					'name': displayName,
+					'passwordHash': passwordHash
+				}
 
 	def login(self, user, password):
+		import hashlib
 		for login, data in self.users.items():
-			if login == user and data['password'] == password:
+			if login == user and data['passwordHash'] == hashlib.sha1(password.encode('utf-8')).hexdigest():
 				self.loggedUser = login
 				logging.info('User \'{}\' ({}) logged in'.format(login, data['name']))
 				if self.config['general']['autologin'] == 'true':
