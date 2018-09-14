@@ -1,7 +1,7 @@
 deviceProgramming;Programming device...;True;BOOL;True
 c1_startUp;Device found;True;BOOL;True
 c1_deviceId;Device ID;True;ACTION
-c1_turnOff12V;turn 12V off;False;BOOL;True
+c1_turnOff12V;12V test;True;BOOL;True
 c1_fullTestResponse;MQTT: run full test;False;BOOL;True
 c1_fullTestResponseRetries;MQTT: number of retries;False;ACTION
 c1_digitalInputTest;Dig IN;True;BOOL;True

@@ -168,7 +168,7 @@ class Gui:
 		# logger.addHandler(textHandler)
 
 		from framework.application import Application
-		self.ots = Application('settings.ini', 'hardware_configuration.ini')
+		self.ots = Application('settings.ini', 'hardware_configuration.ini', 'users.txt')
 		self.ots.station.addDriver(MqttClient("MqttClient1", self.ots.hardwareConfigFilepath))
 		self.ots.station.addDriver(JLinkExe("JLinkExe1", self.ots.hardwareConfigFilepath))
 		self._widgets['interactive.sequenceList'].configure(value=list(self.ots.sequences.keys()))
