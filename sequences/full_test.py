@@ -35,40 +35,42 @@ class FullTest(Sequence):
         self._MqttClient.subscribe(mqttAckTopic)
         self._MqttClient.subscribe(self.relayAckTopic)
 
+        if self._config['power cycle']['mode'] == 'auto':
+            self.displayCustomMessage('', 'Powering up the device...')
+            self._relayOn()
+            self.clearCustomMessage()
+
     def post(self):
-        super().post()
+        if self._config['power cycle']['mode'] == 'auto':
+            self.displayCustomMessage('', 'Powering off the device...')
+            self._relayOff()
+            self.clearCustomMessage()
+
         mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.unsubscribe(mqttAttrTopic)
         self._MqttClient.unsubscribe(mqttAckTopic)
         self._MqttClient.unsubscribe(self.relayAckTopic)
 
+        super().post()
+
     def main(self):
         super().main()
         # returns
         try:
-
-
-            # self.displayCustomMessage('', 'Please power up the device')
-            # time.sleep(1)
-            # #power up - to clarify if we can verify it
-            # self.evaluateStep('powerUp', True)
-            # self.clearCustomMessage()
-
             if(self._config['programming']['enable'] == 'true'):
-                self.displayCustomMessage('', 'Programming in progress...\n\nPlease wait')
+                self.displayCustomMessage('', 'Programming in progress...')
                 # programming
                 self.evaluateStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
                 self.clearCustomMessage()
 
-            self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
+            self.displayCustomMessage('', 'Device starting up...')
 
             for cycle in ['c1_', 'c2_']:
 
                 # we do not know DID until it send the first message (AOEstart),
                 # so I clear all messages and waits for the first one
                 self._MqttClient.clearAllMostRecentMessages()
-
 
                 # wait until new message appears (empty dict evaluates as False in Python)
                 # timeout = 60s
@@ -83,7 +85,6 @@ class FullTest(Sequence):
                     [topic] = self._MqttClient.mostRecentMessages.keys()
                     [null, self.APIKEY, self.DID, null] = topic.split('/')
                     response = json.loads(self._MqttClient.mostRecentMessages[topic])
-
 
                 self.clearCustomMessage()
 
@@ -123,30 +124,50 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'fullTestResponse', bool(response))
 
                 if response:
-                    self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
-                    self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
-                    self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
+                    try:
+                        rtc1, rtc2, rtc3 = False, False, False
+                        rtc1 = self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
+                        rtc2 = self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
+                        rtc3 = self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
+                    except StepFail:
+                        pass
+                    finally:
+                        self.evaluateStep(cycle + 'rtcTotal', rtc1 and rtc2 and rtc3)
+
                     self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
-                    self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
-                    self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
-                    self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
-                    self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
-                    self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
-                    self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
-                    self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
+
+                    try:
+                        dali1, dali2, dali3 = False, False, False
+                        dali1 = self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
+                        dali2 = self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
+                        dali3 = self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
+                    except StepFail:
+                        pass
+                    finally:
+                        self.evaluateStep(cycle + 'daliTotal', dali1 and dali2 and dali3)
+
+                    try:
+                        acc1, acc2, acc3, acc4 = False, False, False, False
+                        acc1 = self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
+                        acc2 = self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
+                        acc3 = self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
+                        acc4 = self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
+                    except StepFail:
+                        pass
+                    finally:
+                        self.evaluateStep(cycle + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
 
                 if cycle == 'c1_':
                     if self._config['power cycle']['mode'] == 'reset':
                         self._JLinkExe.program('reset_script.txt')
-                        self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
+                        self.displayCustomMessage('', 'Device starting up...')
                     elif self._config['power cycle']['mode'] == 'auto':
-                        self.displayCustomMessage('', 'Automatic power cycle in progress\n\nPlease wait')
+                        self.displayCustomMessage('', 'Restarting device...')
                         self._relayOff()
                         time.sleep(float(self._config['power cycle']['delay']))
                         self._relayOn()
-                        self.displayCustomMessage('', 'Device starting up...\n\nPlease wait')
                     else:
-                        self.displayCustomMessage('', 'Please power cycle the device and wait until the device starts up...')
+                        self.displayCustomMessage('', 'Please restart the device and wait until the device starts up...')
 
         except StepFail:
             logging.info("Step failed - sequence terminated")

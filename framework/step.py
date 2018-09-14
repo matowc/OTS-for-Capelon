@@ -28,7 +28,11 @@ class Step:
 				status = StepResultEnum.FAILED
 		
 		elif self.type == StepTypeEnum.BOOL:
-			if (self.limits and str(value).lower() == str(self.limits).lower()) or value == True:
+			if (self.limits and str(value).lower() == str(self.limits).lower()) or (not self.limits and value == True):
+				logging.debug(self.limits)
+				logging.debug(str(value).lower())
+				logging.debug(str(self.limits).lower())
+				logging.debug(value)
 				status = StepResultEnum.PASSED
 			else:
 				status = StepResultEnum.FAILED
@@ -46,6 +50,8 @@ class Step:
 			raise
 		finally:
 			resultList.add(result)
+
+		return status == StepResultEnum.PASSED or self.type == StepTypeEnum.ACTION
 
 
 def main():
