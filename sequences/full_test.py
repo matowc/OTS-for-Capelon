@@ -6,6 +6,7 @@ from drivers import *
 from exceptions.step_fail import *
 from framework.gui import *
 from framework.step import *
+from framework.sequence_result_enum import SequenceStatusEnum
 
 
 class FullTest(Sequence):
@@ -43,7 +44,7 @@ class FullTest(Sequence):
     def post(self):
         if self._config['power cycle']['mode'] == 'auto':
             self.displayCustomMessage('', 'Powering off the device...')
-            self._relayOff()
+            self._relayOff(0.5)
             self.clearCustomMessage()
 
         mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
@@ -124,38 +125,40 @@ class FullTest(Sequence):
                 self.evaluateStep(cycle + 'fullTestResponse', bool(response))
 
                 if response:
-                    try:
-                        rtc1, rtc2, rtc3 = False, False, False
-                        rtc1 = self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
-                        rtc2 = self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
-                        rtc3 = self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'rtcTotal', rtc1 and rtc2 and rtc3)
+                    if cycle == 'c2_':
+                        try:
+                            rtc1, rtc2, rtc3 = False, False, False
+                            rtc1 = self.evaluateStep(cycle + 'rtcTest', response['Cdiags']['rtc']['io'])
+                            rtc2 = self.evaluateStep(cycle + 'rtcRunTest', response['Cdiags']['rtc']['run'])
+                            rtc3 = self.evaluateStep(cycle + 'rtcBkupTest', response['Cdiags']['rtc']['bkup'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'rtcTotal', rtc1 and rtc2 and rtc3)
 
-                    self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
+                    if cycle == 'c1_':
+                        self.evaluateStep(cycle + 'digitalInputTest', response['Cdiags']['digin'] == True)
 
-                    try:
-                        dali1, dali2, dali3 = False, False, False
-                        dali1 = self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
-                        dali2 = self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
-                        dali3 = self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'daliTotal', dali1 and dali2 and dali3)
+                        try:
+                            dali1, dali2, dali3 = False, False, False
+                            dali1 = self.evaluateStep(cycle + 'daliTest', response['Cdiags']['dali']['io'])
+                            dali2 = self.evaluateStep(cycle + 'daliErrsTest', response['Cdiags']['dali']['errs'])
+                            dali3 = self.evaluateStep(cycle + 'daliAlsTest', response['Cdiags']['dali']['als'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'daliTotal', dali1 and dali2 and dali3)
 
-                    try:
-                        acc1, acc2, acc3, acc4 = False, False, False, False
-                        acc1 = self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
-                        acc2 = self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
-                        acc3 = self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
-                        acc4 = self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
-                    except StepFail:
-                        pass
-                    finally:
-                        self.evaluateStep(cycle + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
+                        try:
+                            acc1, acc2, acc3, acc4 = False, False, False, False
+                            acc1 = self.evaluateStep(cycle + 'accelerometerTest', response['Cdiags']['accl']['io'])
+                            acc2 = self.evaluateStep(cycle + 'accelerometerAngleXTest', response['Cdiags']['accl']['angl']['x'])
+                            acc3 = self.evaluateStep(cycle + 'accelerometerAngleYTest', response['Cdiags']['accl']['angl']['y'])
+                            acc4 = self.evaluateStep(cycle + 'accelerometerAngleZTest', response['Cdiags']['accl']['angl']['z'])
+                        except StepFail:
+                            pass
+                        finally:
+                            self.evaluateStep(cycle + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
 
                 if cycle == 'c1_':
                     if self._config['power cycle']['mode'] == 'reset':
@@ -169,18 +172,26 @@ class FullTest(Sequence):
                     else:
                         self.displayCustomMessage('', 'Please restart the device and wait until the device starts up...')
 
+            logging.info("Sequence finished successfully")
+            self.status = SequenceStatusEnum.DONE
+
         except StepFail:
             logging.info("Step failed - sequence terminated")
+            # self.evaluateStep('totalResult', False)
 
         except QuitEvent:
             logging.warning("Sequence terminated by quitting application")
 
         finally:
-            pass
+            try:
+                self.evaluateStep('totalResult', self.status in [SequenceStatusEnum.DONE, SequenceStatusEnum.RUNNING, SequenceStatusEnum.PASSED])
+            except (StepFail, QuitEvent) as e:
+                # ignore exceptions
+                pass
 
         return
 
-    def _sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s):
+    def _sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s, ping=True):
         self._MqttClient.clearMostRecentMessage(mqttAckTopic)
         logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
         self._MqttClient.publish(mqttCmdTopic, json.dumps(message))
@@ -193,14 +204,15 @@ class FullTest(Sequence):
                 response = json.loads(response)
                 break
             else:
-                self.pingStatus()
+                if ping:
+                    self.pingStatus()
                 time.sleep(0.1)
         logging.debug('MQTT received {} = {}'.format(mqttAckTopic, response))
 
         return response
 
     def _controlRelay(self, state, timeout_s=3):
-        response = self._sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s)
+        response = self._sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s, False)
         logging.debug('Relay: {}'.format(state))
 
         return response['Crelay'] == 0

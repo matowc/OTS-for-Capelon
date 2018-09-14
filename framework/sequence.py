@@ -61,7 +61,7 @@ class Sequence:
 	def loadConfigFromFile(self):
 		config = configparser.ConfigParser()
 		config.read(self._configFilepath)
-		logging.debug('Sequece settings file: {}'.format(self._configFilepath))
+		logging.debug('Sequence settings file: {}'.format(self._configFilepath))
 		return config
 
 	def pre(self):
@@ -84,7 +84,7 @@ class Sequence:
 
 	def final(self):
 		self.endTime = time.time()
-		if self.status == SequenceStatusEnum.RUNNING:
+		if self.status in [SequenceStatusEnum.RUNNING, SequenceStatusEnum.DONE]:
 			self.status = SequenceStatusEnum.PASSED
 		if self._gui:
 			if self.status == SequenceStatusEnum.PASSED:
