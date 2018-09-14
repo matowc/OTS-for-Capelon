@@ -6,6 +6,7 @@ from drivers import *
 from exceptions.step_fail import *
 from framework.gui import *
 from framework.step import *
+from framework.sequence_result_enum import SequenceStatusEnum
 
 
 class FullTest(Sequence):
@@ -171,14 +172,22 @@ class FullTest(Sequence):
                     else:
                         self.displayCustomMessage('', 'Please restart the device and wait until the device starts up...')
 
+            logging.info("Sequence finished successfully")
+            self.status = SequenceStatusEnum.DONE
+
         except StepFail:
             logging.info("Step failed - sequence terminated")
+            # self.evaluateStep('totalResult', False)
 
         except QuitEvent:
             logging.warning("Sequence terminated by quitting application")
 
         finally:
-            pass
+            try:
+                self.evaluateStep('totalResult', self.status in [SequenceStatusEnum.DONE, SequenceStatusEnum.RUNNING, SequenceStatusEnum.PASSED])
+            except (StepFail, QuitEvent) as e:
+                # ignore exceptions
+                pass
 
         return
 

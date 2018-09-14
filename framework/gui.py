@@ -198,9 +198,9 @@ class Gui:
 					  highlightthickness=0)
 		self._widgets['interactive.batchNumberLabel'] = \
 			ttk.Label(self._frames['interactive'], text='Enter batch number:',  justify='center')
-		self._widgets['interactive.startButton'] = \
-			Button(self._frames['interactive'], text='Start Test', command=lambda: self.callback_startButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
-		self._widgets['interactive.startButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
+		self._widgets['interactive.okButton'] = \
+			Button(self._frames['interactive'], text='OK', command=lambda: self.callback_okButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+		self._widgets['interactive.okButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center', wraplength=350)
 		self._widgets['interactive.closeBatchButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
 		self._widgets['interactive.closeBatchButton'] = \
 			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
@@ -210,8 +210,8 @@ class Gui:
 		self._widgets['interactive.batchNumber'].grid(row=3, column=0, pady=5)
 		self._widgets['interactive.closeBatchButtonLabel'].grid(row=6, column=0, padx=0, pady=(30,0))
 		self._widgets['interactive.closeBatchButton'].grid(row=7, column=0, padx=50, pady=(5,20))
-		self._widgets['interactive.startButtonLabel'].grid(row=4, column=0, padx=0, pady=(30,0))
-		self._widgets['interactive.startButton'].grid(row=5, column=0, padx=0, pady=(5,20))
+		self._widgets['interactive.okButtonLabel'].grid(row=4, column=0, padx=30, pady=(30,0))
+		self._widgets['interactive.okButton'].grid(row=5, column=0, padx=0, pady=(5,20))
 
 	def initializeResultListTree(self):
 		self._style.element_create("Custom.Treeheading.border", "from", "default")
@@ -324,7 +324,7 @@ class Gui:
 	def updateTestTime(self, time):
 		self._widgets['statistics.canvas'].itemconfigure(self._widgets['statistics.timeCount'], text=str(round(time)))
 
-	def callback_startButtonClick(self):
+	def callback_okButtonClick(self):
 
 		sequenceName = self._widgets['interactive.sequenceList'].get()
 		if not sequenceName:
@@ -332,7 +332,6 @@ class Gui:
 			return
 
 		self._widgets['message.message']['text'] = ''
-		self._frames['interactive'].grid_remove()
 		logging.debug('Sequence: \'{}\''.format(sequenceName))
 
 		from framework.gui_result_list import GuiResultList
@@ -348,9 +347,24 @@ class Gui:
 			self.ots.batch = Batch(self._widgets['interactive.batchNumber'].get())
 
 		self.ots.test = Test(sequence1, self._resultList)
+		self._widgets['user.logout'].grid_remove()
+
+		for widget in self._frames['interactive'].winfo_children():
+			widget.grid_remove()
+
+		self._widgets['interactive.okButtonLabel'].grid()
+		self._widgets['interactive.okButtonLabel']['text'] = 'Attach the test device and click'
+		self._widgets['interactive.okButton'].config(command = lambda: self.callback_startButtonClick())
+		self._widgets['interactive.okButton']['text'] = 'START TEST'
+		self._widgets['interactive.okButton'].grid()
+		# self.displayMemo('Attach the test device and click START TEST')
+
+
+	def callback_startButtonClick(self):
+		self._frames['interactive'].grid_remove()
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
-		self._widgets['user.logout'].grid_remove()
+		self.displayMemo('')
 
 	def callback_quitButtonClick(self):
 		if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -406,22 +420,18 @@ class Gui:
 			self._frames['interactive'].grid_columnconfigure(0, weight=1)
 
 			if self.ots.batch and self.ots.batch.batchNumber:
-				# self._widgets['interactive.sequenceListLabel']['text'] = 'Sequence:\n{}'.format(self._widgets['interactive.sequenceList'].get())
-				# self._widgets['interactive.sequenceList'].grid_remove()
-				# self._widgets['interactive.batchNumberLabel']['text'] = 'Batch number:\n{}'.format(self.ots.batch.batchNumber)
-				# self._widgets['interactive.batchNumber'].grid_remove()
-				self._widgets['interactive.batchNumber'].grid_remove()
-				self._widgets['interactive.batchNumberLabel'].grid_remove()
-				self._widgets['interactive.sequenceList'].grid_remove()
-				self._widgets['interactive.sequenceListLabel'].grid_remove()
+				for widget in self._frames['interactive'].winfo_children():
+					widget.grid_remove()
 
-				self._widgets['interactive.startButtonLabel'].grid()
-				self._widgets['interactive.startButtonLabel']['text'] = 'Click to CONTINUE'
-				self._widgets['interactive.startButton'].grid()
-				self._widgets['interactive.closeBatchButtonLabel'].grid()
-				self._widgets['interactive.closeBatchButtonLabel']['text'] = 'Click to STOP'
-				self._widgets['interactive.closeBatchButton'].grid()
-				self.displayMemo('Click START to continue')
+				self._widgets['interactive.okButtonLabel'].grid()
+				self._widgets['interactive.okButtonLabel']['text'] = 'Attach next test device and click'
+				self._widgets['interactive.okButton']['text'] = 'START NEXT TEST'
+				self._widgets['interactive.okButton'].grid()
+				# self._widgets['interactive.closeBatchButtonLabel'].grid()
+				# self._widgets['interactive.closeBatchButtonLabel']['text'] = 'Click to STOP'
+				# self._widgets['interactive.closeBatchButton'].grid()
+				# self.displayMemo('Attach next test device and click START NEXT TEST')
+				self._widgets['interactive.okButton'].config(command=lambda: self.callback_startButtonClick())
 
 			else:
 				self._widgets['interactive.sequenceListLabel']['text'] = '1. Choose test sequence:'
@@ -430,11 +440,12 @@ class Gui:
 				self._widgets['interactive.batchNumberLabel']['text'] = '2. Enter batch number:'
 				self._widgets['interactive.batchNumberLabel'].grid()
 				self._widgets['interactive.batchNumber'].grid()
-				self._widgets['interactive.startButtonLabel'].grid()
-				self._widgets['interactive.startButtonLabel']['text'] = '3. Click START'
-				self._widgets['interactive.startButton'].grid()
+				self._widgets['interactive.okButtonLabel'].grid()
+				self._widgets['interactive.okButtonLabel']['text'] = '3. Click OK'
+				self._widgets['interactive.okButton'].grid()
 				self._widgets['interactive.closeBatchButton'].grid_remove()
 				self._widgets['interactive.closeBatchButtonLabel'].grid_remove()
+				self._widgets['interactive.okButton'].config(command=lambda: self.callback_okButtonClick())
 
 	def displayMemo(self, text):
 		self._widgets['message.message']['text'] = text

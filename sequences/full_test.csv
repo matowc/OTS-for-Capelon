@@ -23,3 +23,4 @@ c2_rtcTest;RTC - response;False;BOOL;True
 c2_rtcRunTest;RTC - run ;False;BOOL;True
 c2_rtcBkupTest;RTC - bckup;False;BOOL;True
 c2_rtcTotal;RTC test;True;BOOL;True
+totalResult;Test completed;True;BOOL;True

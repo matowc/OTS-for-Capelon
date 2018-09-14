@@ -29,10 +29,6 @@ class Step:
 		
 		elif self.type == StepTypeEnum.BOOL:
 			if (self.limits and str(value).lower() == str(self.limits).lower()) or (not self.limits and value == True):
-				logging.debug(self.limits)
-				logging.debug(str(value).lower())
-				logging.debug(str(self.limits).lower())
-				logging.debug(value)
 				status = StepResultEnum.PASSED
 			else:
 				status = StepResultEnum.FAILED
@@ -44,8 +40,8 @@ class Step:
 
 		try:
 			result = Result(self, value, status)
-			sequence.postStep(result) #postStep action
 			result.post(sequence) #onFail, onPass, onError actions
+			sequence.postStep(result) #postStep action
 		except Exception:
 			raise
 		finally:
