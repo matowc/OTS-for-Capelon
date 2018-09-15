@@ -23,7 +23,6 @@ class Sequence:
 		self.endTime = None
 		self.steps = OrderedDict()
 		self.deviceId = ''
-		self.steps = {}
 		self._stepsFilepath = stepsFilepath
 		self._configFilepath = configFilepath
 

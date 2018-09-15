@@ -42,14 +42,15 @@ class Test:
 			fields['device ID'] = ''
 			fields['test result'] =  self.sequence.status.name
 			fields['test time'] =  round(self.sequence.endTime - self.sequence.startTime, 2)
-			report = ResultCsvReportGenerator(ots.reportsPath+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
-			report.generate()
 			fields['failed step'] = ''
 			for result in self.resultList.results:
 				if result.step.name == 'c1_deviceId':
 					fields['device ID'] = result.value
 				if result.status == StepResultEnum.FAILED or result.status == StepResultEnum.ERROR:
 					fields['failed step'] = result.step.displayName
+
+			report = ResultCsvReportGenerator(ots.reportsPath+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
+			report.generate()
 			generalReport = GeneralCsvReportGenerator(ots.reportsPath+'ALL'+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
 			generalReport.generate()
 		except Exception:
