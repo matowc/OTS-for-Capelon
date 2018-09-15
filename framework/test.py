@@ -48,7 +48,9 @@ class Test:
 			for result in self.resultList.results:
 				if result.step.name == 'c1_deviceId':
 					fields['device ID'] = result.value
-				if result.status == StepResultEnum.FAILED or result.status == StepResultEnum.ERROR:
+				if fields['failed step'] == '' \
+						and self.sequence.status is not SequenceStatusEnum.TERMINATED \
+						and (result.status == StepResultEnum.FAILED or result.status == StepResultEnum.ERROR):
 					fields['failed step'] = result.step.displayName
 
 			report = ResultCsvReportGenerator(ots.reportsPath+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)

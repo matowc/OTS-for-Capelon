@@ -17,8 +17,11 @@ class PowerRelay(Driver):
     def _controlRelay(self, state, timeout_s=3):
         response = self.mqttClient.sendMessageAndWaitForResponse(self.relayCmdTopic, {"Crelay": state}, self.relayAckTopic, timeout_s, None)
         logging.debug('Relay: {}'.format(state))
+        try:
+            return response['Crelay'] == 0
+        except KeyError:
+            return False
 
-        return response['Crelay'] == 0
 
     def switchOn(self, timeout_s=3):
         self._controlRelay(True, timeout_s)

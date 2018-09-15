@@ -34,8 +34,17 @@ class Sequence:
 			self._config = self.loadConfigFromFile()
 
 
-	def executeStep(self, stepName: str, value):
-		return self.steps[stepName].evaluate(self, value, self._resultList)
+	def executeStep(self, stepName: str, value, **kwargs):
+		try:
+			self.displayCustomMessage('', kwargs['displayPre'])
+		except KeyError:
+			pass
+		result = self.steps[stepName].evaluate(self, value, self._resultList)
+		try:
+			self.displayCustomMessage('', kwargs['displayPost'])
+		except KeyError:
+			pass
+		return result
 
 	def updateTimer(self):
 		if self._gui:
@@ -111,6 +120,13 @@ class Sequence:
 	def postStep(self, result):
 		if self.status == SequenceStatusEnum.TERMINATED:
 			raise QuitEvent
+
+	def sleep(self, sleepTime, sleepStep = 0.1):
+		import time
+		sleepCycles = float(sleepTime) / sleepStep
+		for i in range(int(sleepCycles)):
+			time.sleep(sleepStep)
+			self.pingStatus()
 
 	def pingStatus(self):
 		if self.status == SequenceStatusEnum.TERMINATED:

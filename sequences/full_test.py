@@ -4,8 +4,8 @@ import json
 from typing import NewType
 from drivers import *
 from exceptions.step_fail import *
-from framework.gui import *
 from framework.step import *
+from framework.gui import *
 from framework.sequence_result_enum import SequenceStatusEnum
 
 
@@ -33,22 +33,19 @@ class FullTest(Sequence):
         self._MqttClient.subscribe(mqttAttrTopic)
         self._MqttClient.subscribe(mqttAckTopic)
 
-        if self._config['power cycle']['mode'] == 'auto':
-            self.displayCustomMessage('', 'Powering up the device...')
-            self._PowerRelay.switchOn(0.5)
-            self.clearCustomMessage()
+        self.displayCustomMessage('', 'Powering up the device...')
+        self._PowerRelay.switchOn(0.5)
+        self.clearCustomMessage()
 
     def post(self):
-        if self._config['power cycle']['mode'] == 'auto':
-            self.displayCustomMessage('', 'Powering off the device...')
-            self._PowerRelay.switchOff(0.5)
-            self.clearCustomMessage()
+        self.displayCustomMessage('', 'Powering off the device...')
+        self._PowerRelay.switchOff(0.5)
+        self.clearCustomMessage()
 
         mqttAckTopic = '/' + self.APIKEY + '/+/cmdexe'
         mqttAttrTopic = '/' + self.APIKEY + '/+/attrs'
         self._MqttClient.unsubscribe(mqttAttrTopic)
         self._MqttClient.unsubscribe(mqttAckTopic)
-
 
         super().post()
 
@@ -57,10 +54,11 @@ class FullTest(Sequence):
         # returns
         try:
             if(self._config['programming']['enable'] == 'true'):
-                self.displayCustomMessage('', 'Programming in progress...')
-                # programming
-                self.executeStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
-                self.clearCustomMessage()
+                self.executeStep(
+                    'deviceProgramming',
+                    self._JLinkExe.program(self._config['programming']['script']),
+                    displayPre='Programming in progress',
+                    displayPost='')
 
             self.displayCustomMessage('', 'Device starting up...')
 
@@ -109,7 +107,6 @@ class FullTest(Sequence):
 
             self.executeStep('c1_' + 'fullTestResponseRetries', retryCount)
             self.executeStep('c1_' + 'fullTestResponse', bool(response))
-
             self.executeStep('c1_' + 'digitalInputTest', response['Cdiags']['digin'] == True)
 
             try:
@@ -139,13 +136,13 @@ class FullTest(Sequence):
             elif self._config['power cycle']['mode'] == 'auto':
                 self.displayCustomMessage('', 'Restarting device...')
                 self._PowerRelay.switchOff(2)
-                time.sleep(float(self._config['power cycle']['delay']))
+                self.sleep(self._config['power cycle']['delay'])
                 self._PowerRelay.switchOn(2)
             else:
                 self.displayCustomMessage('', 'Please restart the device and wait until the device starts up...')
 
-                # we do not know DID until it send the first message (AOEstart),
-                # so I clear all messages and waits for the first one
+            # we do not know DID until it send the first message (AOEstart),
+            # so I clear all messages and waits for the first one
             self._MqttClient.clearAllMostRecentMessages()
 
             # wait until new message appears (empty dict evaluates as False in Python)
@@ -217,6 +214,7 @@ class FullTest(Sequence):
                 # ignore exceptions
                 pass
         return
+
 
 def main():
     pass
