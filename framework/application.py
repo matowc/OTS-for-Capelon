@@ -5,6 +5,7 @@ import configparser
 from datetime import datetime
 import sys
 import csv
+from drivers import *
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s | %(message)s',
 					handlers=[
@@ -59,6 +60,11 @@ class Application(metaclass=Singleton):
 
 		self.autologin()
 
+		self.station.addDriver(MqttClient("MqttClient1", self.hardwareConfigFilepath))
+		self.station.addDriver(JLinkExe("JLinkExe1", self.hardwareConfigFilepath))
+		self.station.addDriver(PowerRelay("PowerRelay1", self.hardwareConfigFilepath))
+		self.station.drivers['PowerRelay1'].bindMqttClient(self.station.drivers['MqttClient1'])
+
 	def launch(self):
 		# returns
 		pass
@@ -104,8 +110,9 @@ class Application(metaclass=Singleton):
 	def logout(self):
 		logging.info('User \'{}\' ({}) logged out'.format(self.loggedUser, self.users[self.loggedUser]))
 		self.loggedUser = ''
-		self.batch.close()
-		self.batch = None
+		if self.batch:
+			self.batch.close()
+			self.batch = None
 		self.config['general']['autologinUser'] = self.loggedUser
 		with open(self._configFilepath, 'w') as configfile:
 			self.config.write(configfile)

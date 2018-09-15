@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 from tkinter import messagebox
 from tkinter import scrolledtext
+from framework.sequence_result_enum import SequenceStatusEnum
 import sys
 
 class TextHandler(logging.Handler):
@@ -169,8 +170,6 @@ class Gui:
 
 		from framework.application import Application
 		self.ots = Application('settings.ini', 'hardware_configuration.ini', 'users.txt')
-		self.ots.station.addDriver(MqttClient("MqttClient1", self.ots.hardwareConfigFilepath))
-		self.ots.station.addDriver(JLinkExe("JLinkExe1", self.ots.hardwareConfigFilepath))
 		self._widgets['interactive.sequenceList'].configure(value=list(self.ots.sequences.keys()))
 
 		self.init()
@@ -351,16 +350,17 @@ class Gui:
 		for widget in self._frames['interactive'].winfo_children():
 			widget.grid_remove()
 
+		self.ots.station.drivers['PowerRelay1'].switchOff(0.5)
+
 		self._widgets['interactive.okButtonLabel'].grid()
-		self._widgets['interactive.okButtonLabel']['text'] = 'Attach the test device and click'
+		self._widgets['interactive.okButtonLabel']['text'] = 'Attach new test object and click'
 		self._widgets['interactive.okButton'].config(command = lambda: self.callback_startButtonClick())
-		self._widgets['interactive.okButton']['text'] = 'START TEST'
+		self._widgets['interactive.okButton']['text'] = 'START TEST RUN'
 		self._widgets['interactive.okButton'].grid()
 		# self.displayMemo('Attach the test device and click START TEST')
 
 
 	def callback_startButtonClick(self):
-		self._widgets['user.logout'].grid_remove()
 		self._frames['interactive'].grid_remove()
 		self.ots.testThread = threading.Thread(target=lambda: self.ots.test.run())
 		self.ots.testThread.start()
@@ -371,7 +371,9 @@ class Gui:
 			if self.ots.testThread and self.ots.testThread.isAlive():
 				logging.debug("Exiting while test thread is active")
 				self.ots.test.sequence.requestTerminate()
-			time.sleep(0.1)
+				self.ots.logout()
+
+			time.sleep(1)
 			self._root.destroy()
 			self._root = None
 
@@ -392,9 +394,13 @@ class Gui:
 			self._loginFailed()
 
 	def callback_logoutButtonClick(self):
-		user = self.ots.logout()
-		self._logout()
-		self.initializeAuthenticationFrame()
+
+		if self.ots.test and self.ots.test.sequence.status == SequenceStatusEnum.RUNNING:
+			messagebox.showinfo("Action not allowed", "You cannot log out while the test is in progress. \nFinish test session to log out!")
+		else:
+			user = self.ots.logout()
+			self._logout()
+			self.initializeAuthenticationFrame()
 
 	def _loginSuccess(self):
 		self._frames['authentication'].grid_remove()
@@ -404,6 +410,7 @@ class Gui:
 		self._widgets['user.user']['text'] = 'User: ' + self.ots.users[self.ots.loggedUser]['name']
 
 	def _logout(self):
+
 		self._frames['user'].grid_remove()
 		self._frames['interactive'].grid_remove()
 		self._frames['authentication'].grid()
@@ -424,8 +431,8 @@ class Gui:
 					widget.grid_remove()
 
 				self._widgets['interactive.okButtonLabel'].grid()
-				self._widgets['interactive.okButtonLabel']['text'] = 'Attach next test device and click'
-				self._widgets['interactive.okButton']['text'] = 'START NEXT TEST'
+				self._widgets['interactive.okButtonLabel']['text'] = 'Attach new test object and click'
+				self._widgets['interactive.okButton']['text'] = 'START TEST RUN'
 				self._widgets['interactive.okButton'].grid()
 				# self._widgets['interactive.closeBatchButtonLabel'].grid()
 				# self._widgets['interactive.closeBatchButtonLabel']['text'] = 'Click to STOP'

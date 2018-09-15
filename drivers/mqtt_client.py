@@ -81,6 +81,28 @@ class MqttClient(Driver):
 	def onConnect(self, client, userdata, flags, rc):
 		logging.info("MQTT CONNACK received with code %d." % (rc))
 
+	def sendMessageAndWaitForResponse(self, mqttCmdTopic, message, mqttAckTopic, timeout_s, pingCommand=None):
+		import json
+		import time
+		self.clearMostRecentMessage(mqttAckTopic)
+		logging.debug('MQTT publish {} = {}'.format(mqttCmdTopic, message))
+		self.publish(mqttCmdTopic, json.dumps(message))
+
+		timeout = time.time() + timeout_s
+		response = ''
+		while time.time() <= timeout:
+			if mqttAckTopic in self.mostRecentMessages.keys():
+				response = self.mostRecentMessages[mqttAckTopic]
+				response = json.loads(response)
+				break
+			else:
+				if pingCommand:
+					pingCommand()
+				time.sleep(0.1)
+		logging.debug('MQTT received {} = {}'.format(mqttAckTopic, response))
+
+		return response
+
 
 
 def main():

@@ -1,11 +1,12 @@
 import logging
+import configparser
 
 
 class Driver:
 
 	def __init__(self, name, configFilepath=None):
 		self.name = name
-		self._configFilePath = configFilepath
+		self._configFilepath = configFilepath
 		self.config = self.loadConfiguration()
 		self.initialize()
 
@@ -17,14 +18,14 @@ class Driver:
 	def initialize(self):
 		pass
 
-	def deinitalize(self):
+	def deinitialize(self):
 		pass
 
 	def loadConfiguration(self):
 		return self.loadConfigFromFile()
 
 	def loadConfigFromFile(self):
-		if self._configFilePath:
+		if self._configFilepath:
 			config = configparser.ConfigParser()
 			config.read(self._configFilepath)
 			logging.debug('Driver {} settings file: {}'.format(self.name, self._configFilepath))

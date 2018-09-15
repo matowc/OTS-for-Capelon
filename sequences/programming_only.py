@@ -24,7 +24,7 @@ class ProgrammingOnly(Sequence):
             if(self._config['programming']['enable'] == 'true'):
                 self.displayCustomMessage('', 'Programming in progress...\nIt may take some time.')
                 # programming
-                self.evaluateStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
+                self.executeStep('deviceProgramming', self._JLinkExe.program(self._config['programming']['script']))
                 self.clearCustomMessage()
 
 

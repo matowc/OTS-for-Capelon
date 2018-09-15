@@ -5,8 +5,10 @@ import time
 import threading
 from framework.result_csv_report_generator import ResultCsvReportGenerator
 from framework.general_csv_report_generator import GeneralCsvReportGenerator
+from framework.printer_labels_report_generator import PrinterLabelsReportGenerator
 from datetime import datetime
 from collections import OrderedDict
+from framework.sequence_result_enum import SequenceStatusEnum
 
 class Test:
 
@@ -51,8 +53,14 @@ class Test:
 
 			report = ResultCsvReportGenerator(ots.reportsPath+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
 			report.generate()
+
 			generalReport = GeneralCsvReportGenerator(ots.reportsPath+'ALL'+datetime.now().strftime('_%Y_%m_%d.csv'), self.resultList, fields)
 			generalReport.generate()
+
+			if fields['device ID'] and self.sequence.status == SequenceStatusEnum.PASSED:
+				printerReport = PrinterLabelsReportGenerator(ots.reportsPath+'printer_'+self.sequence.name+datetime.now().strftime('_%Y_%m_%d.xlsx'))
+				printerReport.addRow(fields['device ID'])
+
 		except Exception:
 			# TODO
 			logging.exception("Error while generating reports!")

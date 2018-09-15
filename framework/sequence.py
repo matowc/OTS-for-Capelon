@@ -34,7 +34,7 @@ class Sequence:
 			self._config = self.loadConfigFromFile()
 
 
-	def evaluateStep(self, stepName: str, value):
+	def executeStep(self, stepName: str, value):
 		return self.steps[stepName].evaluate(self, value, self._resultList)
 
 	def updateTimer(self):
