@@ -107,7 +107,8 @@ class FullTest(Sequence):
 
             self.executeStep('c1_' + 'fullTestResponseRetries', retryCount)
             self.executeStep('c1_' + 'fullTestResponse', bool(response))
-            self.executeStep('c1_' + 'digitalInputTest', response['Cdiags']['digin'] == True)
+            digInWith12VOff = response['Cdiags']['digin']
+            # self.executeStep('c1_' + 'digitalInputTest', r == True)
 
             try:
                 dali1, dali2, dali3 = False, False, False
@@ -129,6 +130,18 @@ class FullTest(Sequence):
                 pass
             finally:
                 self.executeStep('c1_' + 'accelerometerTotal', acc1 and acc2 and acc3 and acc4)
+
+            response = self._MqttClient.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": True}, mqttAckTopic,
+                                                                      float(self._config['general'][
+                                                                                'defaultCommandTimeout_s']),
+                                                                      self.pingStatus)
+            self.executeStep('c1_turnOn12V', (response and response['C12Vout'] == 0))
+            response = self._MqttClient.sendMessageAndWaitForResponse(mqttCmdTopic, {"Cdiags": 1}, mqttAckTopic,
+                                                                      float(
+                                                                          self._config['general']['fullTestTimeout_s']),
+                                                                      self.pingStatus)
+            digInWith12VOn = response['Cdiags']['digin']
+            self.executeStep('c1_' + 'digitalInputTest', digInWith12VOff and not digInWith12VOn)
 
             if self._config['power cycle']['mode'] == 'reset':
                 self._JLinkExe.program('reset_script.txt')
@@ -169,10 +182,6 @@ class FullTest(Sequence):
             self.deviceId = self.DID
             self.executeStep('c2_' + 'deviceId', self.DID)
             self.displayCustomMessage('', 'Device {} detected.\nStarting test'.format(self.DID))
-
-            response = self._MqttClient.sendMessageAndWaitForResponse(mqttCmdTopic, {"C12Vout": True}, mqttAckTopic,
-                                                           float(self._config['general']['defaultCommandTimeout_s']), self.pingStatus)
-            self.executeStep('c2_turnOn12V', (response and response['C12Vout'] == 0))
 
             response = False
             retryCount = 0
