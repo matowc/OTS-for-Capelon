@@ -202,7 +202,7 @@ class Gui:
 		self._widgets['interactive.okButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center', wraplength=350)
 		self._widgets['interactive.closeBatchButtonLabel'] = ttk.Label(self._frames['interactive'], justify='center')
 		self._widgets['interactive.closeBatchButton'] = \
-			Button(self._frames['interactive'], text='Close Batch', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
+			Button(self._frames['interactive'], text='FINISH TEST SESSION', command=lambda: self.callback_closeBatchButtonClick(), background=self.colors['dark grey'], foreground=self.colors['white'], font=('Arial', 14, 'bold'))
 		self._widgets['interactive.sequenceListLabel'].grid(row=0, column=0, pady=(20,0))
 		self._widgets['interactive.sequenceList'].grid(row=1, column=0, pady=5)
 		self._widgets['interactive.batchNumberLabel'].grid(row=2, column=0, pady=(30,0))
@@ -357,6 +357,9 @@ class Gui:
 		self._widgets['interactive.okButton'].config(command = lambda: self.callback_startButtonClick())
 		self._widgets['interactive.okButton']['text'] = 'START TEST RUN'
 		self._widgets['interactive.okButton'].grid()
+		self._widgets['interactive.closeBatchButtonLabel'].grid()
+		self._widgets['interactive.closeBatchButtonLabel']['text'] = 'To finish the test session, click'
+		self._widgets['interactive.closeBatchButton'].grid()
 		# self.displayMemo('Attach the test device and click START TEST')
 
 
@@ -434,9 +437,9 @@ class Gui:
 				self._widgets['interactive.okButtonLabel']['text'] = 'Attach new test object and click'
 				self._widgets['interactive.okButton']['text'] = 'START TEST RUN'
 				self._widgets['interactive.okButton'].grid()
-				# self._widgets['interactive.closeBatchButtonLabel'].grid()
-				# self._widgets['interactive.closeBatchButtonLabel']['text'] = 'Click to STOP'
-				# self._widgets['interactive.closeBatchButton'].grid()
+				self._widgets['interactive.closeBatchButtonLabel'].grid()
+				self._widgets['interactive.closeBatchButtonLabel']['text'] = 'To finish the test session, click'
+				self._widgets['interactive.closeBatchButton'].grid()
 				# self.displayMemo('Attach next test device and click START NEXT TEST')
 				self._widgets['interactive.okButton'].config(command=lambda: self.callback_startButtonClick())
 
